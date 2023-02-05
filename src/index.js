@@ -1,4 +1,3 @@
-import {sum} from './modules/sum';
+import Handlebars from 'handlebars';
 
-const root = document.querySelector('#root');
-root.textContent = sum(6, -1).toString();
+Handlebars.registerPartial();
