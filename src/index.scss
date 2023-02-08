@@ -1,0 +1,22 @@
+@use './components/Button/button.scss';
+@use './styles/components/auth.scss';
+@use './styles/components/authForm.scss';
+@use './styles/fonts/typography.scss';
+@use './components/Input/input.scss';
+@use './styles/layouts/main.scss';
+@use './components/AnchorLink/anchorLink.scss';
+
+@import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600|Josefin+Sans:300,400,400i');
+
+* {
+    font-family: 'Inter';
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: none;
+    text-decoration: none;
+}
+
+body {
+    height: 100vh;
+}

@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "parcel index.hbs",
-    "build": "parcel build index.hbs"
+    "dev": "parcel src/index.hbs",
+    "build": "parcel build src/index.hbs"
   },
   "keywords": [],
   "author": "",
