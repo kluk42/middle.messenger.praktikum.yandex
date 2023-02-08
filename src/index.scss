@@ -5,6 +5,9 @@
 @use './components/Input/input.scss';
 @use './styles/layouts/main.scss';
 @use './components/AnchorLink/anchorLink.scss';
+@use './components/MessagesList/messagesList.scss';
+@use './components/Message/message.scss';
+@use './components/Chat/Chat.hbs';
 
 @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600|Josefin+Sans:300,400,400i');
 
@@ -15,6 +18,7 @@
     box-sizing: border-box;
     border: none;
     text-decoration: none;
+    overflow: hidden;
 }
 
 body {
