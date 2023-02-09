@@ -4,6 +4,9 @@
         <input type="text" class="messages__searchInput" placeholder="Поиск">
     </div>
     <ul class="messages__list">
+        {{> FoundMessage/FoundMessage
+            name="Иван"
+        }}
         {{> Message/Message
             chatName="Никита"
             messageDate="17:03"
@@ -99,5 +102,4 @@
             messageReceived=true
         }}
     </ul>
-    <div class="messages__chat"></div>
 </div>
