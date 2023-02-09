@@ -1,4 +1,4 @@
-<li class="message">
+<li {{#if isMessageUnread}}class="message message_unread"{{/if}} class="message">
     {{#if imgSrc}}
         <img src="{{imgSrc}}" alt="avatar" class="message__avatar">
     {{else}}

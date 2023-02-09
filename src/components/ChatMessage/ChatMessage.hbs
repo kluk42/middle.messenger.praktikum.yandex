@@ -1,0 +1,60 @@
+<div 
+    {{#unless isMessageSent}}
+        class="chatMessage chatMessage_type_receivedMessage"
+    {{/unless}}
+    class="chatMessage">
+    {{#if withDate}}
+        <p class="chatMessage__date">{{messageDate}}</p>
+    {{/if}}
+    <div 
+        {{#if imgPath}}
+            {{#if isMessageSent}}
+                class="chatMessage__content chatMessage__content_isMessageSent chatMessage__content_type_img"
+            {{/if}}
+        {{/if}}
+        {{#if imgPath}}
+            class="chatMessage__content chatMessage__content_type_img"
+        {{/if}}
+        {{#if isMessageSent}}
+            class="chatMessage__content chatMessage__content_isMessageSent"
+        {{/if}}
+        class="chatMessage__content"
+    >
+        {{#if textMessage}}
+        <p class="chatMessage__text">
+            {{textMessage}}
+        </p>
+        {{/if}}
+        {{#if imgPath}}
+            <img
+                src={{imgPath}}
+                alt="Изображение в сообщении"
+                class="chatMessage__imgMessage"
+            >
+        {{/if}}
+        <div
+            {{#if imgPath}}
+                class="chatMessage__time chatMessage__time_messageContent_img"
+            {{/if}}
+            class="chatMessage__time"
+        >
+            {{#if isMessageSent}}
+              {{#if isMessageDelivered}}
+                <img
+                    src="../../../static/images/messageIsReceivedIcon.png"
+                    alt="Знак получения сообщения"
+                    class="chatMessage__messageIsReceivedIcon"
+                >
+              {{/if}}
+            {{/if}}
+            <p
+                {{#if imgPath}}
+                    class="chatMessage__timeSign chatMessage__timeSign_messageContent_img"
+                {{/if}}
+                class="chatMessage__timeSign"
+            >
+                {{messageTime}}
+            </p>
+        </div>
+    </div>
+</div>

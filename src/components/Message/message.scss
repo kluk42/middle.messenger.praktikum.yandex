@@ -8,6 +8,10 @@
     border-bottom: 1px solid $color-grayish;
     padding: 12px 0;
 
+    &_unread {
+        background-color: $color-hawkes-blue;
+    }
+
     &__avatar {
         grid-column: 1/2;
         grid-row: 1/-1;

@@ -7,7 +7,9 @@
 @use './components/AnchorLink/anchorLink.scss';
 @use './components/MessagesList/messagesList.scss';
 @use './components/Message/message.scss';
-@use './components/Chat/Chat.hbs';
+@use './components/Chat/chat.scss';
+@use './components/ChatMessage/chatMessage.scss';
+@use './components/ChatNewMessageInput/chatNewMessageInput.scss';
 
 @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600|Josefin+Sans:300,400,400i');
 

@@ -1,1 +1,53 @@
-<div class="chat"></div>
+<div class="chat">
+    <div class="chat__head">
+        {{#if avatarSrc}}
+            <img src="{{avatarSrc}}" alt="avatar" class="chat__avatar">
+        {{else}}
+            <div class="chat__avatar chat__avatar_empty"></div>
+        {{/if}}
+            <h2 class="chat__name">{{chatName}}</h2>
+            <button class="chat__settingsBtn">
+                <div class="chat__middleSettingsDot"></div>
+            </button>
+    </div>
+    <div class="chat__messagesWindow">
+        {{> ChatMessage/ChatMessage
+            withDate=true
+            messageDate="3 июля"
+            isMessageSent=false
+            messageTime="15:40"
+            imgPath="../../../static/images/photoMessage.png"
+        }}
+        {{> ChatMessage/ChatMessage
+            isMessageSent=false
+            messageTime="15:40"
+            textMessage="Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью 500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с собой забрали только кассеты с пленкой. Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не попали. Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро."
+        }}
+        {{> ChatMessage/ChatMessage
+            isMessageSent=false
+            messageTime="15:40"
+            textMessage="Хочу такой!!!"
+        }}
+        {{> ChatMessage/ChatMessage
+            isMessageSent=true
+            messageTime="15:40"
+            textMessage="Я тоже такой хочу!!!"
+            isMessageDelivered=true
+        }}
+        {{> ChatMessage/ChatMessage
+            withDate=true
+            messageDate="3 июля"
+            isMessageSent=true
+            messageTime="15:40"
+            imgPath="../../../static/images/photoMessage.png"
+            isMessageDelivered=true
+        }}
+        {{> ChatMessage/ChatMessage
+            isMessageSent=true
+            messageTime="15:40"
+            isMessageDelivered=true
+            textMessage="Привет! Смотри, тут всплыл интересный кусок лунной космической истории — НАСА в какой-то момент попросила Хассельблад адаптировать модель SWC для полетов на Луну. Сейчас мы все знаем что астронавты летали с моделью 500 EL — и к слову говоря, все тушки этих камер все еще находятся на поверхности Луны, так как астронавты с собой забрали только кассеты с пленкой. Хассельблад в итоге адаптировал SWC для космоса, но что-то пошло не так и на ракету они так никогда и не попали. Всего их было произведено 25 штук, одну из них недавно продали на аукционе за 45000 евро."
+        }}
+    </div>
+    {{> ChatNewMessageInput/ChatNewMessageInput}}
+</div>

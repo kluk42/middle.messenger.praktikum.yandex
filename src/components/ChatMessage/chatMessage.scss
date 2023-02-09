@@ -1,0 +1,91 @@
+@import '../../styles/palette.scss';
+@import '../../styles/fonts/typography.scss';
+
+.chatMessage {
+    width: 100%;
+    margin-top: 30px;
+
+    &_type {
+        &_receivedMessage {
+            margin-top: 10px;
+            margin-left: 20px;
+            margin-right: 0;
+        }
+    }
+
+    &__date {
+        width: fit-content;
+        margin: 30px auto;
+        @include thick;
+    }
+
+    &__content {
+        padding: 11px;
+        background-color: $color-labaster;
+        border-radius: 3px;
+        width: fit-content;
+        max-width: 402px;
+
+        display: grid;
+        grid-template-columns: 1fr min-content;
+        column-gap: 5px;
+
+        &_isMessageSent {
+            margin-left: auto;
+            margin-right: 20px;
+        }
+
+        &_type {
+            &_img {
+                background-color: transparent;
+                border: 1px solid $color-grayish;
+                width: fit-content;
+                padding: 0;
+                border-radius: 12px;
+                overflow: hidden;
+                display: block;
+                position: relative;
+            }
+        }
+    }
+
+    &__text {
+        @include tallThick;
+        color: $color-dark;
+    }
+
+    &__time {
+        width: fit-content;
+        height: fit-content;
+        align-self: end;
+        display: flex;
+        align-items: center;
+
+        &_messageContent {
+            &_img {
+                position: absolute;
+                bottom: 11px;
+                right: 11px;
+            }
+        }
+    }
+
+    &__messageIsReceivedIcon {
+        width: 9px;
+        height: 4px;
+    }
+
+    &__timeSign {
+        @include tinyThick;
+        color: $color-gray;
+
+        &_messageContent {
+            &_img {
+                background-color: $color-semitransparent-gray;
+                color: $color-white;
+                padding: 2px 7px;
+                border-radius: 30px;
+            }
+        }
+    }
+}

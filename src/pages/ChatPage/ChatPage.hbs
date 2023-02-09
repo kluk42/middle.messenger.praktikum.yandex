@@ -3,9 +3,10 @@
   <link rel="stylesheet" href="../../index.scss">
 </head>
 <body>
-  <header><a href="/">Home</a></header>
+  {{!-- <header><a href="/">Home</a></header> --}}
   <main class="main-grid">
     {{> MessagesList/MessagesList}}
+    {{> Chat/Chat chatName="Иван"}}
   </main>
 </body>
 </html>
