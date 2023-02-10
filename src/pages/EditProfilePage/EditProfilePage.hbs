@@ -1,0 +1,95 @@
+---
+avatarSrc: ../../../static/images/toad.jpg  
+email: bla@bla.bla
+login: Kate
+name: Екатерина
+surname: Иванова
+chatName: SuperKate
+telephone: 777
+---
+<html>
+<head>
+  <link rel="stylesheet" href="../../index.scss">
+</head>
+<body>
+  <main class="profile">
+    {{>ProfileGoBackBtn/ProfileGoBackBtn}}
+    <div class="profile__content">
+        <buttom class="profile__changeAvatarBtn">
+            {{#if avatarSrc}}
+                <img src={{avatarSrc}} alt="Аватар" class="profile__avatar">
+            {{else}}
+                <div class="profile__avatar profile__avatar_type_tooltip"></div>
+            {{/if}}
+        </buttom>
+        <form class="editProfileForm">
+            {{> Input/Input
+                value=name
+                type="text"
+                name="first_name"
+                label="Имя"
+                inputWrapperStyle="editProfileForm__inputWrapper"
+                labelStyle="editProfileForm__inputLabel"
+                inputStyle="editProfileForm__input"
+                errorText="Обязательное поле"
+                errorStyle="editProfileForm__inputError"
+            }}
+            {{> Input/Input
+                value=surname
+                type="text"
+                name="second_name"
+                label="Фамилия"
+                inputWrapperStyle="editProfileForm__inputWrapper"
+                labelStyle="editProfileForm__inputLabel"
+                inputStyle="editProfileForm__input"
+                errorStyle="editProfileForm__inputError"
+            }}
+            {{> Input/Input
+                value=login
+                type="text"
+                name="login"
+                label="Логин"
+                inputWrapperStyle="editProfileForm__inputWrapper"
+                labelStyle="editProfileForm__inputLabel"
+                inputStyle="editProfileForm__input"
+                errorStyle="editProfileForm__inputError"
+            }}
+            {{>Input/Input
+                value=chatName
+                label="Имя в чате"
+                name="display_name"
+                inputWrapperStyle="editProfileForm__inputWrapper"
+                labelStyle="editProfileForm__inputLabel"
+                inputStyle="editProfileForm__input"
+                errorStyle="editProfileForm__inputError"
+            }}
+            {{>Input/Input
+                value=email
+                label="Почта"
+                type="Email"
+                name="email"
+                inputWrapperStyle="editProfileForm__inputWrapper"
+                labelStyle="editProfileForm__inputLabel"
+                inputStyle="editProfileForm__input"
+                errorStyle="editProfileForm__inputError"
+            }}
+            {{>Input/Input
+                value=telephone
+                label="Телефон"
+                name="phone"
+                inputWrapperStyle="editProfileForm__inputWrapper"
+                labelStyle="editProfileForm__inputLabel"
+                inputStyle="editProfileForm__input"
+                errorStyle="editProfileForm__inputError"
+            }}
+            {{>Button/Button
+                type="submit"
+                stylesType="submit"
+                label="Сохранить"
+                styles="editProfileForm__submitBtn"
+            }}
+        </form>
+    </div>
+  </main>
+</body>
+</html>

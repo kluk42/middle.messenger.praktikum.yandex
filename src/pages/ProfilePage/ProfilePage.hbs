@@ -1,0 +1,69 @@
+---
+avatarSrc: ../../../static/images/toad.jpg
+profileName: Катя
+email: bla@bla.bla
+login: Kate
+name: Екатерина
+surname: Иванова
+chatName: SuperKate
+telephone: 777
+---
+<html>
+<head>
+  <link rel="stylesheet" href="../../index.scss">
+</head>
+<body>
+  <main class="profile">
+    {{>ProfileGoBackBtn/ProfileGoBackBtn}}
+    <div class="profile__content">
+        <buttom class="profile__changeAvatarBtn">
+            {{#if avatarSrc}}
+                <img src={{avatarSrc}} alt="Аватар" class="profile__avatar">
+            {{else}}
+                <div class="profile__avatar profile__avatar_type_tooltip"></div>
+            {{/if}}
+        </buttom>
+        <h2 class="profile__name">{{profileName}}</h2>
+        <div class="profile__lists">
+            <ul class="profile__infoList" >
+                <li class="profile__infoListItem">
+                    <p class="profile__infoListItemName">Почта</p>
+                    <p class="profile__infoListItemValue">{{email}}</p>
+                </li>
+                <li class="profile__infoListItem">
+                    <p class="profile__infoListItemName">Логин</p>
+                    <p class="profile__infoListItemValue">{{login}}</p>
+                </li>
+                <li class="profile__infoListItem">
+                    <p class="profile__infoListItemName">Имя</p>
+                    <p class="profile__infoListItemValue">{{name}}</p>
+                </li>
+                <li class="profile__infoListItem">
+                    <p class="profile__infoListItemName">Фамилия</p>
+                    <p class="profile__infoListItemValue">{{surName}}</p>
+                </li>
+                <li class="profile__infoListItem">
+                    <p class="profile__infoListItemName">Имя в чате</p>
+                    <p class="profile__infoListItemValue">{{chatName}}</p>
+                </li>
+                <li class="profile__infoListItem">
+                    <p class="profile__infoListItemName">Телефон</p>
+                    <p class="profile__infoListItemValue">{{telephone}}</p>
+                </li>
+            </ul>
+            <ul class="profile__links">
+                <li class="profile__linksItem">
+                    <a href="/" class="profile__link">Изменить данные</a>
+                </li>
+                <li class="profile__linksItem">
+                    <a href="/" class="profile__link">Изменить пароль</a>
+                </li>
+                <li class="profile__linksItem">
+                    <a href="/" class="profile__link profile__link_type_logout">Выйти</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+  </main>
+</body>
+</html>

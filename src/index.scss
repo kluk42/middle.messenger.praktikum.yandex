@@ -12,8 +12,11 @@
 @use './components/ChatNewMessageInput/chatNewMessageInput.scss';
 @use './components/FoundMessage/foundMessage.scss';
 @use './components/ChatSettings/chatSettings.scss';
+@use './styles/components/profile.scss';
+@use './components/ProfileGoBackBtn/profileGoBackBtn.scss';
+@use './pages/EditProfilePage/editProfilePage.scss';
 
-@import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600|Josefin+Sans:300,400,400i');
+@import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600|Josefin+Sans:300,400,400i,500,600');
 
 * {
     font-family: 'Inter';

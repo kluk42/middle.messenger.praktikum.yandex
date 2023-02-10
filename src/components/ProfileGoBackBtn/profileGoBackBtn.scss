@@ -1,0 +1,17 @@
+@import '../../styles/palette.scss';
+
+.profileGoBackBtn {
+    background-image: url('../static/images/backBtn.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+    background-color: $color-slightly-gray;
+    border-right: 1px solid $color-grayish;
+
+    &:hover {
+        cursor: pointer;
+        opacity: .8;
+        transition: opacity .2s ease-in-out;
+    }
+}
