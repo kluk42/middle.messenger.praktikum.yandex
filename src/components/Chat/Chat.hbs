@@ -6,9 +6,7 @@
             <div class="chat__avatar chat__avatar_empty"></div>
         {{/if}}
             <h2 class="chat__name">{{chatName}}</h2>
-            <button class="chat__settingsBtn">
-                <div class="chat__middleSettingsDot"></div>
-            </button>
+        {{> ChatSettings/ChatSettings}}
     </div>
     <div class="chat__messagesWindow">
         {{> ChatMessage/ChatMessage

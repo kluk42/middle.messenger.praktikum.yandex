@@ -2,19 +2,15 @@
 @import '../../styles/fonts/typography.scss';
 @import '../../styles/utils/scrollBar.scss';
 
-@mixin settingsDot {
-    width: 3px;
-    height: 3px;
-    background-color: $color-dark;
-    border-radius: 100%;
-    margin: 0 auto
-}
-
 .chat {
     grid-column: 3/-1;
     padding: 10px 0;
     display: flex;
     flex-direction: column;
+
+    &__name {
+        margin-right: auto;
+    }
 
     &__messagesWindow {
         overflow-y: scroll;
@@ -39,35 +35,5 @@
         &_empty {
             background-color: $color-intermediate-gray;
         }
-    }
-
-    &__settingsBtn {
-        margin: 0 10px 0 auto;
-        width: 30px;
-        height: 30px;
-        background-color: transparent;
-        cursor: pointer;
-
-        &:focus {
-            outline: $color-dark solid 1px;
-        }
-
-        &::before {
-            content: '';
-            display: block;
-            @include settingsDot;
-        }
-
-        &::after {
-            content: '';
-            display: block;
-            margin-top: 1px;
-            @include settingsDot;
-        }
-    }
-
-    &__middleSettingsDot {
-        @include settingsDot;
-        margin: 3px auto;
     }
 }
