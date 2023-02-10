@@ -15,13 +15,15 @@ telephone: 777
   <main class="profile">
     {{>ProfileGoBackBtn/ProfileGoBackBtn}}
     <div class="profile__content">
-        <buttom class="profile__changeAvatarBtn">
+        <div class="profile__inputWrapper">
+            <input type="file" class="profile__changeAvatarInput">
             {{#if avatarSrc}}
                 <img src={{avatarSrc}} alt="Аватар" class="profile__avatar">
             {{else}}
                 <div class="profile__avatar profile__avatar_type_tooltip"></div>
             {{/if}}
-        </buttom>
+        </div>
+        
         <form class="editProfileForm">
             {{> Input/Input
                 value=name

@@ -16,13 +16,11 @@ telephone: 777
   <main class="profile">
     {{>ProfileGoBackBtn/ProfileGoBackBtn}}
     <div class="profile__content">
-        <buttom class="profile__changeAvatarBtn">
-            {{#if avatarSrc}}
-                <img src={{avatarSrc}} alt="Аватар" class="profile__avatar">
-            {{else}}
-                <div class="profile__avatar profile__avatar_type_tooltip"></div>
-            {{/if}}
-        </buttom>
+        {{#if avatarSrc}}
+            <img src={{avatarSrc}} alt="Аватар" class="profile__avatar">
+        {{else}}
+            <div class="profile__avatar profile__avatar_type_tooltip"></div>
+        {{/if}}
         <h2 class="profile__name">{{profileName}}</h2>
         <div class="profile__lists">
             <ul class="profile__infoList" >
