@@ -27,6 +27,25 @@
     &__header {
         margin: 0 auto;
     }
+
+    &__fileForm {
+        display: flex;
+        justify-content: center;
+    }
+
+    &__fileInput {
+        display: none;
+    }
+
+    &__fileInputLabel {
+        color: $color-main;
+        text-decoration: underline;
+        @include tallThick;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
 
 .closeBtn {
