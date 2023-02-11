@@ -15,6 +15,13 @@
     &__messagesWindow {
         overflow-y: scroll;
         @include scrollBar;
+
+        &_chatIsNotSelected {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
     }
 
     &__head {
@@ -35,5 +42,12 @@
         &_empty {
             background-color: $color-intermediate-gray;
         }
+    }
+
+    &__chooseChatSign {
+        @include tallThick;
+        color: $color-gray;
+        width: fit-content;
+        margin: 0 auto;
     }
 }
