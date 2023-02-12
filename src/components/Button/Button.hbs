@@ -1,0 +1,9 @@
+<div class="button {{containerStyles}}">
+    {{#if actionError}}
+        <p class="button__error">{{actionError}}</p>
+    {{/if}}
+    <button type="{{type}}" class="button__button button__button_type_{{stylesType}} {{styles}}">{{ label }}</button>
+    {{#if validationError}}
+        <p class="button__error">{{validationError}}</p>
+    {{/if}}
+</div>

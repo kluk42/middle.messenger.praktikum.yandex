@@ -1,0 +1,15 @@
+<html>
+<head>
+  <link rel="stylesheet" href="../../index.scss">
+</head>
+<body>
+  <main class="main-grid">
+    {{> MessagesList/MessagesList}}
+    {{> Chat/Chat chatName="Иван"}}
+    {{> ConfirmationModal/ConfirmationModal
+      header="Удалить чат?"
+      buttonName="Удалить чат"
+    }}
+  </main>
+</body>
+</html>

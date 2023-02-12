@@ -1,0 +1,14 @@
+@import '../../styles/palette.scss';
+@import '../../styles/fonts/typography.scss';
+
+.anchorLink {
+    @include smallThick;
+    color: $color-main;
+
+    opacity: 1;
+
+    &:hover {
+        transition: opacity 0.5s ease-in-out;
+        opacity: .7;
+    }
+}
