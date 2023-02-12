@@ -10,10 +10,9 @@
       <form class="authForm">
         {{> Input/Input type="text" errorText="Пример ошибки" name="login" label="Логин" }}
         {{> Input/Input type="password" name="password" label="Пароль" }}
-        {{> Button/Button type="submit" label="Авторизоваться" stylesType="submit" styles="authForm__signInBtn"}}
+        {{> Button/Button type="submit" label="Авторизоваться" stylesType="submit" containerStyles="authForm__submitBtn"}}
       </form>
-    </form>
-    {{> AnchorLink/AnchorLink href="./SignUpPage" styles="auth__link" text="Нет аккаунта?"}}
+      {{> AnchorLink/AnchorLink href="./SignUpPage" styles="auth__link" text="Нет аккаунта?"}}
     </div>
   </main>
 </body>
