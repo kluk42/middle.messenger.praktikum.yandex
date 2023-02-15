@@ -1,0 +1,19 @@
+---
+statusCode: 500
+text: Что-то пошло не так
+---
+<html>
+<head>
+  <link rel="stylesheet" href="../../index.scss">
+</head>
+<body>
+  <main class="errorPage">
+    <h2 class="errorPage__error">{{statusCode}}</h2>
+    <p class="errorPage__text">{{text}}</p>
+    {{>AnchorLink/AnchorLink
+        href="/"
+        text="Назад к чатам"
+    }}
+  </main>
+</body>
+</html>

@@ -1,0 +1,70 @@
+@mixin mediumExtraThick {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+@mixin smallExtraThick {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 13px;
+}
+
+@mixin superLargeThick {
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 40px;
+}
+
+@mixin hugeThick {
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+@mixin tallThick {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 14px;
+}
+
+@mixin mediumThick {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 13px;
+}
+
+@mixin thick {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 12px;
+}
+
+@mixin tallThick {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 15px;
+}
+
+@mixin smallTallThick {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 12px;
+}
+
+@mixin smallThick {
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 11px;
+}
+
+@mixin tinyThick {
+    font-weight: 500;
+    font-size: 9px;
+    line-height: 9px;
+}
+
+@mixin small {
+    font-size: 8px;
+    line-height: 8px;
+}

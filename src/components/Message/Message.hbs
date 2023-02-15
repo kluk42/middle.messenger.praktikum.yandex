@@ -1,0 +1,20 @@
+<li {{#if isMessageUnread}}class="message message_unread"{{/if}} class="message">
+    {{#if imgSrc}}
+        <img src="{{imgSrc}}" alt="avatar" class="message__avatar">
+    {{else}}
+        <div class="message__avatar message__avatar_empty"></div>
+    {{/if}}
+    <p class="message__chatName">{{chatName}}</p>
+    <p class="message__date">{{messageDate}}</p>
+    {{#if messageReceived}}
+        <p class="message__text">{{message}}</p>
+    {{else}}
+        <p class="message__text">
+            <span class="message__text_highlighted">Вы:&nbsp;</span>
+            {{message}}
+        </p>
+    {{/if}}
+    {{#if unreadMessagesCount}}
+        <p class="message__unreadCount">{{unreadMessagesCount}}</p>
+    {{/if}}
+</li>
