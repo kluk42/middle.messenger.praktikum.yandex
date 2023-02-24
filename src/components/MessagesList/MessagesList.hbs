@@ -4,7 +4,10 @@
         <input type="text" class="messages__searchInput" placeholder="Поиск">
     </div>
     <ul class="messages__list">
-        {{> FoundMessage/FoundMessage
+        {{#each messages}}
+            {{{this}}}
+        {{/each}}
+        {{!-- {{> FoundMessage/FoundMessage
             name="Иван"
         }}
         {{> Message/Message
@@ -100,6 +103,6 @@
             message="Друзья, сегодня буду вести трансляцию из своего родного города Рима. Расскажу вам, куда здесь можно пойти и чем стоит заняться"
             unreadMessagesCount="1"
             messageReceived=true
-        }}
+        }} --}}
     </ul>
 </div>

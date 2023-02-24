@@ -1,23 +1,9 @@
-<html>
-<head>
-  <link rel="stylesheet" href="../../index.scss">
-</head>
-<body>
-  <header><a href="/">Home</a></header>
+<div>
   <main class="main-grid">
     <div class="auth">
       <h2 class="auth__header">Регистрация</h2>
-      <form class="authForm">
-        {{> Input/Input type="text" name="first_name" label="Имя *" }}
-        {{> Input/Input type="text" name="second_name" label="Фамилия" }}
-        {{> Input/Input type="text" name="login" label="Логин *" }}
-        {{> Input/Input type="email" name="email" label="Email *" }}
-        {{> Input/Input type="tel" name="phone" label="Телефон *" }}
-        {{> Input/Input type="password" name="password" label="Пароль *" }}
-        {{> Button/Button type="submit" label="Авторизоваться" stylesType="submit" styles="authForm__signUpBtn"}}
-    </form>
-    {{> AnchorLink/AnchorLink href="/" styles="auth__link" text="Нет аккаунта?"}}
+      {{{form}}}
+      {{{SignInLink}}}
     </div>
   </main>
-</body>
-</html>
+</div>

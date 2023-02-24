@@ -1,9 +1,12 @@
-type Subscriber<A extends any[] = unknown[]> = (...args: A) => void;
-type MapType<P> = P[keyof P];
+type Subscriber<A extends any[]> = (...args: A) => void;
+export type MapType<P> = P[keyof P];
+
+export type EventNamesType = { [name: string]: string };
+export type EventDataType<E extends EventNamesType> = Record<MapType<E>, any[]>;
 
 export class EventBus<
-  EventNames extends { [name: string]: string },
-  Args extends Record<MapType<EventNames>, any[]>
+  EventNames extends EventNamesType = Record<string, string>,
+  Args extends Record<MapType<EventNames>, any[]> = Record<string, any[]>
 > {
   private readonly listeners: {
     [K in MapType<EventNames>]?: Subscriber<Args[K]>[];
@@ -19,7 +22,7 @@ export class EventBus<
 
   off<Event extends MapType<EventNames>>(event: Event, callback: Subscriber<Args[Event]>) {
     if (!this.listeners[event]) {
-      throw new Error(`Нет события: ${event}`);
+      throw new Error(`Несуществующее событие: ${event}`);
     }
 
     this.listeners[event] = this.listeners[event]!.filter(listener => listener !== callback);
