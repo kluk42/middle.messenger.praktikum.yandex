@@ -1,9 +1,77 @@
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
-import { Form } from '../../components/Form/Form';
+import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/input';
 import { Block } from '../../utils/Block';
 import template from './SignUpPage.hbs';
+
+enum InputNames {
+  Name = 'first_name',
+  Surname = 'second_name',
+  Login = 'login',
+  Email = 'email',
+  Phone = 'phone',
+  Password = 'password',
+}
+
+type InputNamesType = {
+  [InputNames.Name]: InputNames.Name;
+  [InputNames.Surname]: InputNames.Surname;
+  [InputNames.Login]: InputNames.Login;
+  [InputNames.Email]: InputNames.Email;
+  [InputNames.Phone]: InputNames.Phone;
+  [InputNames.Password]: InputNames.Password;
+};
+
+const validator = (v: string, regExp: RegExp, errorText: string) => {
+  const value = v.trim();
+  const isValid = regExp.test(value);
+
+  if (isValid) {
+    return null;
+  }
+
+  return errorText;
+};
+
+const validationRules: FormProps<InputNamesType>['validationRules'] = {
+  [InputNames.Name]: v =>
+    validator(
+      v,
+      /^[A-ZА-Я][\p{L}]*$/u,
+      'Латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов'
+    ),
+  [InputNames.Surname]: v =>
+    validator(
+      v,
+      /^[A-ZА-Я][\p{L}]*$/u,
+      'Латиница или кириллица, первая буква должна быть заглавной, без пробелов и без цифр, нет спецсимволов'
+    ),
+  [InputNames.Login]: v =>
+    validator(
+      v,
+      /^[a-zA-Z][a-zA-Z0-9\-_]*$/,
+      'от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов (допустимы дефис и нижнее подчёркивание)'
+    ),
+  [InputNames.Email]: v =>
+    validator(
+      v,
+      /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+      'латиница, может включать цифры и спецсимволы вроде дефиса, обязательно должна быть «собака» (@) и точка после неё, но перед точкой обязательно должны быть буквы'
+    ),
+  [InputNames.Password]: v =>
+    validator(
+      v,
+      /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/,
+      'от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра'
+    ),
+  [InputNames.Phone]: v =>
+    validator(
+      v,
+      /^\+?[0-9]{10,15}$/,
+      'От 10 до 15 символов, состоит из цифр, может начинается с плюса'
+    ),
+};
 
 export class SignUpPage extends Block {
   constructor() {
@@ -11,82 +79,91 @@ export class SignUpPage extends Block {
   }
 
   init() {
-    const firstInput = new Input({
+    const nameInput = new Input({
       class: 'inputField__input',
       type: 'text',
       name: 'first_name',
-      events: {
-        blur: e => {
-          const input = e.target as HTMLInputElement;
-          console.log(input.value);
-        },
-      },
     });
-    const secondInput = new Input({
+    const surnameInput = new Input({
       class: 'inputField__input',
       type: 'text',
       name: 'second_name',
-      events: {
-        blur: e => {
-          const input = e.target as HTMLInputElement;
-          console.log(input.value);
-        },
-      },
+    });
+    const loginInput = new Input({
+      class: 'inputField__input',
+      type: 'text',
+      name: 'login',
+    });
+    const emailInput = new Input({
+      class: 'inputField__input',
+      type: 'email',
+      name: 'email',
+    });
+    const phoneInput = new Input({
+      class: 'inputField__input',
+      type: 'tel',
+      name: 'phone',
+    });
+    const passwordInput = new Input({
+      class: 'inputField__input',
+      type: 'password',
+      name: 'password',
     });
 
-    const inputs = [firstInput, secondInput];
+    const inputs = [nameInput, surnameInput, loginInput, emailInput, phoneInput, passwordInput];
 
     const firstNameField = new Field({
       name: 'first_name',
       label: 'Имя',
-      input: firstInput,
+      input: nameInput,
     });
     const secondNameField = new Field({
       name: 'second_name',
       label: 'Фамилия',
-      input: secondInput,
+      input: surnameInput,
     });
+    const loginField = new Field({
+      name: 'login',
+      label: 'Логин *',
+      input: loginInput,
+    });
+    const emailField = new Field({
+      name: 'email',
+      label: 'Email *',
+      input: emailInput,
+    });
+    const phoneField = new Field({
+      name: 'phone',
+      label: 'Телефон *',
+      input: phoneInput,
+    });
+    const passwordField = new Field({
+      name: 'password',
+      label: 'Пароль *',
+      input: passwordInput,
+    });
+
     const fields: Field[] = [
       firstNameField,
       secondNameField,
-      //   new Field({
-      //     type: 'text',
-      //     name: 'login',
-      //     label: 'Логин *',
-      //   }),
-      //   new Field({
-      //     type: 'email',
-      //     name: 'email',
-      //     label: 'Email *',
-      //   }),
-      //   new Field({
-      //     type: 'tel',
-      //     name: 'phone',
-      //     label: 'Телефон *',
-      //   }),
-      //   new Field({
-      //     type: 'password',
-      //     name: 'password',
-      //     label: 'Пароль *',
-      //   }),
+      loginField,
+      emailField,
+      phoneField,
+      passwordField,
     ];
 
-    this.children.form = new Form({
-      inputs: fields,
+    this.children.form = new Form<InputNamesType>({
+      fields,
       submitBtn: new Button({
         label: 'Авторизоваться',
         stylesType: ButtonStyleTypes.Submit,
         styles: 'authForm__signUpBtn',
       }),
-      events: {
-        submit: e => {
-          e.preventDefault();
-          inputs.forEach(i => {
-            const input = i.getContent()! as HTMLInputElement;
-            console.log(input.value);
-          });
-        },
+      submit: values => {
+        console.log(values);
       },
+      inputs,
+      validationRules,
     });
   }
 

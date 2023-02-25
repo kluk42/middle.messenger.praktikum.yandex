@@ -11,7 +11,7 @@ export type Props = {
   value?: string;
 };
 
-export class Input extends Block {
+export class Input extends Block<Props> {
   constructor(props: Props) {
     super(props);
   }

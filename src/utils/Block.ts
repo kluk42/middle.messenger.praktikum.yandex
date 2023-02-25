@@ -23,7 +23,7 @@ type EventArgs = {
 
 export abstract class Block<P extends Record<string, any> = any> {
   public id = Math.random().toString(16).slice(6);
-  protected children: Record<string, Block<P> | Block<P>[]>;
+  protected children: Record<string, Block | Block[]>;
   public props: P;
   private _element: HTMLElement | null = null;
   private eventBus: EventBus<BlockEventNamesType, EventArgs>;
@@ -121,7 +121,6 @@ export abstract class Block<P extends Record<string, any> = any> {
 
   private addEvents() {
     const { events = {} } = this.props as P & { events: Record<string, () => void> };
-
     Object.keys(events).forEach(eventName => {
       this._element?.addEventListener(eventName, events[eventName]);
     });
@@ -174,7 +173,7 @@ export abstract class Block<P extends Record<string, any> = any> {
   }
 
   protected componentDidUpdate(oldProps: P, newProps: P) {
-    return oldProps === newProps;
+    return oldProps !== newProps;
   }
 
   private registerEvents() {
