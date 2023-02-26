@@ -1,7 +1,12 @@
 import { Block } from '../../utils/Block';
+import { FoundMessage } from '../FoundMessage/FoundMessage';
+import { Message } from '../Message/Message';
 import template from './MessagesList.hbs';
 
-type Props = {};
+type Props = {
+  messages?: Message[];
+  foundMessages?: FoundMessage[];
+};
 
 export class MessagesList extends Block<Props> {
   constructor(props: Props) {
@@ -9,6 +14,6 @@ export class MessagesList extends Block<Props> {
   }
 
   protected render(): DocumentFragment {
-    return this.compile(template, this.children);
+    return this.compile(template, this.props);
   }
 }

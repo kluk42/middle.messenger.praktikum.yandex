@@ -2,13 +2,15 @@ import { Block } from '../../utils/Block';
 import template from './Input.hbs';
 
 export type Props = {
-  class: string;
-  type: string;
+  inputStyle: string;
   name: string;
+  placeholder?: string;
+  type?: string;
   events?: {
     blur?: (e: FocusEvent) => void;
   };
   value?: string;
+  isTextArea?: boolean;
 };
 
 export class Input extends Block<Props> {

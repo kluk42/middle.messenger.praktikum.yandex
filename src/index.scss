@@ -9,7 +9,7 @@
 @use './components/Message/message.scss';
 @use './components/Chat/chat.scss';
 @use './components/ChatMessage/chatMessage.scss';
-@use './components/ChatNewMessageInput/chatNewMessageInput.scss';
+@use './components/ChatMessageInput/chatMessageInput.scss';
 @use './components/FoundMessage/foundMessage.scss';
 @use './components/ChatSettings/chatSettings.scss';
 @use './styles/components/profile.scss';
@@ -21,15 +21,15 @@
 @import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600|Josefin+Sans:300,400,400i,500,600');
 
 * {
-    font-family: 'Inter';
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    border: none;
-    text-decoration: none;
-    overflow: hidden;
+  font-family: 'Inter';
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  text-decoration: none;
+  overflow: hidden;
 }
 
 body {
-    height: 100vh;
+  height: 100vh;
 }

@@ -3,14 +3,18 @@ import template from './Button.hbs';
 
 export type Props = {
   label: string;
+  noValidation?: boolean;
   actionError?: string;
   stylesType?: ButtonStyleTypes;
   styles?: string;
   validationError?: string;
+  containerStyles?: string;
 };
 
 export enum ButtonStyleTypes {
   Submit = 'submit',
+  Attachment = 'attachment',
+  Custom = 'custom',
 }
 
 export class Button extends Block {

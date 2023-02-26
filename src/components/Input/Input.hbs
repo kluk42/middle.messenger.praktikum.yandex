@@ -1,1 +1,5 @@
-<input type="{{type}}" {{#if value}}value={{value}}{{/if}} class="inputField__input {{inputStyle}}" name={{name}}>
+{{#if isTextArea}}
+<textarea {{#if value}}value={{value}}{{/if}} class="{{inputStyle}}" name={{name}} placeholder={{placeholder}}>
+{{else}}
+<input type="{{type}}" {{#if value}}value={{value}}{{/if}} class="{{inputStyle}}" name={{name}}>
+{{/if}}

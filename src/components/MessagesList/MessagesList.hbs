@@ -1,108 +1,14 @@
-<div class="messages">
-    <div class="messages__head">
-        <a href="" class="messages__profileLink">Профиль &#62;</a>
-        <input type="text" class="messages__searchInput" placeholder="Поиск">
-    </div>
-    <ul class="messages__list">
-        {{#each messages}}
-            {{{this}}}
-        {{/each}}
-        {{!-- {{> FoundMessage/FoundMessage
-            name="Иван"
-        }}
-        {{> Message/Message
-            chatName="Никита"
-            messageDate="17:03"
-            message="Изображение"
-            unreadMessagesCount="1"
-            isMessageUnread=true
-        }}
-        {{> Message/Message
-            chatName="Пётр"
-            messageDate="17:03"
-            message="Друзья, сегодня буду вести трансляцию из своего родного города Рима. Расскажу вам, куда здесь можно пойти и чем стоит заняться"
-            unreadMessagesCount="1"
-            messageReceived=true
-        }}
-        {{> Message/Message
-            chatName="Иван"
-            messageDate="Вт"
-            message="Сообщение текст"
-            messageReceived=true
-        }}
-        {{> Message/Message
-            chatName="Андрей"
-            messageDate="1 Мая 2020"
-            message="Изображение"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Яков"
-            messageDate="1 Мая 2020"
-            message="Отлично порыбачили!"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Фома"
-            messageDate="1 Мая 2020"
-            message="Верую!!!"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Филипп"
-            messageDate="1 Мая 2020"
-            message="Поеду в Грецию чо"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Варфоломей"
-            messageDate="1 Мая 2020"
-            message="Деньги мне плати"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Яков"
-            messageDate="1 Мая 2020"
-            message="Пожалуй, останусь в Армении"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Иуда не Искариот"
-            messageDate="1 Мая 2020"
-            message="Пожалуй, останусь в Армении"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Семён"
-            messageDate="1 Мая 2020"
-            message="Вся слава мне"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Павел"
-            messageDate="1 Мая 2020"
-            message="Я тоже крут"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Александр Македонский"
-            messageDate="1 Мая 2020"
-            message="Индию хочу"
-            unreadMessagesCount="1"
-        }}
-        {{> Message/Message
-            chatName="Пётр"
-            messageDate="17:03"
-            message="Друзья, сегодня буду вести трансляцию из своего родного города Рима. Расскажу вам, куда здесь можно пойти и чем стоит заняться"
-            unreadMessagesCount="1"
-            messageReceived=true
-        }}
-        {{> Message/Message
-            chatName="Пётр"
-            messageDate="17:03"
-            message="Друзья, сегодня буду вести трансляцию из своего родного города Рима. Расскажу вам, куда здесь можно пойти и чем стоит заняться"
-            unreadMessagesCount="1"
-            messageReceived=true
-        }} --}}
-    </ul>
+<div class='messages'>
+  <div class='messages__head'>
+    <a href='' class='messages__profileLink'>Профиль &#62;</a>
+    <input type='text' class='messages__searchInput' placeholder='Поиск' />
+  </div>
+  <ul class='messages__list'>
+    {{#each foundMessages}}
+      {{{this}}}
+    {{/each}}
+    {{#each messages}}
+      {{{this}}}
+    {{/each}}
+  </ul>
 </div>

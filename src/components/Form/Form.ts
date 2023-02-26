@@ -2,7 +2,7 @@ import { Block } from '../../utils/Block';
 import { EventBus, EventNamesType, MapType } from '../../utils/EventBus';
 import { Button } from '../Button/Button';
 import { Field } from '../Field/Field';
-import { Input } from '../Input/input';
+import { Input } from '../Input/Input';
 import template from './Form.hbs';
 
 export type Props<InputNames extends EventNamesType> = {
@@ -10,6 +10,7 @@ export type Props<InputNames extends EventNamesType> = {
   submitBtn: Button;
   inputs: Input[];
   submit: (values: Record<string, string>) => void;
+  formClass?: string;
   validationRules?: {
     [K in MapType<InputNames>]: (value: string) => string | null;
   };
@@ -83,7 +84,7 @@ export class Form<InputNames extends EventNamesType> extends Block<
             inputField.props.errorText = errorText;
           }
 
-          if (errorText === null) {
+          if (errorText === null && inputField.props.errorText) {
             inputField.props.errorText = '';
           }
         }

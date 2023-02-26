@@ -20,6 +20,26 @@ export class HomePage extends Block {
           },
         },
       }),
+      new AnchorLink({
+        href: '/',
+        text: 'Авторизация',
+        events: {
+          click: (e: Event) => {
+            e.preventDefault();
+            renderDOM('signIn');
+          },
+        },
+      }),
+      new AnchorLink({
+        href: '/',
+        text: 'Выбранный чат',
+        events: {
+          click: (e: Event) => {
+            e.preventDefault();
+            renderDOM('openChat');
+          },
+        },
+      }),
     ];
     this.children.links = links;
   }

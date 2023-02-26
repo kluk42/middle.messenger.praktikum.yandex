@@ -1,11 +1,12 @@
 import { Block } from '../../utils/Block';
-import { Input } from '../Input/input';
+import { Input } from '../Input/Input';
 import template from './Field.hbs';
 
 export type Props = {
   name: string;
   label: string;
   input: Input;
+  isTextArea?: boolean;
   errorStyle?: string;
   errorText?: string;
   inputWrapperStyle?: string;

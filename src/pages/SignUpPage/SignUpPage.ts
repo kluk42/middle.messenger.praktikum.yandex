@@ -1,7 +1,9 @@
+import { renderDOM } from '../..';
+import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
-import { Input } from '../../components/Input/input';
+import { Input } from '../../components/Input/Input';
 import { Block } from '../../utils/Block';
 import template from './SignUpPage.hbs';
 
@@ -50,7 +52,7 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
   [InputNames.Login]: v =>
     validator(
       v,
-      /^[a-zA-Z][a-zA-Z0-9\-_]*$/,
+      /^[a-zA-Z][a-zA-Z0-9\-_]{3,20}$/,
       'от 3 до 20 символов, латиница, может содержать цифры, но не состоять из них, без пробелов, без спецсимволов (допустимы дефис и нижнее подчёркивание)'
     ),
   [InputNames.Email]: v =>
@@ -80,32 +82,32 @@ export class SignUpPage extends Block {
 
   init() {
     const nameInput = new Input({
-      class: 'inputField__input',
+      inputStyle: 'inputField__input',
       type: 'text',
       name: 'first_name',
     });
     const surnameInput = new Input({
-      class: 'inputField__input',
+      inputStyle: 'inputField__input',
       type: 'text',
       name: 'second_name',
     });
     const loginInput = new Input({
-      class: 'inputField__input',
+      inputStyle: 'inputField__input',
       type: 'text',
       name: 'login',
     });
     const emailInput = new Input({
-      class: 'inputField__input',
+      inputStyle: 'inputField__input',
       type: 'email',
       name: 'email',
     });
     const phoneInput = new Input({
-      class: 'inputField__input',
+      inputStyle: 'inputField__input',
       type: 'tel',
       name: 'phone',
     });
     const passwordInput = new Input({
-      class: 'inputField__input',
+      inputStyle: 'inputField__input',
       type: 'password',
       name: 'password',
     });
@@ -155,7 +157,7 @@ export class SignUpPage extends Block {
     this.children.form = new Form<InputNamesType>({
       fields,
       submitBtn: new Button({
-        label: 'Авторизоваться',
+        label: 'Зарегистрироваться',
         stylesType: ButtonStyleTypes.Submit,
         styles: 'authForm__signUpBtn',
       }),
@@ -164,6 +166,19 @@ export class SignUpPage extends Block {
       },
       inputs,
       validationRules,
+      formClass: 'authForm',
+    });
+
+    this.children.signInLink = new AnchorLink({
+      href: '/',
+      text: 'Уже есть аккаунт?',
+      styles: 'auth__link',
+      events: {
+        click: e => {
+          e.preventDefault();
+          renderDOM('signIn');
+        },
+      },
     });
   }
 

@@ -1,19 +1,7 @@
-<html>
-<head>
-  <link rel="stylesheet" href="../../index.scss">
-</head>
-<body>
-  <header><a href="/">Home</a></header>
-  <main class="main-grid">
-    <div class="auth">
-      <h2 class="auth__header">Вход</h2>
-      <form class="authForm">
-        {{> Input/Input type="text" errorText="Пример ошибки" name="login" label="Логин" }}
-        {{> Input/Input type="password" name="password" label="Пароль" }}
-        {{> Button/Button type="submit" label="Авторизоваться" stylesType="submit" containerStyles="authForm__submitBtn"}}
-      </form>
-      {{> AnchorLink/AnchorLink href="./SignUpPage" styles="auth__link" text="Нет аккаунта?"}}
-    </div>
-  </main>
-</body>
-</html>
+<main class='main-grid'>
+  <div class='auth'>
+    <h2 class='auth__header'>Вход</h2>
+    {{{form}}}
+    {{{signUpLink}}}
+  </div>
+</main>
