@@ -87,7 +87,7 @@ class HTTPTransport {
   };
 }
 
-function fetchWithRetry(url: string, options: OptionsType) {
+export async function fetchWithRetry(url: string, options: OptionsType) {
   const transport = new HTTPTransport();
 
   const { retries, method } = options;
@@ -112,19 +112,18 @@ function fetchWithRetry(url: string, options: OptionsType) {
 
   let triesCount = 0;
 
-  return requestFunction(url, options)
-    .then(res => {
-      return res;
-    })
-    .catch(err => {
-      if (requestFunction === null) {
-        throw err;
-      }
-      if (triesCount === retries) {
-        throw err;
-      } else {
-        triesCount += 1;
-        return requestFunction(url, options);
-      }
-    });
+  try {
+    const res = await requestFunction(url, options);
+    return res;
+  } catch (err) {
+    if (requestFunction === null) {
+      throw err;
+    }
+    if (triesCount === retries) {
+      throw err;
+    } else {
+      triesCount += 1;
+      return requestFunction(url, options);
+    }
+  }
 }

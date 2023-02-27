@@ -30,7 +30,7 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
 
 type Props = {};
 
-export class ChatMessageInput extends Block<Props> {
+export class ChatMessageInput extends Block<Record<string, never>> {
   constructor(props: Props) {
     super(props);
   }

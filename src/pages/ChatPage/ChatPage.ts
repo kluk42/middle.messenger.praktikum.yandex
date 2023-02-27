@@ -1,3 +1,4 @@
+import imgPath from '../../../static/images/photoMessage.png';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Chat } from '../../components/Chat/Chat';
 import { ChatMessage } from '../../components/ChatMessage/ChatMessage';
@@ -21,7 +22,7 @@ export class ChatPage extends Block {
         messageDate: '3 июля',
         isMessageSent: false,
         messageTime: '15:40',
-        imgPath: '../../../static/images/photoMessage.png',
+        imgPath: imgPath,
         isMessageDelivered: false,
       }),
       new ChatMessage({
@@ -46,7 +47,7 @@ export class ChatPage extends Block {
         messageDate: '3 июля',
         isMessageSent: false,
         messageTime: '15:40',
-        imgPath: '../../../static/images/photoMessage.png',
+        imgPath: imgPath,
         isMessageDelivered: true,
       }),
       new ChatMessage({

@@ -21,9 +21,12 @@ type EventArgs = {
   [BlockEvents.FLOW_RENDER]: [];
 };
 
-export abstract class Block<P extends Record<string, any> = any> {
+export abstract class Block<P extends Record<string, unknown> = any> {
   public id = Math.random().toString(16).slice(6);
-  protected children: Record<string, Block | Block[]>;
+  protected children: Record<
+    string,
+    Block<Record<string, unknown>> | Block<Record<string, unknown>>[]
+  >;
   public props: P;
   private _element: HTMLElement | null = null;
   private eventBus: EventBus<BlockEventNamesType, EventArgs>;
@@ -42,7 +45,10 @@ export abstract class Block<P extends Record<string, any> = any> {
 
   protected separatePropsFromChildren(childrenAndProps: P) {
     const props: Record<string, unknown> = {};
-    const children: Record<string, Block<P> | Block<P>[]> = {};
+    const children: Record<
+      string,
+      Block<Record<string, unknown>> | Block<Record<string, unknown>>[]
+    > = {};
 
     Object.entries(childrenAndProps).forEach(([key, value]) => {
       if (Array.isArray(value) && value.length > 0 && value.every(v => v instanceof Block)) {
@@ -92,7 +98,7 @@ export abstract class Block<P extends Record<string, any> = any> {
 
     temp.innerHTML = html;
 
-    const replaceStub = (component: Block<P>) => {
+    const replaceStub = (component: Block<Record<string, unknown>>) => {
       const stub = temp.content.querySelector(`[data-id="${component.id}"]`);
 
       if (!stub) {
