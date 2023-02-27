@@ -60,6 +60,26 @@ export class HomePage extends Block {
           },
         },
       }),
+      new AnchorLink({
+        href: '/',
+        text: 'Профиль',
+        events: {
+          click: (e: Event) => {
+            e.preventDefault();
+            renderDOM('profilePage');
+          },
+        },
+      }),
+      new AnchorLink({
+        href: '/',
+        text: 'Страница с ошибкой',
+        events: {
+          click: (e: Event) => {
+            e.preventDefault();
+            renderDOM('errorPage');
+          },
+        },
+      }),
     ];
     this.children.links = links;
   }
