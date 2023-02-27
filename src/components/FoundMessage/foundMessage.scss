@@ -1,5 +1,5 @@
-@import '../../styles/palette.scss';
-@import '../../styles/fonts/typography.scss';
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
 
 .foundMessage {
     display: flex;
@@ -16,6 +16,6 @@
     }
 
     &__name {
-        @include smallExtraThick;
+        @include small-extra-thick;
     }
 }

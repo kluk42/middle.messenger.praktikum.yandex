@@ -1,5 +1,5 @@
-@import '../../styles/palette.scss';
-@import '../../styles/fonts/typography.scss';
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
 
 .editProfileForm {
     width: 510px;
@@ -21,7 +21,8 @@
     &__inputLabel {
         height: fit-content;
         color: $color-dark;
-        @include mediumThick;
+        @include medium-thick;
+
         align-self: center;
     }
 
@@ -30,7 +31,8 @@
         padding: 0;
         margin: 0;
         justify-self: end;
-        @include mediumThick;
+        @include medium-thick;
+
         color: $color-gray;
     }
 

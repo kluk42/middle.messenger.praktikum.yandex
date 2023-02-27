@@ -1,5 +1,5 @@
-@import '../../styles/palette.scss';
-@import '../../styles/fonts/typography.scss';
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
 
 .chatMessage {
     width: 100%;
@@ -25,7 +25,6 @@
         border-radius: 3px;
         width: fit-content;
         max-width: 402px;
-
         display: grid;
         grid-template-columns: 1fr min-content;
         column-gap: 5px;
@@ -50,7 +49,8 @@
     }
 
     &__text {
-        @include tallThick;
+        @include tall-thick;
+
         color: $color-dark;
     }
 
@@ -76,7 +76,8 @@
     }
 
     &__timeSign {
-        @include tinyThick;
+        @include tiny-thick;
+
         color: $color-gray;
 
         &_messageContent {

@@ -6,7 +6,8 @@
     "start": "parcel build src/index.html && node server.js",
     "dev": "parcel src/index.html --no-cache --open",
     "build": "tsc && parcel build src/index.html",
-    "lint": "eslint -- ./src"
+    "lint": "eslint -- ./src",
+    "lint:css": "stylelint src/**/*.scss --fix"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,9 @@
     "express": "4.18.2",
     "parcel": "2.8.3",
     "prettier": "2.8.4",
+    "stylelint": "15.2.0",
+    "stylelint-config-prettier-scss": "0.0.1",
+    "stylelint-config-standard-scss": "7.0.1",
     "typescript": "4.9.5"
   }
 }

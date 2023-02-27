@@ -9,6 +9,7 @@ export type Props = {
   styles?: string;
   validationError?: string;
   containerStyles?: string;
+  child?: Block;
 };
 
 export enum ButtonStyleTypes {

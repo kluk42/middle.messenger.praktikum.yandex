@@ -1,10 +1,12 @@
 import { Block } from '../../utils/Block';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
+import { ChatSettings } from '../ChatSettings/ChatSettings';
 import template from './Chat.hbs';
 
 type Props = {
   ChatMessageInput: ChatMessageInput;
+  ChatSettings: ChatSettings;
   avatarSrc?: string;
   chatName?: string;
   isChatSelected?: boolean;

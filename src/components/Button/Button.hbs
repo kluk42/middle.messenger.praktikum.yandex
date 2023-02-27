@@ -2,7 +2,10 @@
   <button
     type='{{type}}'
     class='button__button button__button_type_{{stylesType}} {{styles}}'
-  >{{label}}</button>
+  >
+    {{label}}
+    {{{child}}}
+  </button>
 {{else}}
   <div class='button {{containerStyles}}'>
     {{#if actionError}}

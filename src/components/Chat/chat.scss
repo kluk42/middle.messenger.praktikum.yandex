@@ -1,6 +1,6 @@
-@import '../../styles/palette.scss';
-@import '../../styles/fonts/typography.scss';
-@import '../../styles/utils/scrollBar.scss';
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
+@import '../../styles/utils/scrollBar';
 
 .chat {
     grid-column: 3/-1;
@@ -14,7 +14,8 @@
 
     &__messagesWindow {
         overflow-y: scroll;
-        @include scrollBar;
+        flex: 1;
+        @include scroll-bar;
 
         &_chatIsNotSelected {
             display: flex;
@@ -45,7 +46,8 @@
     }
 
     &__chooseChatSign {
-        @include tallThick;
+        @include tall-thick;
+
         color: $color-gray;
         width: fit-content;
         margin: 0 auto;

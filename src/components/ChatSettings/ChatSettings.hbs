@@ -1,32 +1,17 @@
 <div class='chatSettings'>
-  <button class='chatSettings__settingsBtn'>
-    <div class='chatSettings__middleSettingsDot'></div>
-  </button>
   {{{openBtn}}}
 
-  <ul {{#if isOpen}}class='chatSettings__list chatSettings__list_open'{{/if}}>
+  <ul {{#if isOpen}}class='chatSettings__list chatSettings__list_open'{{/if}} class="chatSettings__list">
     <li class='chatSettings__item'>
-      <button class='chatSettings__actionBtn'>
-        Удалить чат
-      </button>
       {{{deleteChatBtn}}}
     </li>
     <li class='chatSettings__item'>
-      <button class='chatSettings__actionBtn'>
-        Добавить пользователя
-      </button>
       {{{addUserBtn}}}
     </li>
     <li class='chatSettings__item'>
-      <button class='chatSettings__actionBtn'>
-        Удалить пользователя
-      </button>
       {{{deleteUserBtn}}}
     </li>
     <li class='chatSettings__item'>
-      <button class='chatSettings__actionBtn'>
-        Изменить аватар
-      </button>
       {{{changeAvatarBtn}}}
     </li>
   </ul>

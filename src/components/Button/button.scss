@@ -1,5 +1,5 @@
-@import '../../styles/palette.scss';
-@import '../../styles/fonts/typography.scss';
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
 
 .button {
   &__button {
@@ -9,13 +9,15 @@
     opacity: 1;
     margin: 14px 0;
 
-    @include mediumThick;
+    @include medium-thick;
+
     &_type {
       &_submit {
         width: 100%;
         height: 37px;
         border-radius: 8px;
       }
+
       &_attachment {
         background-image: url('../static/images/clip.png');
         background-size: contain;
@@ -34,7 +36,8 @@
   }
 
   &__error {
-    @include smallThick;
+    @include small-thick;
+
     color: $color-error;
     display: block;
     width: fit-content;

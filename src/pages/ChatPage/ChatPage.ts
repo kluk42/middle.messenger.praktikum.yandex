@@ -1,6 +1,9 @@
+import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Chat } from '../../components/Chat/Chat';
 import { ChatMessage } from '../../components/ChatMessage/ChatMessage';
 import { ChatMessageInput } from '../../components/ChatMessageInput/ChatMessageInput';
+import { ChatSettings } from '../../components/ChatSettings/ChatSettings';
+import { DotsForButton } from '../../components/ChatSettings/DotsForButton';
 import { Message } from '../../components/Message/Message';
 import { MessagesList } from '../../components/MessagesList/MessagesList';
 import { Block } from '../../utils/Block';
@@ -59,6 +62,40 @@ export class ChatPage extends Block {
       isChatSelected: true,
       chatMessages: messages,
       ChatMessageInput: new ChatMessageInput({}),
+      ChatSettings: new ChatSettings({
+        isOpen: false,
+        deleteChatBtn: new Button({
+          label: 'Удалить чат',
+          noValidation: true,
+          stylesType: ButtonStyleTypes.Custom,
+          styles: 'chatSettings__actionBtn',
+        }),
+        addUserBtn: new Button({
+          label: 'Добавить пользователя',
+          noValidation: true,
+          stylesType: ButtonStyleTypes.Custom,
+          styles: 'chatSettings__actionBtn',
+        }),
+        deleteUserBtn: new Button({
+          label: 'Удалить пользователя',
+          noValidation: true,
+          stylesType: ButtonStyleTypes.Custom,
+          styles: 'chatSettings__actionBtn',
+        }),
+        changeAvatarBtn: new Button({
+          label: 'Изменить аватар',
+          noValidation: true,
+          stylesType: ButtonStyleTypes.Custom,
+          styles: 'chatSettings__actionBtn',
+        }),
+        openBtn: new Button({
+          label: '',
+          noValidation: true,
+          stylesType: ButtonStyleTypes.Custom,
+          styles: 'chatSettings__settingsBtn',
+          child: new DotsForButton(),
+        }),
+      }),
     });
 
     this.children.MessagesList = new MessagesList({

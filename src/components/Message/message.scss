@@ -1,5 +1,5 @@
-@import '../../styles/palette.scss';
-@import '../../styles/fonts/typography.scss';
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
 
 .message {
     display: grid;
@@ -27,19 +27,21 @@
     }
 
     &__chatName {
-        @include smallExtraThick;
+        @include small-extra-thick;
+
         height: fit-content;
     }
 
     &__date {
-        @include tinyThick;
+        @include tiny-thick;
+
         color: $color-gray;
     }
 
     &__text {
-        @include tallThick;
+        @include tall-thick;
+
         color: $color-gray;
-        height: fit-content;
         margin-top: 4px;
         height: fit-content;
         max-height: 30px;
@@ -52,7 +54,7 @@
 
         &_highlighted {
             color: $color-dark;
-            @include tallThick;
+            @include tall-thick;
         }
     }
 
@@ -60,7 +62,6 @@
         grid-row: -1/-2;
         grid-column: -1/-2;
         justify-self: end;
-
         background-color: $color-main;
         width: 20px;
         height: 20px;
@@ -69,6 +70,6 @@
         align-items: center;
         justify-content: center;
         color: $color-white;
-        @include smallTallThick;
+        @include small-tall-thick;
     }
 }
