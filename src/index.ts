@@ -1,4 +1,6 @@
 import { ChatPage } from './pages/ChatPage/ChatPage';
+import { EditPasswordPage } from './pages/EditPasswordPage/EditPasswordPage';
+import { EditProfilePage } from './pages/EditProfilePage/EditProfilePage';
 import { HomePage } from './pages/HomePage/HomePage';
 import { SignInPage } from './pages/SignInPage/SignInPage';
 import { SignUpPage } from './pages/SignUpPage/SignUpPage';
@@ -7,7 +9,9 @@ const routes = {
   home: HomePage,
   signUp: SignUpPage,
   signIn: SignInPage,
-  openChat: ChatPage,
+  chat: ChatPage,
+  editProfile: EditProfilePage,
+  editPassword: EditPasswordPage,
 };
 
 export function renderDOM(route: keyof typeof routes) {

@@ -4,6 +4,14 @@
 .editProfileForm {
     width: 510px;
 
+    &__fileInputLabel {
+        display: none;
+    }
+
+    &__fileInputError {
+        display: none;
+    }
+
     &__inputWrapper {
         display: grid;
         grid-template-columns: max-content 1fr;

@@ -3,22 +3,19 @@ import { EventBus, EventNamesType, MapType } from '../../utils/EventBus';
 import { Button } from '../Button/Button';
 import { Field } from '../Field/Field';
 import { Input } from '../Input/Input';
+import { Modal } from '../Modal/Modal';
 import template from './Form.hbs';
 
 export type Props<InputNames extends EventNamesType> = {
   fields: Field[];
-  submitBtn: Button;
+  submitBtn?: Button;
   inputs: Input[];
   submit: (values: Record<string, string>) => void;
   formClass?: string;
   validationRules?: {
     [K in MapType<InputNames>]: (value: string) => string | null;
   };
-};
-
-type FormValue = {
-  inputName: string;
-  value: string;
+  Modal?: Modal;
 };
 
 export class Form<InputNames extends EventNamesType> extends Block<

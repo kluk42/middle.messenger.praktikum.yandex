@@ -32,11 +32,31 @@ export class HomePage extends Block {
       }),
       new AnchorLink({
         href: '/',
-        text: 'Выбранный чат',
+        text: 'Чат',
         events: {
           click: (e: Event) => {
             e.preventDefault();
-            renderDOM('openChat');
+            renderDOM('chat');
+          },
+        },
+      }),
+      new AnchorLink({
+        href: '/',
+        text: 'Редактирование профиля',
+        events: {
+          click: (e: Event) => {
+            e.preventDefault();
+            renderDOM('editProfile');
+          },
+        },
+      }),
+      new AnchorLink({
+        href: '/',
+        text: 'Редактирование пароля',
+        events: {
+          click: (e: Event) => {
+            e.preventDefault();
+            renderDOM('editPassword');
           },
         },
       }),

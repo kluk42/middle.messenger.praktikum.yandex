@@ -1,11 +1,12 @@
 import { renderDOM } from '../..';
-import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
+import { InputName, ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
+import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
 import { Block } from '../../utils/Block';
-import template from './SignUpPage.hbs';
+import template from './EditProfilePage.hbs';
 
 enum InputNames {
   Name = 'first_name',
@@ -13,7 +14,6 @@ enum InputNames {
   Login = 'login',
   Email = 'email',
   Phone = 'phone',
-  Password = 'password',
 }
 
 type InputNamesType = {
@@ -22,7 +22,6 @@ type InputNamesType = {
   [InputNames.Login]: InputNames.Login;
   [InputNames.Email]: InputNames.Email;
   [InputNames.Phone]: InputNames.Phone;
-  [InputNames.Password]: InputNames.Password;
 };
 
 const validator = (v: string, regExp: RegExp, errorText: string) => {
@@ -61,12 +60,6 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
       /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
       'латиница, может включать цифры и спецсимволы вроде дефиса, обязательно должна быть «собака» (@) и точка после неё, но перед точкой обязательно должны быть буквы'
     ),
-  [InputNames.Password]: v =>
-    validator(
-      v,
-      /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/,
-      'от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра'
-    ),
   [InputNames.Phone]: v =>
     validator(
       v,
@@ -75,89 +68,114 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
     ),
 };
 
-export class SignUpPage extends Block {
+export class EditProfilePage extends Block<Record<string, never>> {
   constructor() {
     super({});
   }
 
-  init() {
+  protected init(): void {
+    this.children.GoBackBtn = new ProfileGoBackBtn({
+      events: { click: () => renderDOM('home') },
+    });
+
+    const fileInput = new Input({
+      inputStyle: 'profile__changeAvatarInput',
+      name: 'file',
+      type: 'file',
+    });
+    const fileInputField = new Field({
+      input: fileInput,
+      label: '',
+      labelStyle: 'editProfileForm__fileInputLabel',
+      name: 'file',
+      errorStyle: 'editProfileForm__fileInputError',
+    });
+
+    const fileForm = new Form<InputName>({
+      fields: [fileInputField],
+      inputs: [fileInput],
+      submit(values) {
+        console.log(values);
+      },
+    });
+
+    this.children.AvatarInput = new ProfileAvatar({ fileForm });
+
     const nameInput = new Input({
-      inputStyle: 'inputField__input',
+      inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'first_name',
     });
     const surnameInput = new Input({
-      inputStyle: 'inputField__input',
+      inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'second_name',
     });
     const loginInput = new Input({
-      inputStyle: 'inputField__input',
+      inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'login',
     });
     const emailInput = new Input({
-      inputStyle: 'inputField__input',
+      inputStyle: 'editProfileForm__input',
       type: 'email',
       name: 'email',
     });
     const phoneInput = new Input({
-      inputStyle: 'inputField__input',
+      inputStyle: 'editProfileForm__input',
       type: 'tel',
       name: 'phone',
     });
-    const passwordInput = new Input({
-      inputStyle: 'inputField__input',
-      type: 'password',
-      name: 'password',
-    });
 
-    const inputs = [nameInput, surnameInput, loginInput, emailInput, phoneInput, passwordInput];
+    const inputs = [nameInput, surnameInput, loginInput, emailInput, phoneInput];
 
     const firstNameField = new Field({
       name: 'first_name',
       label: 'Имя',
       input: nameInput,
+      inputWrapperStyle: 'editProfileForm__inputWrapper',
+      labelStyle: 'editProfileForm__inputLabel',
+      errorStyle: 'editProfileForm__inputError',
     });
     const secondNameField = new Field({
       name: 'second_name',
       label: 'Фамилия',
       input: surnameInput,
+      inputWrapperStyle: 'editProfileForm__inputWrapper',
+      labelStyle: 'editProfileForm__inputLabel',
+      errorStyle: 'editProfileForm__inputError',
     });
     const loginField = new Field({
       name: 'login',
       label: 'Логин *',
       input: loginInput,
+      inputWrapperStyle: 'editProfileForm__inputWrapper',
+      labelStyle: 'editProfileForm__inputLabel',
+      errorStyle: 'editProfileForm__inputError',
     });
     const emailField = new Field({
       name: 'email',
       label: 'Email *',
       input: emailInput,
+      inputWrapperStyle: 'editProfileForm__inputWrapper',
+      labelStyle: 'editProfileForm__inputLabel',
+      errorStyle: 'editProfileForm__inputError',
     });
     const phoneField = new Field({
       name: 'phone',
       label: 'Телефон *',
       input: phoneInput,
-    });
-    const passwordField = new Field({
-      name: 'password',
-      label: 'Пароль *',
-      input: passwordInput,
+      inputWrapperStyle: 'editProfileForm__inputWrapper',
+      labelStyle: 'editProfileForm__inputLabel',
+      errorStyle: 'editProfileForm__inputError',
     });
 
-    const fields: Field[] = [
-      firstNameField,
-      secondNameField,
-      loginField,
-      emailField,
-      phoneField,
-      passwordField,
-    ];
+    const fields: Field[] = [firstNameField, secondNameField, loginField, emailField, phoneField];
 
     this.children.form = new Form<InputNamesType>({
       fields,
       submitBtn: new Button({
-        label: 'Зарегистрироваться',
+        label: 'Сохранить',
         stylesType: ButtonStyleTypes.Submit,
         styles: 'authForm__signUpBtn',
       }),
@@ -166,19 +184,7 @@ export class SignUpPage extends Block {
       },
       inputs,
       validationRules,
-      formClass: 'authForm',
-    });
-
-    this.children.signInLink = new AnchorLink({
-      href: '/',
-      text: 'Уже есть аккаунт?',
-      styles: 'auth__link',
-      events: {
-        click: e => {
-          e.preventDefault();
-          renderDOM('signIn');
-        },
-      },
+      formClass: 'editProfileForm',
     });
   }
 
