@@ -2,8 +2,8 @@ import { Block } from '../../utils/Block';
 import template from './Input.hbs';
 
 export type Props = {
-  inputStyle: string;
   name: string;
+  inputStyle?: string;
   placeholder?: string;
   type?: string;
   events?: {

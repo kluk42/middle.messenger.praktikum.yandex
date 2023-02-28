@@ -10,6 +10,9 @@ export type Props = {
   validationError?: string;
   containerStyles?: string;
   child?: Block;
+  events?: {
+    click: () => void;
+  };
 };
 
 export enum ButtonStyleTypes {

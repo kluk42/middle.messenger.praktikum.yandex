@@ -25,7 +25,7 @@ export abstract class Block<P extends Record<string, unknown> = any> {
   public id = Math.random().toString(16).slice(6);
   protected children: Record<
     string,
-    Block<Record<string, unknown>> | Block<Record<string, unknown>>[]
+    Block<Record<string, unknown>> | Block<Record<string, unknown>>[] | undefined
   >;
   public props: P;
   private _element: HTMLElement | null = null;
@@ -85,10 +85,12 @@ export abstract class Block<P extends Record<string, unknown> = any> {
     const contextAndStubs = { ...context };
 
     Object.entries(this.children).forEach(([name, component]) => {
-      if (Array.isArray(component)) {
-        contextAndStubs[name] = component.map(child => `<div data-id="${child.id}"></div>`);
-      } else {
-        contextAndStubs[name] = `<div data-id="${component.id}"></div>`;
+      if (component) {
+        if (Array.isArray(component)) {
+          contextAndStubs[name] = component.map(child => `<div data-id="${child.id}"></div>`);
+        } else {
+          contextAndStubs[name] = `<div data-id="${component.id}"></div>`;
+        }
       }
     });
 
@@ -104,17 +106,18 @@ export abstract class Block<P extends Record<string, unknown> = any> {
       if (!stub) {
         return;
       }
-
       component.getContent()?.append(...Array.from(stub.childNodes));
 
       stub.replaceWith(component._element!);
     };
 
     Object.entries(this.children).forEach(([_, component]) => {
-      if (Array.isArray(component)) {
-        component.forEach(replaceStub);
-      } else {
-        replaceStub(component);
+      if (component) {
+        if (Array.isArray(component)) {
+          component.forEach(replaceStub);
+        } else {
+          replaceStub(component);
+        }
       }
     });
 
@@ -164,10 +167,12 @@ export abstract class Block<P extends Record<string, unknown> = any> {
     this.eventBus.emit(BlockEvents.FLOW_CDM);
 
     Object.values(this.children).forEach(child => {
-      if (Array.isArray(child)) {
-        child.forEach(ch => ch.dispatchComponentDidMount());
-      } else {
-        child.dispatchComponentDidMount();
+      if (child) {
+        if (Array.isArray(child)) {
+          child.forEach(ch => ch.dispatchComponentDidMount());
+        } else {
+          child.dispatchComponentDidMount();
+        }
       }
     });
   }

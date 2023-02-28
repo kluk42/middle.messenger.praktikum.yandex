@@ -1,9 +1,9 @@
-<div {{#if isOpen}}class="modalBackground modalBackground_open"{{/if}} class="modalBackground">
-    <button class="closeBtn"></button>
-    <div class="modal">
-        <h3 class="modal__header">{{header}}</h3>
-        {{#each content}}
-            {{{this}}}
-        {{/each}}
-    </div>
+<div class='modalBackground'>
+  <button class='closeBtn'></button>
+  <div class='modal'>
+    <h3 class='modal__header'>{{header}}</h3>
+    {{#each content}}
+      {{{this}}}
+    {{/each}}
+  </div>
 </div>

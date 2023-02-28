@@ -5,14 +5,92 @@ import { ChatMessage } from '../../components/ChatMessage/ChatMessage';
 import { ChatMessageInput } from '../../components/ChatMessageInput/ChatMessageInput';
 import { ChatSettings } from '../../components/ChatSettings/ChatSettings';
 import { DotsForButton } from '../../components/ChatSettings/DotsForButton';
+import { Field } from '../../components/Field/Field';
+import { Form } from '../../components/Form/Form';
+import { Input } from '../../components/Input/Input';
 import { Message } from '../../components/Message/Message';
 import { MessagesList } from '../../components/MessagesList/MessagesList';
+import { Modal } from '../../components/Modal/Modal';
 import { Block } from '../../utils/Block';
 import template from './ChatPage.hbs';
 
-export class ChatPage extends Block {
+type InternalProps = {
+  openModal: 'delete-chat' | 'add-user' | 'delete-user' | 'change-avatar' | null;
+  areSettingsOpen: boolean;
+};
+
+const modalSwitcher = (modalName: InternalProps['openModal']) => {
+  const loginInput = new Input({
+    name: 'login',
+  });
+  const loginField = new Field({
+    input: loginInput,
+    label: 'Логин',
+    name: 'login',
+  });
+
+  const addUserForm = new Form<{ login: 'login' }>({
+    fields: [loginField],
+    inputs: [loginInput],
+    submitBtn: new Button({ label: 'Добавить пользователя', stylesType: ButtonStyleTypes.Submit }),
+    submit: values => console.log(values),
+  });
+
+  const deleteUserForm = new Form<{ login: 'login' }>({
+    fields: [loginField],
+    inputs: [loginInput],
+    submitBtn: new Button({ label: 'Удалить пользователя', stylesType: ButtonStyleTypes.Submit }),
+    submit: values => console.log(values),
+  });
+
+  const fileInput = new Input({
+    type: 'file',
+    name: 'avatar',
+    inputStyle: 'modal__fileInput',
+  });
+  const fileField = new Field({
+    input: fileInput,
+    label: 'Выберите файл',
+    name: 'avatar',
+    labelStyle: 'modal__fileInputLabel',
+  });
+  const fileForm = new Form<{ avatar: 'avatar' }>({
+    fields: [fileField],
+    inputs: [fileInput],
+    submit: values => console.log(values),
+    submitBtn: new Button({ label: 'Поменять аватар', stylesType: ButtonStyleTypes.Submit }),
+    formClass: 'modal__fileForm',
+  });
+
+  switch (modalName) {
+    case 'delete-chat':
+      return new Modal({
+        isOpen: true,
+        content: [new Button({ label: 'Подтвердить', stylesType: ButtonStyleTypes.Submit })],
+        header: 'Удалить?',
+      });
+    case 'add-user':
+      return new Modal({
+        isOpen: true,
+        header: 'Добавить пользователя',
+        content: [addUserForm],
+      });
+    case 'delete-user':
+      return new Modal({
+        isOpen: true,
+        header: 'Удалить пользователя',
+        content: [deleteUserForm],
+      });
+    case 'change-avatar':
+      return new Modal({ isOpen: true, header: 'Поменять аватар', content: [fileForm] });
+    default:
+      return undefined;
+  }
+};
+
+export class ChatPage extends Block<InternalProps> {
   constructor() {
-    super({});
+    super({ areSettingsOpen: false, openModal: null });
   }
 
   init() {
@@ -63,31 +141,36 @@ export class ChatPage extends Block {
       isChatSelected: true,
       chatMessages: messages,
       ChatMessageInput: new ChatMessageInput({}),
+      areSettingsOpen: this.props.areSettingsOpen,
       ChatSettings: new ChatSettings({
-        isOpen: false,
+        isOpen: this.props.areSettingsOpen,
         deleteChatBtn: new Button({
           label: 'Удалить чат',
           noValidation: true,
           stylesType: ButtonStyleTypes.Custom,
           styles: 'chatSettings__actionBtn',
+          events: { click: () => (this.props.openModal = 'delete-chat') },
         }),
         addUserBtn: new Button({
           label: 'Добавить пользователя',
           noValidation: true,
           stylesType: ButtonStyleTypes.Custom,
           styles: 'chatSettings__actionBtn',
+          events: { click: () => (this.props.openModal = 'add-user') },
         }),
         deleteUserBtn: new Button({
           label: 'Удалить пользователя',
           noValidation: true,
           stylesType: ButtonStyleTypes.Custom,
           styles: 'chatSettings__actionBtn',
+          events: { click: () => (this.props.openModal = 'delete-user') },
         }),
         changeAvatarBtn: new Button({
           label: 'Изменить аватар',
           noValidation: true,
           stylesType: ButtonStyleTypes.Custom,
           styles: 'chatSettings__actionBtn',
+          events: { click: () => (this.props.openModal = 'change-avatar') },
         }),
         openBtn: new Button({
           label: '',
@@ -95,6 +178,13 @@ export class ChatPage extends Block {
           stylesType: ButtonStyleTypes.Custom,
           styles: 'chatSettings__settingsBtn',
           child: new DotsForButton(),
+          events: {
+            click: () => {
+              this.props.areSettingsOpen = !this.props.areSettingsOpen;
+              const chat = this.children.Chat as Chat;
+              chat.props.areSettingsOpen = this.props.areSettingsOpen;
+            },
+          },
         }),
       }),
     });
@@ -200,6 +290,13 @@ export class ChatPage extends Block {
         }),
       ],
     });
+  }
+
+  protected componentDidUpdate(oldProps: InternalProps, newProps: InternalProps): boolean {
+    if (oldProps.openModal !== newProps.openModal) {
+      this.children.Modal = modalSwitcher(newProps.openModal);
+    }
+    return oldProps !== newProps;
   }
 
   protected render(): DocumentFragment {
