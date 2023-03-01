@@ -3,7 +3,6 @@ import { EventBus, EventNamesType, MapType } from '../../utils/EventBus';
 import { Button } from '../Button/Button';
 import { Field } from '../Field/Field';
 import { Input } from '../Input/Input';
-import { Modal } from '../Modal/Modal';
 import template from './Form.hbs';
 
 export type Props<InputNames extends EventNamesType> = {
@@ -15,7 +14,6 @@ export type Props<InputNames extends EventNamesType> = {
   validationRules?: {
     [K in MapType<InputNames>]: (value: string) => string | null;
   };
-  Modal?: Modal;
 };
 
 export class Form<InputNames extends EventNamesType> extends Block<
@@ -40,6 +38,30 @@ export class Form<InputNames extends EventNamesType> extends Block<
   }
 
   componentDidMount(): void {
+    this.props.events = {
+      submit: e => {
+        e.preventDefault();
+
+        if (this.props.validationRules) {
+          const inputs = this.children.inputs as Input[];
+          inputs.forEach(input => {
+            const inputName = input.props.name as MapType<InputNames>;
+            validationBus.emit(inputName, input.value);
+          });
+
+          const fields = this.children.fields as Field[];
+
+          const isFormInValid = fields.some(f => f.props.errorText && f.props.errorText !== '');
+
+          if (isFormInValid) {
+            return;
+          }
+        }
+
+        this.props.submit(this.getValues());
+      },
+    };
+
     if (!this.props.validationRules) {
       return;
     }
@@ -89,28 +111,6 @@ export class Form<InputNames extends EventNamesType> extends Block<
 
       validationBus.on(inputName, validationListener);
     });
-
-    this.props.events = {
-      submit: e => {
-        e.preventDefault();
-        const inputs = this.children.inputs as Input[];
-
-        inputs.forEach(input => {
-          const inputName = input.props.name as MapType<InputNames>;
-          validationBus.emit(inputName, input.value);
-        });
-
-        const fields = this.children.fields as Field[];
-
-        const isFormInValid = fields.some(f => f.props.errorText && f.props.errorText !== '');
-
-        if (isFormInValid) {
-          return;
-        }
-
-        this.props.submit(this.getValues());
-      },
-    };
   }
 
   protected render(): DocumentFragment {

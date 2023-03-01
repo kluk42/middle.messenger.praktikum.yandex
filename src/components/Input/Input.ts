@@ -3,6 +3,7 @@ import template from './Input.hbs';
 
 export type Props = {
   name: string;
+  id?: string;
   inputStyle?: string;
   placeholder?: string;
   type?: string;

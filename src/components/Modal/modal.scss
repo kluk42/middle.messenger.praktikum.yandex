@@ -31,6 +31,7 @@
     &__fileForm {
         display: flex;
         justify-content: center;
+        flex-direction: column;
     }
 
     &__fileInput {
@@ -41,6 +42,7 @@
         color: $color-main;
         text-decoration: underline;
         @include tall-thick;
+        align-self: center;
 
         &:hover {
             cursor: pointer;
