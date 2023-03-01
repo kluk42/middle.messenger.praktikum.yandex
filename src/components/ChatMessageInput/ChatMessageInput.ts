@@ -28,9 +28,9 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
   [InputNames.Message]: v => validator(v, /(.|\s)*\S(.|\s)*/, 'Пустое поле недопустимо'),
 };
 
-type Props = {};
+type Props = Record<string, never>;
 
-export class ChatMessageInput extends Block<Record<string, never>> {
+export class ChatMessageInput extends Block<Props> {
   constructor(props: Props) {
     super(props);
   }

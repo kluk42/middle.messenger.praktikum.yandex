@@ -42,6 +42,7 @@
         color: $color-main;
         text-decoration: underline;
         @include tall-thick;
+
         align-self: center;
 
         &:hover {
