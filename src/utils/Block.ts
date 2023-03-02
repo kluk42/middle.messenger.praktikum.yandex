@@ -200,12 +200,4 @@ export abstract class Block<P extends Record<string, unknown> = any> {
   }
 
   protected init() {}
-
-  setProps = (nextProps: Partial<P>) => {
-    if (!nextProps) {
-      return;
-    }
-
-    Object.assign(this.props, nextProps);
-  };
 }

@@ -1,3 +1,4 @@
+import imageReceivedIcon from '../../../static/images/messageIsReceivedIcon.png';
 import { Block } from '../../utils/Block';
 import template from './ChatMessage.hbs';
 
@@ -11,9 +12,13 @@ type Props = {
   textMessage?: string;
 };
 
-export class ChatMessage extends Block<Props> {
+type InternalProps = {
+  messageReceivedImgPath: string;
+};
+
+export class ChatMessage extends Block<Props & InternalProps> {
   constructor(props: Props) {
-    super(props);
+    super({ ...props, messageReceivedImgPath: imageReceivedIcon });
   }
 
   protected render(): DocumentFragment {

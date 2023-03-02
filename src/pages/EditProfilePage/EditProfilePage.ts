@@ -105,26 +105,31 @@ export class EditProfilePage extends Block<Record<string, never>> {
       inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'first_name',
+      value: 'Name',
     });
     const surnameInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'second_name',
+      value: 'Surname',
     });
     const loginInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'login',
+      value: 'login',
     });
     const emailInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'email',
       name: 'email',
+      value: 'bla@bla.bla',
     });
     const phoneInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'tel',
       name: 'phone',
+      value: '+777',
     });
 
     const inputs = [nameInput, surnameInput, loginInput, emailInput, phoneInput];

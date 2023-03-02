@@ -38,7 +38,7 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
   [InputNames.Password]: v =>
     validator(
       v,
-      /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,40}$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,40}$/,
       'от 8 до 40 символов, обязательно хотя бы одна заглавная буква и цифра'
     ),
 };

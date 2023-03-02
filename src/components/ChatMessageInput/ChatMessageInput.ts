@@ -58,9 +58,7 @@ export class ChatMessageInput extends Block<Props> {
     this.children.Form = new Form<InputNamesType>({
       fields: [field],
       inputs: [input],
-      submit(values) {
-        console.log(values);
-      },
+      submit: values => console.log(values),
       submitBtn: new Button({
         label: '→',
         stylesType: ButtonStyleTypes.Submit,

@@ -23,8 +23,13 @@ export class Form<InputNames extends EventNamesType> extends Block<
     };
   }
 > {
+  private validationBus?: EventBus<InputNames, Record<MapType<InputNames>, [string]>>;
+
   constructor(props: Props<InputNames>) {
     super(props);
+    if (this.props.validationRules) {
+      this.validationBus = new EventBus<InputNames, Record<MapType<InputNames>, [string]>>();
+    }
   }
 
   public getValues() {
@@ -41,13 +46,8 @@ export class Form<InputNames extends EventNamesType> extends Block<
     this.props.events = {
       submit: e => {
         e.preventDefault();
-
-        if (this.props.validationRules) {
-          const inputs = this.children.inputs as Input[];
-          inputs.forEach(input => {
-            const inputName = input.props.name as MapType<InputNames>;
-            validationBus.emit(inputName, input.value);
-          });
+        if (this.validationBus) {
+          this.triggerFormValidation();
 
           const fields = this.children.fields as Field[];
 
@@ -62,55 +62,72 @@ export class Form<InputNames extends EventNamesType> extends Block<
       },
     };
 
+    this.subscribeInputsToValidationBus();
+
     if (!this.props.validationRules) {
       return;
     }
+  }
 
-    const validationBus = new EventBus<InputNames, Record<MapType<InputNames>, [string]>>();
+  private subscribeInputsToValidationBus() {
+    if (this.validationBus) {
+      const inputs = this.children.inputs as Input[];
 
-    const triggerValidation = (name: MapType<InputNames>, value: string) => {
-      validationBus.emit(name, value);
-    };
+      inputs.forEach(input => {
+        const inputName = input.props.name as MapType<InputNames>;
+        input.props.events = {
+          blur: _e => {
+            this.triggerInputValidation(inputName, input.value);
+          },
+        };
 
+        this.validationBus?.on(inputName, v => this.validationListener(v, inputName));
+      });
+    }
+  }
+
+  private triggerInputValidation(inputName: MapType<InputNames>, value: string) {
+    if (this.validationBus) {
+      this.validationBus.emit(inputName, value);
+    }
+  }
+
+  private triggerFormValidation() {
     const inputs = this.children.inputs as Input[];
 
     inputs.forEach(input => {
-      const inputName = input.props.name as MapType<InputNames>;
-      input.props.events = {
-        blur: _e => {
-          triggerValidation(inputName, input.value);
-        },
-      };
-
-      const validationListener = (value: string) => {
-        const listener = this.props.validationRules && this.props.validationRules[inputName];
-        if (listener) {
-          const errorText = listener(value);
-
-          const fields = this.children.fields as Field[];
-          const inputFieldArr = fields.filter(field => field.props.name === inputName);
-
-          if (!inputFieldArr[0]) {
-            throw new Error(`Поле с имененм ${inputName} не зарегистрировано`);
-          }
-          if (inputFieldArr.length > 1) {
-            throw new Error('Имена полей ввода должны быть уникальными');
-          }
-
-          const inputField = inputFieldArr[0];
-
-          if (errorText !== null) {
-            inputField.props.errorText = errorText;
-          }
-
-          if (errorText === null && inputField.props.errorText) {
-            inputField.props.errorText = '';
-          }
-        }
-      };
-
-      validationBus.on(inputName, validationListener);
+      if (this.validationBus) {
+        const inputName = input.props.name as MapType<InputNames>;
+        this.validationBus.emit(inputName, input.value);
+      }
     });
+  }
+
+  private validationListener(value: string, inputName: MapType<InputNames>) {
+    const listener = this.props.validationRules && this.props.validationRules[inputName];
+    if (listener) {
+      const errorText = listener(value);
+
+      const fields = this.children.fields as Field[];
+      const inputFieldArr = fields.filter(field => field.props.name === inputName);
+
+      if (!inputFieldArr[0]) {
+        throw new Error(`Поле с имененм ${inputName} не зарегистрировано`);
+      }
+      if (inputFieldArr.length > 1) {
+        throw new Error('Имена полей ввода должны быть уникальными');
+      }
+
+      const inputField = inputFieldArr[0];
+
+      if (errorText !== null) {
+        inputField.props.errorText = errorText;
+      }
+
+      if (errorText === null && inputField.props.errorText) {
+        inputField.props.errorText = '';
+      }
+    }
   }
 
   protected render(): DocumentFragment {

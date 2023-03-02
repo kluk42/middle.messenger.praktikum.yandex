@@ -6,21 +6,6 @@ enum METHODS {
   DELETE = 'DELETE',
 }
 
-/**
- * Функцию реализовывать здесь необязательно, но может помочь не плодить логику у GET-метода
- * На входе: объект. Пример: {a: 1, b: 2, c: {d: 123}, k: [1, 2, 3]}
- * На выходе: строка. Пример: ?a=1&b=2&c=[object Object]&k=1,2,3
- */
-function queryStringify(data: Record<string, unknown>) {
-  let optionsString = '?';
-
-  Object.entries(data).forEach(([key, value]) => {
-    optionsString += `${key}=${value}&`;
-  });
-
-  return optionsString.slice(0, -1);
-}
-
 type OptionsType = {
   data?: Record<string, unknown>;
   timeout?: number;
@@ -30,11 +15,20 @@ type OptionsType = {
 };
 
 class HTTPTransport {
-  get = (url: string, options: Omit<OptionsType, 'method' | 'retries'> = {}) => {
-    let query = url;
-    if (options?.data) {
-      query += queryStringify(options.data);
+  private static instance?: HTTPTransport;
+
+  private constructor() {}
+
+  public static get Instance() {
+    if (!HTTPTransport.instance) {
+      HTTPTransport.instance = new HTTPTransport();
     }
+
+    return HTTPTransport.instance;
+  }
+
+  get = (url: string, options: Omit<OptionsType, 'method' | 'retries'> = {}) => {
+    const query = this.queryStringify(url, options.data);
     return this.request(query, { ...options, method: METHODS.GET }, options.timeout);
   };
 
@@ -50,12 +44,7 @@ class HTTPTransport {
     return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
   };
 
-  // PUT, POST, DELETE
-
-  // options:
-  // headers — obj
-  // data — obj
-  request = (url: string, options: Omit<OptionsType, 'retries'>, timeout = 5000) => {
+  private request = (url: string, options: Omit<OptionsType, 'retries'>, timeout = 5000) => {
     return new Promise(function (resolve, reject) {
       const { headers, data, method } = options;
 
@@ -85,10 +74,24 @@ class HTTPTransport {
       }
     });
   };
+
+  private queryStringify(url: string, data?: Record<string, unknown>) {
+    if (data) {
+      let optionsString = '?';
+
+      Object.entries(data).forEach(([key, value]) => {
+        optionsString += `${key}=${value}&`;
+      });
+
+      return url + optionsString.slice(0, -1);
+    } else {
+      return url;
+    }
+  }
 }
 
 export async function fetchWithRetry(url: string, options: OptionsType) {
-  const transport = new HTTPTransport();
+  const transport = HTTPTransport.Instance;
 
   const { retries, method } = options;
 
