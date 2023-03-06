@@ -1,9 +1,19 @@
-<div class="button {{containerStyles}}">
+{{#if noValidation}}
+  <button type='{{type}}' class='button__button button__button_type_{{stylesType}} {{styles}}'>
+    {{label}}
+    {{{child}}}
+  </button>
+{{else}}
+  <div class='button {{containerStyles}}'>
     {{#if actionError}}
-        <p class="button__error">{{actionError}}</p>
+      <p class='button__error'>{{actionError}}</p>
     {{/if}}
-    <button type="{{type}}" class="button__button button__button_type_{{stylesType}} {{styles}}">{{ label }}</button>
+    <button
+      type='{{type}}'
+      class='button__button button__button_type_{{stylesType}} {{styles}}'
+    >{{label}}</button>
     {{#if validationError}}
-        <p class="button__error">{{validationError}}</p>
+      <p class='button__error'>{{validationError}}</p>
     {{/if}}
-</div>
+  </div>
+{{/if}}

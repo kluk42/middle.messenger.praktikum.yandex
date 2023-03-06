@@ -1,11 +1,7 @@
-<html>
-<head>
-  <link rel="stylesheet" href="../../index.scss">
-</head>
-<body>
-  <main class="main-grid">
-    {{> MessagesList/MessagesList}}
-    {{> Chat/Chat chatName="Иван" isChatSelected=true}}
+<div>
+  <main class='mainGrid'>
+    {{{MessagesList}}}
+    {{{Chat}}}
+    {{{Modal}}}
   </main>
-</body>
-</html>
+</div>

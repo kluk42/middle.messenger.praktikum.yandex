@@ -3,17 +3,29 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "parcel build src/index.hbs && node server.js",
-    "dev": "parcel src/index.hbs --no-cache --open",
-    "build": "parcel build src/index.hbs"
+    "start": "parcel build src/index.html && node server.js",
+    "dev": "parcel src/index.html --no-cache --open",
+    "build": "tsc && parcel build src/index.html",
+    "lint": "eslint -- ./src",
+    "lint:css": "stylelint src/**/*.scss --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@anikin/parcel-transformer-handlebars": "1.0.9",
+    "@anikin/parcel-transformer-handlebars-precompile": "1.0.1",
     "@parcel/transformer-sass": "2.8.3",
+    "@typescript-eslint/eslint-plugin": "5.52.0",
+    "@typescript-eslint/parser": "5.52.0",
+    "eslint": "8.34.0",
+    "eslint-config-prettier": "8.6.0",
+    "eslint-plugin-prettier": "4.2.1",
     "express": "4.18.2",
-    "parcel": "2.8.3"
+    "parcel": "2.8.3",
+    "prettier": "2.8.4",
+    "stylelint": "15.2.0",
+    "stylelint-config-prettier-scss": "0.0.1",
+    "stylelint-config-standard-scss": "7.0.1",
+    "typescript": "4.9.5"
   }
 }

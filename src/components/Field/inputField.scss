@@ -1,0 +1,36 @@
+@import '../../styles/fonts/typography';
+@import '../../styles/palette';
+
+.inputField {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 16px;
+
+    &:last-of-type{
+        margin-bottom: 0;
+    }
+
+    &__label {
+        @include tiny-thick;
+    }
+
+    &__input {
+        margin-top: 8px;
+        border-bottom: 1px solid $color-main;
+        padding-bottom: 7px;
+
+        @include medium-thick;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__error {
+        @include small;
+
+        color: $color-error;
+        margin-top: 7px;
+    }
+}

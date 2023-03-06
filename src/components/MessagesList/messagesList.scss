@@ -1,12 +1,11 @@
-@import '../../styles/palette.scss';
-@import '../../styles/fonts/typography.scss';
-@import '../../styles/utils/scrollBar.scss';
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
+@import '../../styles/utils/scrollBar';
 
 .messages {
     grid-column: 1/3;
     background-color: $color-slightly-gray;
     border-right: 1px solid $color-grayish;
-
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -22,6 +21,7 @@
 
     &__profileLink {
         @include thick;
+
         color: $color-gray;
         align-self: flex-end;
         margin-bottom: 23px;
@@ -35,6 +35,7 @@
 
         &::placeholder {
             @include thick;
+
             color: $color-gray;
             text-align: center;
         }
@@ -50,7 +51,7 @@
         padding: 0 10px;
         padding-bottom: 10px;
 
-        @include scrollBar;
+        @include scroll-bar;
     }
 
     &__chat {
