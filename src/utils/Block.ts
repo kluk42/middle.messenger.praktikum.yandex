@@ -177,6 +177,10 @@ export abstract class Block<P extends Record<string, unknown> = any> {
     });
   }
 
+  public hide() {
+    return;
+  }
+
   private _componentDidUpdate(oldProps: P, newProps: P) {
     if (this.componentDidUpdate(oldProps, newProps)) {
       this.eventBus.emit(BlockEvents.FLOW_RENDER);

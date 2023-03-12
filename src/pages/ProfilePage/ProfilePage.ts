@@ -1,6 +1,6 @@
-import { renderDOM } from '../..';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
+import Router, { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './ProfilePage.hbs';
 
@@ -13,7 +13,7 @@ export class ProfilePage extends Block<Record<string, never>> {
     this.children.GoBackBtn = new ProfileGoBackBtn({
       events: {
         click() {
-          renderDOM('home');
+          Router.back();
         },
       },
     });
@@ -25,7 +25,7 @@ export class ProfilePage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
-          renderDOM('editProfile');
+          Router.go(Routes.EditProfilePage);
         },
       },
     });
@@ -37,6 +37,7 @@ export class ProfilePage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
+          Router.replace(Routes.SignUpPage);
         },
       },
     });
@@ -48,7 +49,7 @@ export class ProfilePage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
-          renderDOM('editPassword');
+          Router.go(Routes.EditPasswordPage);
         },
       },
     });

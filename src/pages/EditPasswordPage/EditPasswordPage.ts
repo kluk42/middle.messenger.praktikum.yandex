@@ -1,10 +1,10 @@
-import { renderDOM } from '../..';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
 import { InputName, ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
+import Router from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './EditPasswordPage.hbs';
 
@@ -67,7 +67,7 @@ export class EditPasswordPage extends Block<Record<string, never>> {
 
   protected init(): void {
     this.children.GoBackBtn = new ProfileGoBackBtn({
-      events: { click: () => renderDOM('home') },
+      events: { click: () => Router.back() },
     });
 
     const fileInput = new Input({

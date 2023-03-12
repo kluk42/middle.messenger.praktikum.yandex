@@ -1,9 +1,9 @@
-import { renderDOM } from '../..';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
+import Router, { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './SignUpPage.hbs';
 
@@ -176,7 +176,7 @@ export class SignUpPage extends Block {
       events: {
         click: e => {
           e.preventDefault();
-          renderDOM('signIn');
+          Router.go(Routes.SignInPage);
         },
       },
     });

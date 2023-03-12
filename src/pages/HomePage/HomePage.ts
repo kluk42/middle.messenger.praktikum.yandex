@@ -1,5 +1,5 @@
-import { renderDOM } from '../..';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
+import router, { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './HomePage.hbs';
 
@@ -16,7 +16,8 @@ export class HomePage extends Block {
         events: {
           click: (e: Event) => {
             e.preventDefault();
-            renderDOM('signUp');
+            e.preventDefault();
+            router.go(Routes.SignUpPage);
           },
         },
       }),
@@ -26,7 +27,7 @@ export class HomePage extends Block {
         events: {
           click: (e: Event) => {
             e.preventDefault();
-            renderDOM('signIn');
+            router.go(Routes.SignInPage);
           },
         },
       }),
@@ -36,7 +37,7 @@ export class HomePage extends Block {
         events: {
           click: (e: Event) => {
             e.preventDefault();
-            renderDOM('chat');
+            router.go(Routes.Chat);
           },
         },
       }),
@@ -46,7 +47,7 @@ export class HomePage extends Block {
         events: {
           click: (e: Event) => {
             e.preventDefault();
-            renderDOM('editProfile');
+            router.go(Routes.EditProfilePage);
           },
         },
       }),
@@ -56,7 +57,7 @@ export class HomePage extends Block {
         events: {
           click: (e: Event) => {
             e.preventDefault();
-            renderDOM('editPassword');
+            router.go(Routes.EditPasswordPage);
           },
         },
       }),
@@ -66,7 +67,7 @@ export class HomePage extends Block {
         events: {
           click: (e: Event) => {
             e.preventDefault();
-            renderDOM('profilePage');
+            router.go(Routes.Profile);
           },
         },
       }),
@@ -76,7 +77,7 @@ export class HomePage extends Block {
         events: {
           click: (e: Event) => {
             e.preventDefault();
-            renderDOM('errorPage');
+            router.go(Routes.ServerError);
           },
         },
       }),
