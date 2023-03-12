@@ -128,6 +128,14 @@ export abstract class Block<P extends Record<string, unknown> = any> {
     return this._element;
   }
 
+  setProps(nextProps: P) {
+    if (!nextProps) {
+      return;
+    }
+
+    Object.assign(this.props, nextProps);
+  }
+
   private addEvents() {
     const { events = {} } = this.props as P & { events: Record<string, () => void> };
     Object.keys(events).forEach(eventName => {
