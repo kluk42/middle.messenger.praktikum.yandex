@@ -1,10 +1,12 @@
+import { GetUserResponse } from '../api/AuthApi';
 import { EventBus } from './EventBus';
 import set from './set';
 
 export type State = {
-  chat: {
+  chat?: {
     messages: { message: string }[];
   };
+  user?: GetUserResponse;
 };
 
 export enum StoreEvents {
@@ -15,7 +17,11 @@ type StoreEventsType = {
   [StoreEvents.Updated]: StoreEvents.Updated;
 };
 
-class Store extends EventBus<StoreEventsType> {
+type EventArguments = {
+  [StoreEvents.Updated]: [State];
+};
+
+class Store extends EventBus<StoreEventsType, EventArguments> {
   private state: State;
 
   constructor(initialState: State) {
@@ -29,10 +35,10 @@ class Store extends EventBus<StoreEventsType> {
 
   set(path: string, value: unknown): void {
     set(this.state, path, value);
-    this.emit(StoreEvents.Updated);
+    this.emit(StoreEvents.Updated, this.state);
   }
 }
 
-const store = new Store({ chat: { messages: [{ message: 'bla' }] } });
+const store = new Store({});
 
 export default store;

@@ -1,8 +1,5 @@
+import { isArrayOrObject } from './typeGuards';
 import { Indexed } from './types';
-
-const isObject = (value: unknown): value is Indexed => {
-  return typeof value === 'object' && value !== null;
-};
 
 const isNaNCheck = (val: unknown) => {
   return typeof val === 'number' && isNaN(val);
@@ -25,10 +22,12 @@ const isEqual = (a: object, b: object): boolean => {
   }
 
   if (areEmpty) {
-    return Array.isArray(a) === Array.isArray(b);
+    return true;
   }
 
-  if (aEntries.length !== bEntries.length) {
+  const areArrays = Array.isArray(a) && Array.isArray(b);
+
+  if (areArrays && aEntries.length !== bEntries.length) {
     return false;
   }
 
@@ -44,7 +43,7 @@ const isEqual = (a: object, b: object): boolean => {
 
     const bValue = castB[key];
 
-    if (isObject(aValue) && isObject(bValue)) {
+    if (isArrayOrObject(aValue) && isArrayOrObject(bValue)) {
       result = isEqual(aValue, bValue);
       return;
     }

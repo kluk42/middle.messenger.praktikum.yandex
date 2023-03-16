@@ -36,14 +36,14 @@ function set(object: Indexed | unknown, path: string, value: unknown): Indexed |
     return object;
   }
 
-  const result = path.split('.').reduceRight<Indexed>(
+  const result = path.split('.').reduceRight<Indexed | unknown>(
     (acc, key) => ({
       [key]: acc,
     }),
     value as any
   );
 
-  merge(object, result);
+  merge(object, result as Indexed);
 
   return object;
 }
