@@ -1,7 +1,7 @@
 import { AuthAPI, SignInBody, SignUpBody } from '../api/AuthApi';
 import store from '../utils/Store';
 
-class AuthController {
+export class AuthController {
   private api: AuthAPI;
 
   constructor() {
@@ -29,7 +29,7 @@ class AuthController {
     try {
       const user = await this.api.getUser();
 
-      store.set('user', user);
+      store.set('user.data', user);
     } catch (error) {
       console.error(error);
     }

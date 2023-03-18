@@ -1,10 +1,10 @@
 import { HTTPTransport, METHODS, OptionsType } from './HttpTransport';
 
-export async function fetchWithRetry<Response>(
+export const fetchWithRetry = async <Response>(
   transport: HTTPTransport,
   path: string,
   options: OptionsType
-): Promise<Response> {
+): Promise<Response> => {
   const { retries, method } = options;
 
   let requestFunction:
@@ -13,16 +13,16 @@ export async function fetchWithRetry<Response>(
 
   switch (method) {
     case METHODS.DELETE:
-      requestFunction = transport.delete;
+      requestFunction = transport.delete.bind(transport);
       break;
     case METHODS.POST:
-      requestFunction = transport.post;
+      requestFunction = transport.post.bind(transport);
       break;
     case METHODS.PUT:
-      requestFunction = transport.put;
+      requestFunction = transport.put.bind(transport);
       break;
     default:
-      requestFunction = transport.get;
+      requestFunction = transport.get.bind(transport);
   }
 
   let triesCount = 0;
@@ -41,4 +41,4 @@ export async function fetchWithRetry<Response>(
       return requestFunction(path, options);
     }
   }
-}
+};

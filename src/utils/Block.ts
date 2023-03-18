@@ -1,4 +1,5 @@
 import { EventBus } from './EventBus';
+import isEqual from './isEqual';
 
 enum BlockEvents {
   INIT = 'init',
@@ -128,7 +129,7 @@ export abstract class Block<P extends Record<string, unknown> = any> {
     return this._element;
   }
 
-  setProps(nextProps: P) {
+  setProps(nextProps: Partial<P>) {
     if (!nextProps) {
       return;
     }
@@ -196,7 +197,7 @@ export abstract class Block<P extends Record<string, unknown> = any> {
   }
 
   protected componentDidUpdate(oldProps: P, newProps: P) {
-    return oldProps !== newProps;
+    return !isEqual(oldProps, newProps);
   }
 
   private registerEvents() {

@@ -9,7 +9,7 @@ export type Props<InputNames extends EventNamesType> = {
   fields: Field[];
   submitBtn?: Button;
   inputs: Input[];
-  submit: (values: Record<string, string>) => void;
+  submit: (values: { [K in MapType<InputNames>]: string }) => void;
   formClass?: string;
   validationRules?: {
     [K in MapType<InputNames>]: (value: string) => string | null;
@@ -33,11 +33,14 @@ export class Form<InputNames extends EventNamesType> extends Block<
   }
 
   public getValues() {
-    const values: Record<string, string> = {};
+    const values: { [K in MapType<InputNames>]: string } = {} as {
+      [K in MapType<InputNames>]: string;
+    };
     const inputs = this.children.inputs as Input[];
     inputs.forEach(i => {
       const input = i.getContent()! as HTMLInputElement;
-      values[input.name] = input.value;
+      const name = input.name as MapType<InputNames>;
+      values[name] = input.value;
     });
     return values;
   }

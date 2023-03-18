@@ -3,13 +3,13 @@ import { EditPasswordPage } from './pages/EditPasswordPage/EditPasswordPage';
 import { EditProfilePage } from './pages/EditProfilePage/EditProfilePage';
 import { ErrorPage } from './pages/ErrorPage/ErrorPage';
 import { HomePage } from './pages/HomePage/HomePage';
-import { ProfilePage } from './pages/ProfilePage/ProfilePage';
-import { SignInPage } from './pages/SignInPage/SignInPage';
-import { SignUpPage } from './pages/SignUpPage/SignUpPage';
-import router, { Routes } from './Router/Router';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import SignInPage from './pages/SignInPage/SignInPage';
+import SignUpPage from './pages/SignUpPage/SignUpPage';
+import { Router, Routes } from './Router/Router';
 
 window.addEventListener('DOMContentLoaded', () => {
-  router
+  new Router('#app')
     .use(Routes.Home, HomePage, {})
     .use(Routes.SignInPage, SignInPage, {})
     .use(Routes.SignUpPage, SignUpPage, {})

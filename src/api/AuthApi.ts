@@ -39,6 +39,9 @@ export class AuthAPI extends BaseAPI {
       method: METHODS.POST,
       retries: 1,
       data,
+      headers: {
+        'content-type': 'application/json',
+      },
     });
   }
   signin(data: SignInBody) {

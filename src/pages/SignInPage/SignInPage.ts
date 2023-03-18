@@ -1,10 +1,15 @@
+import { GetUserResponse } from '../../api/AuthApi';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
-import Router, { Routes } from '../../Router/Router';
+import { AuthController } from '../../controllers/AuthController';
+import { withControllers } from '../../hocs/withControllers';
+import { withStore } from '../../hocs/withStore';
+import { Router, Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
+import { State } from '../../utils/Store';
 import template from './SignInPage.hbs';
 
 enum InputNames {
@@ -43,9 +48,14 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
     ),
 };
 
-export class SignInPage extends Block {
-  constructor() {
-    super({});
+type Controllers = { auth: AuthController; router: Router };
+type FromStore = GetUserResponse | undefined;
+type OwnProps = {};
+type AllProps = Controllers & FromStore & OwnProps;
+
+class SignInPage extends Block<AllProps> {
+  constructor(props: AllProps) {
+    super(props);
   }
 
   init() {
@@ -78,18 +88,17 @@ export class SignInPage extends Block {
     this.children.form = new Form<InputNamesType>({
       fields,
       submitBtn: new Button({
-        label: 'Зарегистрироваться',
+        label: 'Войти',
         stylesType: ButtonStyleTypes.Submit,
         containerStyles: 'authForm__submitBtn',
       }),
-      submit: values => {
-        console.log(values);
+      submit: async values => {
+        await this.props.auth?.signIn(values);
       },
       inputs,
       validationRules,
       formClass: 'authForm',
     });
-
     this.children.signUpLink = new AnchorLink({
       href: '/',
       text: 'Нет аккаунта?',
@@ -97,7 +106,7 @@ export class SignInPage extends Block {
       events: {
         click: e => {
           e.preventDefault();
-          Router.go(Routes.SignUpPage);
+          this.props.router.go(Routes.SignUpPage);
         },
       },
     });
@@ -107,3 +116,19 @@ export class SignInPage extends Block {
     return this.compile(template, this.children);
   }
 }
+
+const WithControllers = withControllers<OwnProps, { auth: AuthController; router: Router }>(
+  SignInPage,
+  {
+    auth: new AuthController(),
+    router: new Router('#app'),
+  }
+);
+
+const mapStateToProps = (state: State): FromStore => {
+  return state.user?.data;
+};
+
+const WithStore = withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);
+
+export default WithStore;

@@ -25,9 +25,7 @@ const isEqual = (a: object, b: object): boolean => {
     return true;
   }
 
-  const areArrays = Array.isArray(a) && Array.isArray(b);
-
-  if (areArrays && aEntries.length !== bEntries.length) {
+  if (aEntries.length !== bEntries.length) {
     return false;
   }
 

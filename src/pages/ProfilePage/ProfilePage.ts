@@ -1,19 +1,29 @@
+import { GetUserResponse } from '../../api/AuthApi';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
-import Router, { Routes } from '../../Router/Router';
+import { withControllers } from '../../hocs/withControllers';
+import { withStore } from '../../hocs/withStore';
+import { Router, Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
+import { State } from '../../utils/Store';
 import template from './ProfilePage.hbs';
 
-export class ProfilePage extends Block<Record<string, never>> {
-  constructor() {
-    super({});
+type Controllers = { router: Router };
+type FromStore = GetUserResponse | undefined;
+type OwnProps = {};
+type Props = Controllers & FromStore & OwnProps;
+
+class ProfilePage extends Block<Props> {
+  constructor(props: Props) {
+    super(props);
   }
 
   protected init(): void {
+    const router = this.props.router;
     this.children.GoBackBtn = new ProfileGoBackBtn({
       events: {
         click() {
-          Router.back();
+          router.back();
         },
       },
     });
@@ -25,7 +35,7 @@ export class ProfilePage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
-          Router.go(Routes.EditProfilePage);
+          router.go(Routes.EditProfilePage);
         },
       },
     });
@@ -37,7 +47,7 @@ export class ProfilePage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
-          Router.replace(Routes.SignUpPage);
+          router.replace(Routes.SignUpPage);
         },
       },
     });
@@ -49,7 +59,7 @@ export class ProfilePage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
-          Router.go(Routes.EditPasswordPage);
+          router.go(Routes.EditPasswordPage);
         },
       },
     });
@@ -67,3 +77,13 @@ export class ProfilePage extends Block<Record<string, never>> {
     });
   }
 }
+
+const mapStateToProps = (state: State) => {
+  return state.user?.data;
+};
+
+const WithControllers = withControllers<OwnProps, Controllers>(ProfilePage, {
+  router: new Router('#app'),
+});
+
+export default withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);

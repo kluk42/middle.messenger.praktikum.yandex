@@ -6,7 +6,7 @@ export type State = {
   chat?: {
     messages: { message: string }[];
   };
-  user?: GetUserResponse;
+  user?: { data?: GetUserResponse };
 };
 
 export enum StoreEvents {

@@ -1,7 +1,7 @@
 import { Block } from '../utils/Block';
 import { trim } from '../utils/trim';
 
-interface BlockConstructable<P extends Record<string, any> = any> {
+export interface BlockConstructable<P extends Record<string, any> = any> {
   new (props: P): Block<P>;
 }
 
@@ -49,6 +49,8 @@ function render(query: string, block: Block) {
   root.innerHTML = '';
 
   root.append(block.getContent()!);
+
+  block.dispatchComponentDidMount();
 
   return root;
 }
@@ -98,7 +100,7 @@ export class Route<
   }
 }
 
-class Router implements IRouter {
+export class Router implements IRouter {
   private static instance: Router;
   private routes: Route<Record<string, unknown>, BlockConstructable>[] = [];
   private history: (typeof window)['history'] = window.history;
