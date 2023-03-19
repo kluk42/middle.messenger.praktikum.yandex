@@ -1,16 +1,27 @@
 import { Chat } from '../../components/Chat/Chat';
 import { ChatMessageInput } from '../../components/ChatMessageInput/ChatMessageInput';
-import { MessagesList } from '../../components/MessagesList/MessagesList';
+import MessagesList from '../../components/MessagesList/MessagesList';
+import { ChatsController } from '../../controllers/ChatsController';
+import { Router } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './ChatPage.hbs';
-import { chatMessagesMock, messagesListMock } from './mocks';
+import { chatMessagesMock } from './mocks';
 
-export class ChatPage extends Block<Record<string, never>> {
-  constructor() {
-    super({});
+type PropsFromStore = {};
+type Controllers = {
+  router: Router;
+  chatsController: ChatsController;
+};
+type OwnProps = {};
+
+type Props = PropsFromStore & Controllers & OwnProps;
+
+export default class ChatPage extends Block<Props> {
+  constructor(props: Props) {
+    super(props);
   }
 
-  init() {
+  async init() {
     this.children.Chat = new Chat({
       chatName: 'Иван',
       isChatSelected: true,
@@ -18,9 +29,7 @@ export class ChatPage extends Block<Record<string, never>> {
       ChatMessageInput: new ChatMessageInput({}),
     });
 
-    this.children.MessagesList = new MessagesList({
-      messages: messagesListMock,
-    });
+    this.children.MessagesList = new MessagesList({});
   }
 
   protected render(): DocumentFragment {

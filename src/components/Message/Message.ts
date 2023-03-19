@@ -1,18 +1,19 @@
 import { Block } from '../../utils/Block';
 import template from './Message.hbs';
 
-type Props = {
+export type MessageProps = {
   chatName: string;
-  messageDate: string;
-  message: string;
+  messageDate?: string;
+  message?: string;
   isMessageReceived?: boolean;
   unreadMessagesCount?: number;
   isMessageSelected?: boolean;
   imgSrc?: string;
+  chatId?: number;
 };
 
-export class Message extends Block<Props> {
-  constructor(props: Props) {
+export class Message extends Block<MessageProps> {
+  constructor(props: MessageProps) {
     super(props);
   }
 

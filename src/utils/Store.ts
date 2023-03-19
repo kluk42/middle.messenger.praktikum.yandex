@@ -1,4 +1,5 @@
 import { GetUserResponse } from '../api/AuthApi';
+import { GetChatsResponse } from '../api/ChatsApi';
 import { EventBus } from './EventBus';
 import set from './set';
 
@@ -7,6 +8,7 @@ export type State = {
     messages: { message: string }[];
   };
   user?: { data?: GetUserResponse };
+  chats?: { chatsList: GetChatsResponse; selectedChat?: string };
 };
 
 export enum StoreEvents {
