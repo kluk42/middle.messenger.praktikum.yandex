@@ -93,7 +93,7 @@ class SignInPage extends Block<AllProps> {
         containerStyles: 'authForm__submitBtn',
       }),
       submit: async values => {
-        await this.props.auth?.signIn(values);
+        await this.props.auth.signIn(values);
       },
       inputs,
       validationRules,

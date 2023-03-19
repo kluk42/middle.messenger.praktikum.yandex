@@ -5,9 +5,13 @@ const isNaNCheck = (val: unknown) => {
   return typeof val === 'number' && isNaN(val);
 };
 
-const isEqual = (a: object, b: object): boolean => {
+const isEqual = (a?: object, b?: object): boolean => {
   if (typeof a !== typeof b) {
     return false;
+  }
+
+  if (a === undefined || b === undefined) {
+    return a === b;
   }
 
   const aEntries = Object.entries(a);

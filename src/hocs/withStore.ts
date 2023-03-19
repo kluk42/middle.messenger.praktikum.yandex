@@ -17,13 +17,8 @@ export function withStore<
 
         store.on(StoreEvents.Updated, () => {
           const stateProps = mapStateToProps(store.getState());
-          debugger;
 
-          if (
-            previousState !== undefined &&
-            stateProps !== undefined &&
-            !isEqual(previousState, stateProps)
-          ) {
+          if (!isEqual(previousState, stateProps)) {
             previousState = { ...stateProps };
             this.setProps({ ...stateProps } as Props & V);
           }

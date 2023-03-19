@@ -75,13 +75,31 @@ export class HTTPTransport {
       }
 
       xhr.onload = function () {
-        const response = xhr.response as Response;
-        resolve(response);
+        if (xhr.status < 400) {
+          const response = xhr.response as Response;
+          resolve(response);
+        } else {
+          reject(xhr.response);
+        }
       };
 
-      xhr.onabort = reject;
-      xhr.onerror = reject;
-      xhr.ontimeout = reject;
+      xhr.setRequestHeader('Content-Type', 'application/json');
+
+      xhr.withCredentials = true;
+      xhr.responseType = 'json';
+
+      xhr.onabort = () => {
+        debugger;
+        reject();
+      };
+      xhr.onerror = () => {
+        debugger;
+        reject('error');
+      };
+      xhr.ontimeout = () => {
+        debugger;
+        reject();
+      };
 
       if (method === METHODS.GET || !data) {
         xhr.send();

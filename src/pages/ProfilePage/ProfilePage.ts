@@ -1,6 +1,7 @@
 import { GetUserResponse } from '../../api/AuthApi';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
+import { AuthController } from '../../controllers/AuthController';
 import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
 import { Router, Routes } from '../../Router/Router';
@@ -8,7 +9,7 @@ import { Block } from '../../utils/Block';
 import { State } from '../../utils/Store';
 import template from './ProfilePage.hbs';
 
-type Controllers = { router: Router };
+type Controllers = { router: Router; authController: AuthController };
 type FromStore = GetUserResponse | undefined;
 type OwnProps = {};
 type Props = Controllers & FromStore & OwnProps;
@@ -20,6 +21,8 @@ class ProfilePage extends Block<Props> {
 
   protected init(): void {
     const router = this.props.router;
+    const authController = this.props.authController;
+
     this.children.GoBackBtn = new ProfileGoBackBtn({
       events: {
         click() {
@@ -45,9 +48,9 @@ class ProfilePage extends Block<Props> {
       text: 'Выйти',
       styles: 'profile__link',
       events: {
-        click(e) {
+        async click(e) {
           e.preventDefault();
-          router.replace(Routes.SignUpPage);
+          await authController.logout();
         },
       },
     });
@@ -68,12 +71,12 @@ class ProfilePage extends Block<Props> {
   protected render(): DocumentFragment {
     return this.compile(template, {
       ...this.children,
-      email: 'bla@bla.bla',
-      login: 'bla88',
-      name: 'Bla',
-      surname: 'Bla',
+      email: this.props.email,
+      login: this.props.login,
+      name: this.props.first_name,
+      surname: this.props.second_name,
       chatName: 'Bla',
-      telephone: '777',
+      telephone: this.props.phone,
     });
   }
 }
@@ -84,6 +87,7 @@ const mapStateToProps = (state: State) => {
 
 const WithControllers = withControllers<OwnProps, Controllers>(ProfilePage, {
   router: new Router('#app'),
+  authController: new AuthController(),
 });
 
 export default withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);
