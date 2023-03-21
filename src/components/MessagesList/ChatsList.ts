@@ -4,31 +4,29 @@ import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
 import { State } from '../../utils/Store';
-import { Message, MessageProps } from '../Message/Message';
-import template from './MessagesList.hbs';
+import ChatsListItem, { MessageProps } from '../Message/ChatsListItem';
+import template from './ChatsList.hbs';
 
 type PropsFromStore = {
   messages?: MessageProps[];
-  selectedChatId?: string;
 };
 
 type Controllers = {
   chatsController: ChatsController;
 };
 
-type OwnProps = {};
+type OwnProps = Record<string, never>;
 
 type Props = PropsFromStore & OwnProps & Controllers;
 
-class MessagesList extends Block<Props> {
+class ChatsList extends Block<Props> {
   constructor(props: Props) {
     super(props);
   }
 
   protected async init() {
-    this.children.chats = this.createChats();
-
     await this.props.chatsController.getChats();
+    this.children.chats = this.createChats();
   }
 
   protected componentDidUpdate(oldProps: PropsFromStore, newProps: PropsFromStore): boolean {
@@ -36,14 +34,6 @@ class MessagesList extends Block<Props> {
       this.children.chats = this.createChats();
 
       return true;
-    }
-
-    if (oldProps.selectedChatId !== newProps.selectedChatId) {
-      const selectedMessage = (this.children.chats as Message[]).find(
-        c => c.props.chatId === newProps.selectedChatId
-      );
-
-      selectedMessage?.props.isMessageSelected = true;
     }
 
     return !isEqual(oldProps, newProps);
@@ -54,7 +44,18 @@ class MessagesList extends Block<Props> {
   }
 
   protected createChats() {
-    return this.props.messages?.map(m => new Message(m));
+    const chatsController = this.props.chatsController;
+    return this.props.messages?.map(
+      m =>
+        new ChatsListItem({
+          ...m,
+          events: {
+            click() {
+              chatsController.selectChat(m.chatId);
+            },
+          },
+        })
+    );
   }
 }
 
@@ -70,11 +71,10 @@ const mapStateToProps = (state: State): PropsFromStore => {
       isMessageSelected: false,
       chatId: c.id,
     })),
-    selectedChatId: state.chats?.selectedChat,
   };
 };
 
-const WithControllers = withControllers<OwnProps, Controllers>(MessagesList, {
+const WithControllers = withControllers<OwnProps, Controllers>(ChatsList, {
   chatsController: new ChatsController(),
 });
 

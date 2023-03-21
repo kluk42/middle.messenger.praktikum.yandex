@@ -94,7 +94,6 @@ export abstract class Block<P extends Record<string, unknown> = any> {
         }
       }
     });
-
     const html = template(contextAndStubs);
 
     const temp = document.createElement('template');

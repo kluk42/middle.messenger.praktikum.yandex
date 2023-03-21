@@ -5,8 +5,8 @@
 @use './components/Field/inputField.scss';
 @use './styles/layouts/main.scss';
 @use './components/AnchorLink/anchorLink.scss';
-@use './components/MessagesList/messagesList.scss';
-@use './components/Message/message.scss';
+@use './components/MessagesList/chatsList.scss';
+@use './components/Message/chatsListItem.scss';
 @use './components/Chat/chat.scss';
 @use './components/ChatMessage/chatMessage.scss';
 @use './components/ChatMessageInput/chatMessageInput.scss';

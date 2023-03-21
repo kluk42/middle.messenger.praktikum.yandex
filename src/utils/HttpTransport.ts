@@ -88,18 +88,9 @@ export class HTTPTransport {
       xhr.withCredentials = true;
       xhr.responseType = 'json';
 
-      xhr.onabort = () => {
-        debugger;
-        reject();
-      };
-      xhr.onerror = () => {
-        debugger;
-        reject('error');
-      };
-      xhr.ontimeout = () => {
-        debugger;
-        reject();
-      };
+      xhr.onabort = reject;
+      xhr.onerror = reject;
+      xhr.ontimeout = reject;
 
       if (method === METHODS.GET || !data) {
         xhr.send();

@@ -1,6 +1,6 @@
 import { Chat } from '../../components/Chat/Chat';
 import { ChatMessageInput } from '../../components/ChatMessageInput/ChatMessageInput';
-import MessagesList from '../../components/MessagesList/MessagesList';
+import MessagesList from '../../components/MessagesList/ChatsList';
 import { ChatsController } from '../../controllers/ChatsController';
 import { Router } from '../../Router/Router';
 import { Block } from '../../utils/Block';
