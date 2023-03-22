@@ -4,10 +4,7 @@ import template from './ChatSettings.hbs';
 
 type Props = {
   isOpen: boolean;
-  deleteChatBtn: Button;
-  addUserBtn: Button;
-  deleteUserBtn: Button;
-  changeAvatarBtn: Button;
+  buttons: Button[];
   openBtn: Button;
 };
 

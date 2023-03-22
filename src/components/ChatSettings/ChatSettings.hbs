@@ -2,17 +2,10 @@
   {{{openBtn}}}
 
   <ul {{#if isOpen}}class='chatSettings__list chatSettings__list_open'{{/if}} class="chatSettings__list">
-    <li class='chatSettings__item'>
-      {{{deleteChatBtn}}}
+    {{#each buttons}}
+      <li class='chatSettings__item'>
+      {{{this}}}
     </li>
-    <li class='chatSettings__item'>
-      {{{addUserBtn}}}
-    </li>
-    <li class='chatSettings__item'>
-      {{{deleteUserBtn}}}
-    </li>
-    <li class='chatSettings__item'>
-      {{{changeAvatarBtn}}}
-    </li>
+    {{/each}}
   </ul>
 </div>

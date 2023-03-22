@@ -1,19 +1,18 @@
+import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
+import { State } from '../../utils/Store';
+import isEqual from '../../utils/isEqual';
 import { Button, ButtonStyleTypes } from '../Button/Button';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
 import { ChatSettings } from '../ChatSettings/ChatSettings';
 import { DotsForButton } from '../ChatSettings/DotsForButton';
+import { getButtonsForNotSelectedChat, getButtonsForSelectedChat } from '../ChatSettings/utils';
 import { Field } from '../Field/Field';
 import { Form } from '../Form/Form';
 import { Input } from '../Input/Input';
 import { Modal } from '../Modal/Modal';
 import template from './Chat.hbs';
-
-type InternalProps = {
-  Modal: 'delete-chat' | 'add-user' | 'delete-user' | 'change-avatar' | null;
-  areSettingsOpen: boolean;
-};
 
 const modalSwitcher = (modalName: InternalProps['Modal'], onCloseModal: () => void) => {
   const loginInput = new Input({
@@ -61,6 +60,23 @@ const modalSwitcher = (modalName: InternalProps['Modal'], onCloseModal: () => vo
     formClass: 'modal__fileForm',
   });
 
+  const createChatInput = new Input({
+    name: 'chatName',
+    inputStyle: 'inputField__input',
+  });
+  const createChatField = new Field({
+    input: createChatInput,
+    label: 'Имя чата',
+    name: 'chatName',
+  });
+  const createChatForm = new Form<{ chatName: 'chatName' }>({
+    fields: [createChatField],
+    inputs: [createChatInput],
+    submit: values => console.log(values),
+    submitBtn: new Button({ label: 'Создать чат', stylesType: ButtonStyleTypes.Submit }),
+    formClass: 'modal__fileForm',
+  });
+
   switch (modalName) {
     case 'delete-chat':
       return new Modal({
@@ -90,54 +106,47 @@ const modalSwitcher = (modalName: InternalProps['Modal'], onCloseModal: () => vo
         content: [fileForm],
         onClose: onCloseModal,
       });
+    case 'create-chat':
+      return new Modal({
+        isOpen: true,
+        header: 'Создать чат',
+        content: [createChatForm],
+        onClose: onCloseModal,
+      });
     default:
       return undefined;
   }
 };
 
-type Props = {
+type InternalProps = {
+  Modal?: 'delete-chat' | 'add-user' | 'delete-user' | 'change-avatar' | 'create-chat' | null;
+  areSettingsOpen?: boolean;
+};
+
+type PropsFromStore = {
+  isChatSelected: boolean;
+};
+
+type OwnProps = {
   ChatMessageInput: ChatMessageInput;
   avatarSrc?: string;
   chatName?: string;
-  isChatSelected?: boolean;
   chatMessages?: ChatMessage[];
 };
 
-export class Chat extends Block<Props & InternalProps> {
-  constructor(props: Props) {
+type Props = OwnProps & PropsFromStore & InternalProps;
+type PropsFromConstructor = OwnProps & PropsFromStore;
+
+class Chat extends Block<Props> {
+  constructor(props: PropsFromConstructor) {
     super({ ...props, Modal: null, areSettingsOpen: false });
   }
 
   protected init(): void {
     this.children.ChatSettings = new ChatSettings({
       isOpen: false,
-      deleteChatBtn: new Button({
-        label: 'Удалить чат',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__actionBtn',
-        events: { click: () => (this.props.Modal = 'delete-chat') },
-      }),
-      addUserBtn: new Button({
-        label: 'Добавить пользователя',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__actionBtn',
-        events: { click: () => (this.props.Modal = 'add-user') },
-      }),
-      deleteUserBtn: new Button({
-        label: 'Удалить пользователя',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__actionBtn',
-        events: { click: () => (this.props.Modal = 'delete-user') },
-      }),
-      changeAvatarBtn: new Button({
-        label: 'Изменить аватар',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__actionBtn',
-        events: { click: () => (this.props.Modal = 'change-avatar') },
+      buttons: getButtonsForNotSelectedChat({
+        clickCreateChat: () => (this.props.Modal = 'create-chat'),
       }),
       openBtn: new Button({
         label: '',
@@ -146,9 +155,7 @@ export class Chat extends Block<Props & InternalProps> {
         styles: 'chatSettings__settingsBtn',
         child: new DotsForButton(),
         events: {
-          click: () => {
-            this.props.areSettingsOpen = !this.props.areSettingsOpen;
-          },
+          click: () => (this.props.areSettingsOpen = !this.props.areSettingsOpen),
         },
       }),
     });
@@ -158,7 +165,7 @@ export class Chat extends Block<Props & InternalProps> {
     this.props.Modal = null;
   }
 
-  protected componentDidUpdate(oldProps: InternalProps, newProps: InternalProps): boolean {
+  protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
     if (oldProps.Modal !== newProps.Modal) {
       this.props.areSettingsOpen = false;
 
@@ -170,15 +177,67 @@ export class Chat extends Block<Props & InternalProps> {
 
       this.children.Modal = modal;
     }
+
     if (oldProps.areSettingsOpen !== newProps.areSettingsOpen) {
       const chatSettings = this.children.ChatSettings as ChatSettings;
-      chatSettings.props.isOpen = newProps.areSettingsOpen;
+      chatSettings.props.isOpen = !!newProps.areSettingsOpen;
     }
 
-    return oldProps !== newProps;
+    if (oldProps.isChatSelected !== newProps.isChatSelected) {
+      if (newProps.isChatSelected) {
+        this.children.ChatSettings = new ChatSettings({
+          isOpen: false,
+          buttons: getButtonsForSelectedChat({
+            clickDeleteChat: () => {
+              this.props.Modal = 'delete-chat';
+            },
+            clickAddUser: () => (this.props.Modal = 'add-user'),
+            clickDeleteUser: () => (this.props.Modal = 'delete-user'),
+            clickEditAvatar: () => (this.props.Modal = 'change-avatar'),
+          }),
+          openBtn: new Button({
+            label: '',
+            noValidation: true,
+            stylesType: ButtonStyleTypes.Custom,
+            styles: 'chatSettings__settingsBtn',
+            child: new DotsForButton(),
+            events: {
+              click: () => (this.props.areSettingsOpen = !this.props.areSettingsOpen),
+            },
+          }),
+        });
+      } else {
+        this.children.ChatSettings = new ChatSettings({
+          isOpen: false,
+          buttons: getButtonsForNotSelectedChat({
+            clickCreateChat: () => (this.props.Modal = 'create-chat'),
+          }),
+          openBtn: new Button({
+            label: '',
+            noValidation: true,
+            stylesType: ButtonStyleTypes.Custom,
+            styles: 'chatSettings__settingsBtn',
+            child: new DotsForButton(),
+            events: {
+              click: () => (this.props.areSettingsOpen = !this.props.areSettingsOpen),
+            },
+          }),
+        });
+      }
+    }
+
+    return !isEqual(oldProps, newProps);
   }
 
   protected render(): DocumentFragment {
     return this.compile(template, this.props);
   }
 }
+
+const mapStateToProps = (state: State): PropsFromStore => {
+  return {
+    isChatSelected: state.chats?.selectedChatId !== undefined,
+  };
+};
+
+export default withStore<Props, PropsFromStore>(mapStateToProps)(Chat);
