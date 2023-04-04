@@ -8,7 +8,7 @@ export type State = {
     messages: { message: string }[];
   };
   user?: { data?: GetUserResponse };
-  chats?: { chatsList: GetChatsResponse; selectedChatId?: number };
+  chats?: { chatsList: GetChatsResponse; selectedChatId?: number; token?: string };
 };
 
 export enum StoreEvents {

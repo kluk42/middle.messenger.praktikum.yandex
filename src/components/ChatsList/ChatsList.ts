@@ -25,7 +25,7 @@ class ChatsList extends Block<Props> {
   }
 
   protected async init() {
-    await this.props.chatsController.getChats();
+    await this.props.chatsController.getChats({ limit: 50, offset: 0 });
     this.children.chats = this.createChats();
   }
 

@@ -1,39 +1,34 @@
-import { Indexed } from './types';
-
-const isObject = (value: unknown): value is Indexed => {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
+type Indexed<T = any> = {
+  [key in string]: T;
 };
 
 function merge(lhs: Indexed, rhs: Indexed): Indexed {
-  const keys = Object.keys(rhs);
-
-  keys.forEach(key => {
-    const rhsValue = rhs[key];
-    const lhsValue = lhs[key];
-
-    if (key in lhs && isObject(rhsValue) && isObject(lhsValue)) {
-      merge(lhsValue, rhsValue);
+  for (const p in rhs) {
+    if (!rhs.hasOwnProperty(p)) {
+      continue;
     }
 
-    if (!(key in lhs)) {
-      if (isObject(rhsValue)) {
-        lhs[key] = { ...rhsValue };
+    try {
+      if (rhs[p].constructor === Object) {
+        rhs[p] = merge(lhs[p] as Indexed, rhs[p] as Indexed);
       } else {
-        lhs[key] = rhsValue;
+        lhs[p] = rhs[p];
       }
+    } catch (e) {
+      lhs[p] = rhs[p];
     }
-  });
+  }
 
   return lhs;
 }
 
 function set(object: Indexed | unknown, path: string, value: unknown): Indexed | unknown {
-  if (typeof path !== 'string') {
-    throw new Error('path must be string');
+  if (typeof object !== 'object' || object === null) {
+    return object;
   }
 
-  if (!isObject(object)) {
-    return object;
+  if (typeof path !== 'string') {
+    throw new Error('path must be string');
   }
 
   const result = path.split('.').reduceRight<Indexed | unknown>(
@@ -42,10 +37,7 @@ function set(object: Indexed | unknown, path: string, value: unknown): Indexed |
     }),
     value as any
   );
-
-  merge(object, result as Indexed);
-
-  return object;
+  return merge(object as Indexed, result as Indexed);
 }
 
 export default set;

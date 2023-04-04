@@ -1,3 +1,5 @@
+import { ChatsController } from '../../controllers/ChatsController';
+import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
 import { State } from '../../utils/Store';
@@ -14,7 +16,11 @@ import { Input } from '../Input/Input';
 import { Modal } from '../Modal/Modal';
 import template from './Chat.hbs';
 
-const modalSwitcher = (modalName: InternalProps['Modal'], onCloseModal: () => void) => {
+const modalSwitcher = (
+  modalName: InternalProps['Modal'],
+  onCloseModal: () => void,
+  controller: ChatsController
+) => {
   const loginInput = new Input({
     name: 'login',
     inputStyle: 'inputField__input',
@@ -72,7 +78,10 @@ const modalSwitcher = (modalName: InternalProps['Modal'], onCloseModal: () => vo
   const createChatForm = new Form<{ chatName: 'chatName' }>({
     fields: [createChatField],
     inputs: [createChatInput],
-    submit: values => console.log(values),
+    submit: async ({ chatName }) => {
+      await controller.createChat(chatName);
+      onCloseModal();
+    },
     submitBtn: new Button({ label: 'Создать чат', stylesType: ButtonStyleTypes.Submit }),
     formClass: 'modal__fileForm',
   });
@@ -127,6 +136,10 @@ type PropsFromStore = {
   isChatSelected: boolean;
 };
 
+type Controllers = {
+  chatsController: ChatsController;
+};
+
 type OwnProps = {
   ChatMessageInput: ChatMessageInput;
   avatarSrc?: string;
@@ -134,8 +147,9 @@ type OwnProps = {
   chatMessages?: ChatMessage[];
 };
 
-type Props = OwnProps & PropsFromStore & InternalProps;
-type PropsFromConstructor = OwnProps & PropsFromStore;
+type Props = OwnProps & PropsFromStore & InternalProps & Controllers;
+type PropsFromConstructor = OwnProps & PropsFromStore & Controllers;
+type PropsWithoutControllers = OwnProps & PropsFromStore;
 
 class Chat extends Block<Props> {
   constructor(props: PropsFromConstructor) {
@@ -169,7 +183,11 @@ class Chat extends Block<Props> {
     if (oldProps.Modal !== newProps.Modal) {
       this.props.areSettingsOpen = false;
 
-      const modal = modalSwitcher(newProps.Modal, this.closeModal.bind(this));
+      const modal = modalSwitcher(
+        newProps.Modal,
+        this.closeModal.bind(this),
+        this.props.chatsController
+      );
 
       if (modal) {
         modal.dispatchComponentDidMount();
@@ -234,10 +252,14 @@ class Chat extends Block<Props> {
   }
 }
 
+const WithControllers = withControllers<Props, Controllers>(Chat, {
+  chatsController: new ChatsController(),
+});
+
 const mapStateToProps = (state: State): PropsFromStore => {
   return {
     isChatSelected: state.chats?.selectedChatId !== undefined,
   };
 };
 
-export default withStore<Props, PropsFromStore>(mapStateToProps)(Chat);
+export default withStore<PropsWithoutControllers, PropsFromStore>(mapStateToProps)(WithControllers);

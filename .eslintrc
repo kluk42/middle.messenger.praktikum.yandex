@@ -30,6 +30,7 @@
     "space-in-parens": "error",
     "no-multiple-empty-lines": "error",
     "prefer-const": "error",
+    "no-prototype-builtins": "off",
 
     // Typescript.
     "@typescript-eslint/adjacent-overload-signatures": "warn",
@@ -54,7 +55,7 @@
       "off",
       {
         "accessibility": "explicit"
-      },
+      }
     ],
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/interface-name-prefix": "off",
