@@ -12,7 +12,7 @@ export type GetOldMessagesDto = {
 };
 
 export class MessagesController {
-  private sockets: Map<number, WSTransport> = new Map();
+  private static sockets: Map<number, WSTransport> = new Map();
 
   async connect(id: number, token: string) {
     const userId = store.getState().user?.data?.id;
@@ -21,7 +21,7 @@ export class MessagesController {
 
     await transport.connect();
 
-    this.sockets.set(id, transport);
+    MessagesController.sockets.set(id, transport);
   }
 
   sendMessage(id: number, message: string) {
@@ -46,7 +46,7 @@ export class MessagesController {
   }
 
   private getTransport(id: number) {
-    const transport = this.sockets.get(id);
+    const transport = MessagesController.sockets.get(id);
 
     if (!transport) {
       throw new Error(`WS transport with id ${id} doesn't exist`);

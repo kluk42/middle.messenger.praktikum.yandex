@@ -1,4 +1,5 @@
 import { ChatsController } from '../../controllers/ChatsController';
+import { MessagesController } from '../../controllers/MessagesController';
 import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
@@ -9,10 +10,12 @@ import template from './ChatsList.hbs';
 
 type PropsFromStore = {
   messages?: MessageProps[];
+  chats?: { id: number; token: string }[];
 };
 
 type Controllers = {
   chatsController: ChatsController;
+  messagesController: MessagesController;
 };
 
 type OwnProps = Record<string, never>;
@@ -26,6 +29,11 @@ class ChatsList extends Block<Props> {
 
   protected async init() {
     await this.props.chatsController.getChats({ limit: 50, offset: 0 });
+
+    this.props.chats?.forEach(async chat => {
+      this.props.messagesController.connect(chat.id, chat.token);
+    });
+
     this.children.chats = this.createChats();
   }
 
@@ -45,6 +53,7 @@ class ChatsList extends Block<Props> {
 
   protected createChats() {
     const chatsController = this.props.chatsController;
+    const messagesController = this.props.messagesController;
     return this.props.messages?.map(
       m =>
         new ChatsListItem({
@@ -52,6 +61,7 @@ class ChatsList extends Block<Props> {
           events: {
             click() {
               chatsController.selectChat(m.chatId);
+              messagesController.fetchOldMessages(m.chatId, 0);
             },
           },
         })
@@ -71,11 +81,13 @@ const mapStateToProps = (state: State): PropsFromStore => {
       isMessageSelected: false,
       chatId: c.id,
     })),
+    chats: state.chats?.chatsList.map(c => ({ id: c.id, token: c.token })),
   };
 };
 
 const WithControllers = withControllers<OwnProps, Controllers>(ChatsList, {
   chatsController: new ChatsController(),
+  messagesController: new MessagesController(),
 });
 
 export default withStore<OwnProps, PropsFromStore>(mapStateToProps)(WithControllers);

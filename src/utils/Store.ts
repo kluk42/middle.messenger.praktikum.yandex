@@ -1,14 +1,34 @@
 import { GetUserResponse } from '../api/AuthApi';
-import { GetChatsResponse } from '../api/ChatsApi';
 import { EventBus } from './EventBus';
 import set from './set';
+
+export type ChatsList = {
+  id: number;
+  title: string;
+  avatar: string;
+  unread_count: number;
+  last_message?: {
+    user: {
+      first_name: string;
+      second_name: string;
+      avatar: string;
+      email: string;
+      login: string;
+      phone: string;
+    };
+    time: string;
+    content: string;
+  };
+  token: string;
+}[];
 
 export type State = {
   chat?: {
     messages: { message: string }[];
+    id: number;
   };
   user?: { data?: GetUserResponse };
-  chats?: { chatsList: GetChatsResponse; selectedChatId?: number; token?: string };
+  chats?: { chatsList: ChatsList; selectedChatId?: number };
 };
 
 export enum StoreEvents {

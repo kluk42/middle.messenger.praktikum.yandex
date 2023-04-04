@@ -1,4 +1,5 @@
 import { ChatsController } from '../../controllers/ChatsController';
+import { MessagesController } from '../../controllers/MessagesController';
 import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
@@ -10,138 +11,25 @@ import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
 import { ChatSettings } from '../ChatSettings/ChatSettings';
 import { DotsForButton } from '../ChatSettings/DotsForButton';
 import { getButtonsForNotSelectedChat, getButtonsForSelectedChat } from '../ChatSettings/utils';
-import { Field } from '../Field/Field';
-import { Form } from '../Form/Form';
-import { Input } from '../Input/Input';
-import { Modal } from '../Modal/Modal';
 import template from './Chat.hbs';
-
-const modalSwitcher = (
-  modalName: InternalProps['Modal'],
-  onCloseModal: () => void,
-  controller: ChatsController
-) => {
-  const loginInput = new Input({
-    name: 'login',
-    inputStyle: 'inputField__input',
-  });
-  const loginField = new Field({
-    input: loginInput,
-    label: 'Логин',
-    name: 'login',
-  });
-
-  const addUserForm = new Form<{ login: 'login' }>({
-    fields: [loginField],
-    inputs: [loginInput],
-    submitBtn: new Button({ label: 'Добавить пользователя', stylesType: ButtonStyleTypes.Submit }),
-    submit: values => console.log(values),
-  });
-
-  const deleteUserForm = new Form<{ login: 'login' }>({
-    fields: [loginField],
-    inputs: [loginInput],
-    submitBtn: new Button({ label: 'Удалить пользователя', stylesType: ButtonStyleTypes.Submit }),
-    submit: values => console.log(values),
-  });
-
-  const fileInput = new Input({
-    type: 'file',
-    name: 'avatar',
-    id: 'avatar',
-    inputStyle: 'modal__fileInput',
-  });
-  const fileField = new Field({
-    input: fileInput,
-    label: 'Выберите файл',
-    name: 'avatar',
-    labelStyle: 'modal__fileInputLabel',
-  });
-
-  const fileForm = new Form<{ avatar: 'avatar' }>({
-    fields: [fileField],
-    inputs: [fileInput],
-    submit: values => console.log(values),
-    submitBtn: new Button({ label: 'Поменять аватар', stylesType: ButtonStyleTypes.Submit }),
-    formClass: 'modal__fileForm',
-  });
-
-  const createChatInput = new Input({
-    name: 'chatName',
-    inputStyle: 'inputField__input',
-  });
-  const createChatField = new Field({
-    input: createChatInput,
-    label: 'Имя чата',
-    name: 'chatName',
-  });
-  const createChatForm = new Form<{ chatName: 'chatName' }>({
-    fields: [createChatField],
-    inputs: [createChatInput],
-    submit: async ({ chatName }) => {
-      await controller.createChat(chatName);
-      onCloseModal();
-    },
-    submitBtn: new Button({ label: 'Создать чат', stylesType: ButtonStyleTypes.Submit }),
-    formClass: 'modal__fileForm',
-  });
-
-  switch (modalName) {
-    case 'delete-chat':
-      return new Modal({
-        isOpen: true,
-        content: [new Button({ label: 'Подтвердить', stylesType: ButtonStyleTypes.Submit })],
-        header: 'Удалить?',
-        onClose: onCloseModal,
-      });
-    case 'add-user':
-      return new Modal({
-        isOpen: true,
-        header: 'Добавить пользователя',
-        content: [addUserForm],
-        onClose: onCloseModal,
-      });
-    case 'delete-user':
-      return new Modal({
-        isOpen: true,
-        header: 'Удалить пользователя',
-        content: [deleteUserForm],
-        onClose: onCloseModal,
-      });
-    case 'change-avatar':
-      return new Modal({
-        isOpen: true,
-        header: 'Поменять аватар',
-        content: [fileForm],
-        onClose: onCloseModal,
-      });
-    case 'create-chat':
-      return new Modal({
-        isOpen: true,
-        header: 'Создать чат',
-        content: [createChatForm],
-        onClose: onCloseModal,
-      });
-    default:
-      return undefined;
-  }
-};
+import { ModalNames, modalSwitcher } from './utils';
 
 type InternalProps = {
-  Modal?: 'delete-chat' | 'add-user' | 'delete-user' | 'change-avatar' | 'create-chat' | null;
+  Modal?: ModalNames | null;
   areSettingsOpen?: boolean;
 };
 
 type PropsFromStore = {
   isChatSelected: boolean;
+  chatId?: number;
 };
 
 type Controllers = {
   chatsController: ChatsController;
+  messagesController: MessagesController;
 };
 
 type OwnProps = {
-  ChatMessageInput: ChatMessageInput;
   avatarSrc?: string;
   chatName?: string;
   chatMessages?: ChatMessage[];
@@ -173,6 +61,14 @@ class Chat extends Block<Props> {
         },
       }),
     });
+
+    this.children.ChatMessageInput = new ChatMessageInput({
+      sendMessage: message => {
+        if (this.props.chatId) {
+          this.props.messagesController.sendMessage(this.props.chatId, message);
+        }
+      },
+    });
   }
 
   private closeModal() {
@@ -184,9 +80,9 @@ class Chat extends Block<Props> {
       this.props.areSettingsOpen = false;
 
       const modal = modalSwitcher(
-        newProps.Modal,
         this.closeModal.bind(this),
-        this.props.chatsController
+        this.props.chatsController,
+        newProps.Modal
       );
 
       if (modal) {
@@ -254,11 +150,13 @@ class Chat extends Block<Props> {
 
 const WithControllers = withControllers<Props, Controllers>(Chat, {
   chatsController: new ChatsController(),
+  messagesController: new MessagesController(),
 });
 
 const mapStateToProps = (state: State): PropsFromStore => {
   return {
     isChatSelected: state.chats?.selectedChatId !== undefined,
+    chatId: state.chats?.selectedChatId,
   };
 };
 

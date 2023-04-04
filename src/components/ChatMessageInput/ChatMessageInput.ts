@@ -28,7 +28,9 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
   [InputNames.Message]: v => validator(v, /(.|\s)*\S(.|\s)*/, 'Пустое поле недопустимо'),
 };
 
-type Props = Record<string, never>;
+type Props = {
+  sendMessage: (message: string) => void;
+};
 
 export class ChatMessageInput extends Block<Props> {
   constructor(props: Props) {
@@ -58,7 +60,9 @@ export class ChatMessageInput extends Block<Props> {
     this.children.Form = new Form<InputNamesType>({
       fields: [field],
       inputs: [input],
-      submit: values => console.log(values),
+      submit: ({ message }) => {
+        this.props.sendMessage(message);
+      },
       submitBtn: new Button({
         label: '→',
         stylesType: ButtonStyleTypes.Submit,

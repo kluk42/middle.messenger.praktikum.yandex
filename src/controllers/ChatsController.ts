@@ -1,29 +1,27 @@
 import { ChatsApi, GetChatsDto } from '../api/ChatsApi';
 import { Router } from '../Router/Router';
 import store from '../utils/Store';
-import { MessagesController } from './MessagesController';
 
 export class ChatsController {
   private router: Router;
   private api: ChatsApi;
-  private messagesController: MessagesController;
 
   constructor() {
     this.router = new Router('#app');
     this.api = new ChatsApi();
-    this.messagesController = new MessagesController();
   }
 
   async getChats(dto: GetChatsDto) {
     const chats = await this.api.read(dto);
+    const chatsWithTokens = await Promise.all(
+      chats.map(async chat => {
+        const { token } = await this.api.getToken(chat.id);
 
-    chats.forEach(async chat => {
-      const token = await this.getToken(chat.id);
+        return { ...chat, token };
+      })
+    );
 
-      this.messagesController.connect(chat.id, token);
-    });
-
-    store.set('chats.chatsList', chats);
+    store.set('chats.chatsList', chatsWithTokens);
   }
 
   async selectChat(id: number) {
