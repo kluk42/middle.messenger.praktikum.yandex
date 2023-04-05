@@ -5,11 +5,11 @@ import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
 import { State } from '../../utils/Store';
-import ChatsListItem, { MessageProps } from '../Message/ChatsListItem';
+import ChatsListItem, { ChatListItemProps } from '../Message/ChatsListItem';
 import template from './ChatsList.hbs';
 
 type PropsFromStore = {
-  messages?: MessageProps[];
+  lastChatMessages?: ChatListItemProps[];
   chats?: { id: number; token: string }[];
 };
 
@@ -38,7 +38,7 @@ class ChatsList extends Block<Props> {
   }
 
   protected componentDidUpdate(oldProps: PropsFromStore, newProps: PropsFromStore): boolean {
-    if (!isEqual(oldProps.messages, newProps.messages)) {
+    if (!isEqual(oldProps.lastChatMessages, newProps.lastChatMessages)) {
       this.children.chats = this.createChats();
 
       return true;
@@ -54,7 +54,7 @@ class ChatsList extends Block<Props> {
   protected createChats() {
     const chatsController = this.props.chatsController;
     const messagesController = this.props.messagesController;
-    return this.props.messages?.map(
+    return this.props.lastChatMessages?.map(
       m =>
         new ChatsListItem({
           ...m,
@@ -71,7 +71,7 @@ class ChatsList extends Block<Props> {
 
 const mapStateToProps = (state: State): PropsFromStore => {
   return {
-    messages: state.chats?.chatsList.map(c => ({
+    lastChatMessages: state.chats?.chatsList.map(c => ({
       chatName: c.title,
       message: c.last_message?.content,
       messageDate: c.last_message?.time && new Date(c.last_message?.time).toString(),

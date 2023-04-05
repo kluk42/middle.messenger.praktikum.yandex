@@ -1,5 +1,6 @@
 import { GetUserResponse } from '../api/AuthApi';
 import { EventBus } from './EventBus';
+import { Message } from './WSTransport';
 import set from './set';
 
 export type ChatsList = {
@@ -29,6 +30,7 @@ export type State = {
   };
   user?: { data?: GetUserResponse };
   chats?: { chatsList: ChatsList; selectedChatId?: number };
+  messages?: Record<number, Message[]>;
 };
 
 export enum StoreEvents {

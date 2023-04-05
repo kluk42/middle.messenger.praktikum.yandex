@@ -71,6 +71,7 @@ export class ChatMessageInput extends Block<Props> {
       }),
       formClass: 'newMessage__form',
       validationRules,
+      shouldCleanOnSubmit: true,
     });
   }
 

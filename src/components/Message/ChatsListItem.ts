@@ -8,7 +8,7 @@ type PropsFromStore = {
   selectedChatId?: number;
 };
 
-export type MessageProps = {
+export type ChatListItemProps = {
   chatName: string;
   messageDate?: string;
   message?: string;
@@ -26,9 +26,9 @@ type InternalState = {
   isMessageSelected: boolean;
 };
 
-type ExternalProps = MessageProps & PropsFromStore;
+type ExternalProps = ChatListItemProps & PropsFromStore;
 
-type Props = MessageProps & PropsFromStore & InternalState;
+type Props = ChatListItemProps & PropsFromStore & InternalState;
 
 class ChatsListItem extends Block<Props> {
   constructor(props: ExternalProps) {
@@ -56,4 +56,4 @@ const mapStateToProps = (state: State): PropsFromStore => {
   };
 };
 
-export default withStore<MessageProps, PropsFromStore>(mapStateToProps)(ChatsListItem);
+export default withStore<ChatListItemProps, PropsFromStore>(mapStateToProps)(ChatsListItem);

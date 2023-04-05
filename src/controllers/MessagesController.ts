@@ -1,5 +1,5 @@
 import store from '../utils/Store';
-import { WSTransport } from '../utils/WSTransport';
+import { Message, WSTransport, WSTransportEvents } from '../utils/WSTransport';
 
 export type ChatMessageDto = {
   content: string;
@@ -12,7 +12,12 @@ export type GetOldMessagesDto = {
 };
 
 export class MessagesController {
-  private static sockets: Map<number, WSTransport> = new Map();
+  private sockets: Map<number, WSTransport> = new Map();
+  private static controller: MessagesController = new MessagesController();
+
+  constructor() {
+    return MessagesController.controller;
+  }
 
   async connect(id: number, token: string) {
     const userId = store.getState().user?.data?.id;
@@ -21,7 +26,11 @@ export class MessagesController {
 
     await transport.connect();
 
-    MessagesController.sockets.set(id, transport);
+    this.subscribe(transport, id);
+
+    this.sockets.set(id, transport);
+
+    this.fetchOldMessages(id, 0);
   }
 
   sendMessage(id: number, message: string) {
@@ -45,13 +54,41 @@ export class MessagesController {
     transport.send(dto);
   }
 
+  private onMessage(id: number, messages: Message | Message[]) {
+    const storeKey = `messages.${id}`;
+
+    if (Array.isArray(messages)) {
+      store.set(storeKey, messages.reverse());
+
+      return;
+    }
+
+    const allOldMessages = store.getState().messages;
+
+    if (allOldMessages) {
+      const oldMessages = allOldMessages[id];
+
+      if (!oldMessages) {
+        store.set(storeKey, [messages]);
+
+        return;
+      }
+
+      store.set(storeKey, [...oldMessages, messages]);
+    }
+  }
+
   private getTransport(id: number) {
-    const transport = MessagesController.sockets.get(id);
+    const transport = this.sockets.get(id);
 
     if (!transport) {
       throw new Error(`WS transport with id ${id} doesn't exist`);
     }
 
     return transport;
+  }
+
+  private subscribe(transport: WSTransport, id: number) {
+    transport.on(WSTransportEvents.Message, message => this.onMessage(id, message));
   }
 }

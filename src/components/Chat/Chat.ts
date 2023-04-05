@@ -4,6 +4,7 @@ import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
 import { State } from '../../utils/Store';
+import { Message } from '../../utils/WSTransport';
 import isEqual from '../../utils/isEqual';
 import { Button, ButtonStyleTypes } from '../Button/Button';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
@@ -22,6 +23,8 @@ type InternalProps = {
 type PropsFromStore = {
   isChatSelected: boolean;
   chatId?: number;
+  chatMessages?: Message[];
+  userId?: number;
 };
 
 type Controllers = {
@@ -32,7 +35,6 @@ type Controllers = {
 type OwnProps = {
   avatarSrc?: string;
   chatName?: string;
-  chatMessages?: ChatMessage[];
 };
 
 type Props = OwnProps & PropsFromStore & InternalProps & Controllers;
@@ -120,6 +122,8 @@ class Chat extends Block<Props> {
             },
           }),
         });
+
+        this.renderMessages();
       } else {
         this.children.ChatSettings = new ChatSettings({
           isOpen: false,
@@ -140,7 +144,27 @@ class Chat extends Block<Props> {
       }
     }
 
+    if (
+      oldProps.chatMessages &&
+      newProps.chatMessages &&
+      !isEqual(oldProps.chatMessages, newProps.chatMessages)
+    ) {
+      this.renderMessages();
+    }
+
     return !isEqual(oldProps, newProps);
+  }
+
+  private renderMessages() {
+    this.children.chatMessages = this.props.chatMessages?.map(message => {
+      const messageDate = new Date(message.time);
+      const messageTime = `${messageDate.getHours()}:${messageDate.getMinutes()}`;
+      return new ChatMessage({
+        isMessageSent: message.user_id === this.props.userId,
+        messageTime,
+        textMessage: message.content,
+      });
+    });
   }
 
   protected render(): DocumentFragment {
@@ -154,9 +178,13 @@ const WithControllers = withControllers<Props, Controllers>(Chat, {
 });
 
 const mapStateToProps = (state: State): PropsFromStore => {
+  const chatId = state.chats?.selectedChatId;
+
   return {
     isChatSelected: state.chats?.selectedChatId !== undefined,
-    chatId: state.chats?.selectedChatId,
+    chatId: chatId,
+    chatMessages: chatId !== undefined ? state.messages && [...state.messages[chatId]] : [],
+    userId: state.user?.data?.id,
   };
 };
 

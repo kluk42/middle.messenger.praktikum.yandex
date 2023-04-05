@@ -14,6 +14,7 @@ export type Props<InputNames extends EventNamesType> = {
   validationRules?: {
     [K in MapType<InputNames>]: (value: string) => string | null;
   };
+  shouldCleanOnSubmit?: boolean;
 };
 
 export class Form<InputNames extends EventNamesType> extends Block<
@@ -62,6 +63,10 @@ export class Form<InputNames extends EventNamesType> extends Block<
         }
 
         this.props.submit(this.getValues());
+
+        if (this.props.shouldCleanOnSubmit) {
+          this.cleanValues();
+        }
       },
     };
 
@@ -131,6 +136,14 @@ export class Form<InputNames extends EventNamesType> extends Block<
         inputField.props.errorText = '';
       }
     }
+  }
+
+  private cleanValues() {
+    const inputs = this.children.inputs as Input[];
+
+    inputs.forEach(input => {
+      input.props.value = '';
+    });
   }
 
   protected render(): DocumentFragment {

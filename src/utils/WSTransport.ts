@@ -14,11 +14,30 @@ type EventNamesType = {
   Close: 'close';
 };
 
+export type Message = {
+  chat_id: number;
+  time: string;
+  type: string;
+  user_id: number;
+  content: string;
+  file?: {
+    id: number;
+    user_id: number;
+    path: string;
+    filename: string;
+    content_type: string;
+    content_size: number;
+    upload_date: string;
+  };
+};
+
+type DataType = Message | Message[] | { type: 'ping' } | { type: 'pong' };
+
 type EventArguments = {
-  [WSTransportEvents.Message]: [unknown];
+  [WSTransportEvents.Message]: [Message | Message[]];
   [WSTransportEvents.Error]: [any];
-  [WSTransportEvents.Close]: [undefined];
-  [WSTransportEvents.Connected]: [undefined];
+  [WSTransportEvents.Close]: [];
+  [WSTransportEvents.Connected]: [];
 };
 
 export class WSTransport extends EventBus<EventNamesType, EventArguments> {
@@ -32,6 +51,8 @@ export class WSTransport extends EventBus<EventNamesType, EventArguments> {
   connect(): Promise<void> {
     this.socket = new WebSocket(this.url);
 
+    this.subscribe(this.socket);
+
     return new Promise(resolve => {
       this.socket?.addEventListener('open', () => resolve());
     });
@@ -43,5 +64,28 @@ export class WSTransport extends EventBus<EventNamesType, EventArguments> {
     }
 
     this.socket.send(JSON.stringify(data));
+  }
+
+  private subscribe(socket: WebSocket) {
+    socket.addEventListener('open', () => {
+      this.emit(WSTransportEvents.Connected);
+    });
+    socket.addEventListener('close', () => {
+      this.emit(WSTransportEvents.Close);
+    });
+
+    socket.addEventListener('error', e => {
+      this.emit(WSTransportEvents.Error, e);
+    });
+
+    socket.addEventListener('message', (message: { data: string }) => {
+      const data = JSON.parse(message.data) as DataType;
+
+      if (!Array.isArray(data) && data.type && (data.type === 'ping' || data.type === 'pong')) {
+        return;
+      }
+
+      this.emit(WSTransportEvents.Message, data as Message | Message[]);
+    });
   }
 }
