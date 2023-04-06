@@ -42,7 +42,7 @@ type EventArguments = {
 
 export class WSTransport extends EventBus<EventNamesType, EventArguments> {
   private socket: WebSocket | null = null;
-  private pingInterval: number = 0;
+  private pingInterval?: NodeJS.Timer;
 
   constructor(private url: string) {
     super();
@@ -54,7 +54,11 @@ export class WSTransport extends EventBus<EventNamesType, EventArguments> {
     this.subscribe(this.socket);
 
     return new Promise(resolve => {
-      this.socket?.addEventListener('open', () => resolve());
+      this.on(WSTransportEvents.Connected, () => {
+        this.setupPing();
+
+        resolve();
+      });
     });
   }
 
@@ -64,6 +68,16 @@ export class WSTransport extends EventBus<EventNamesType, EventArguments> {
     }
 
     this.socket.send(JSON.stringify(data));
+  }
+
+  public close() {
+    this.socket?.close();
+  }
+
+  private setupPing() {
+    this.pingInterval = setInterval(() => this.send({ type: 'ping' }), 5000);
+
+    this.on(WSTransportEvents.Close, () => clearInterval(this.pingInterval));
   }
 
   private subscribe(socket: WebSocket) {

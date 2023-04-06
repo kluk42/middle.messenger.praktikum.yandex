@@ -1,6 +1,7 @@
 import { AuthAPI, SignInBody, SignUpBody } from '../api/AuthApi';
 import { Router, Routes } from '../Router/Router';
 import store from '../utils/Store';
+import { MessagesController } from './MessagesController';
 
 export class AuthController {
   private api: AuthAPI;
@@ -44,6 +45,8 @@ export class AuthController {
   }
   async logout() {
     try {
+      MessagesController.closeAll();
+
       await this.api.logout();
 
       this.router.replace(Routes.SignUpPage);

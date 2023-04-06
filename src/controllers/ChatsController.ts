@@ -15,7 +15,7 @@ export class ChatsController {
     const chats = await this.api.read(dto);
     const chatsWithTokens = await Promise.all(
       chats.map(async chat => {
-        const { token } = await this.api.getToken(chat.id);
+        const token = await this.getToken(chat.id);
 
         return { ...chat, token };
       })

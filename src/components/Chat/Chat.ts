@@ -144,11 +144,7 @@ class Chat extends Block<Props> {
       }
     }
 
-    if (
-      oldProps.chatMessages &&
-      newProps.chatMessages &&
-      !isEqual(oldProps.chatMessages, newProps.chatMessages)
-    ) {
+    if (!isEqual(oldProps.chatMessages, newProps.chatMessages)) {
       this.renderMessages();
     }
 

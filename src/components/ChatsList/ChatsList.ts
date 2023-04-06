@@ -5,12 +5,14 @@ import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
 import { State } from '../../utils/Store';
+import { Message } from '../../utils/WSTransport';
 import ChatsListItem, { ChatListItemProps } from '../Message/ChatsListItem';
 import template from './ChatsList.hbs';
 
 type PropsFromStore = {
   lastChatMessages?: ChatListItemProps[];
   chats?: { id: number; token: string }[];
+  messages?: Record<number, Message[]>;
 };
 
 type Controllers = {
@@ -54,14 +56,25 @@ class ChatsList extends Block<Props> {
   protected createChats() {
     const chatsController = this.props.chatsController;
     const messagesController = this.props.messagesController;
+
+    const props = this.props;
+
     return this.props.lastChatMessages?.map(
       m =>
         new ChatsListItem({
           ...m,
           events: {
-            click() {
+            async click() {
               chatsController.selectChat(m.chatId);
-              messagesController.fetchOldMessages(m.chatId, 0);
+
+              const hasOldMessages =
+                !!props.messages && props.messages[m.chatId] && props.messages[m.chatId].length > 0;
+
+              if (hasOldMessages) {
+                return;
+              }
+
+              await messagesController.fetchOldMessages(m.chatId, 0);
             },
           },
         })
@@ -71,17 +84,20 @@ class ChatsList extends Block<Props> {
 
 const mapStateToProps = (state: State): PropsFromStore => {
   return {
-    lastChatMessages: state.chats?.chatsList.map(c => ({
-      chatName: c.title,
-      message: c.last_message?.content,
-      messageDate: c.last_message?.time && new Date(c.last_message?.time).toString(),
-      imgSrc: c.avatar,
-      unreadMessagesCount: c.unread_count,
-      isMessageReceived: c.unread_count === 0,
-      isMessageSelected: false,
-      chatId: c.id,
-    })),
+    lastChatMessages: state.chats?.chatsList.map(c => {
+      return {
+        chatName: c.title,
+        message: c.last_message?.content,
+        messageDate: c.last_message?.time && new Date(c.last_message?.time).toString(),
+        imgSrc: c.avatar,
+        unreadMessagesCount: c.unread_count,
+        isMessageReceived: c.unread_count === 0,
+        isMessageSelected: false,
+        chatId: c.id,
+      };
+    }),
     chats: state.chats?.chatsList.map(c => ({ id: c.id, token: c.token })),
+    messages: state.messages,
   };
 };
 
