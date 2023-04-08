@@ -81,17 +81,20 @@ class Chat extends Block<Props> {
     if (oldProps.Modal !== newProps.Modal) {
       this.props.areSettingsOpen = false;
 
-      const modal = modalSwitcher(
-        this.closeModal.bind(this),
-        this.props.chatsController,
-        newProps.Modal
-      );
+      if (this.props.chatId) {
+        const modal = modalSwitcher(
+          this.closeModal.bind(this),
+          this.props.chatId,
+          this.props.chatsController,
+          newProps.Modal
+        );
 
-      if (modal) {
-        modal.dispatchComponentDidMount();
+        if (modal) {
+          modal.dispatchComponentDidMount();
+        }
+
+        this.children.Modal = modal;
       }
-
-      this.children.Modal = modal;
     }
 
     if (oldProps.areSettingsOpen !== newProps.areSettingsOpen) {
@@ -104,9 +107,7 @@ class Chat extends Block<Props> {
         this.children.ChatSettings = new ChatSettings({
           isOpen: false,
           buttons: getButtonsForSelectedChat({
-            clickDeleteChat: () => {
-              this.props.Modal = 'delete-chat';
-            },
+            clickDeleteChat: () => (this.props.Modal = 'delete-chat'),
             clickAddUser: () => (this.props.Modal = 'add-user'),
             clickDeleteUser: () => (this.props.Modal = 'delete-user'),
             clickEditAvatar: () => (this.props.Modal = 'change-avatar'),

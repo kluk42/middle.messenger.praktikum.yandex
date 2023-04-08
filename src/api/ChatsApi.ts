@@ -58,6 +58,11 @@ export type GetTokenDto = {
 
 export type GetTokenResponse = { token: string };
 
+export type AddUserDto = {
+  users: number[];
+  chatId: number;
+};
+
 export class ChatsApi extends BaseAPI {
   constructor() {
     super('/chats');
@@ -86,6 +91,22 @@ export class ChatsApi extends BaseAPI {
       method: METHODS.DELETE,
       retries: 1,
       data,
+    });
+  }
+
+  public addUser(data: AddUserDto) {
+    return fetchWithRetry<Record<string, never>>(this.http, '/users', {
+      method: METHODS.PUT,
+      retries: 1,
+      data,
+    });
+  }
+
+  public deleteUser(userId: number, chatId: number) {
+    return fetchWithRetry<Record<string, never>>(this.http, '/users', {
+      method: METHODS.DELETE,
+      retries: 1,
+      data: { users: [userId], chatId },
     });
   }
 

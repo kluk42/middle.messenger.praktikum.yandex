@@ -1,18 +1,21 @@
 import { ChatsApi, GetChatsDto } from '../api/ChatsApi';
+import { UsersApi } from '../api/UsersApi';
 import { Router } from '../Router/Router';
 import store from '../utils/Store';
 
 export class ChatsController {
   private router: Router;
-  private api: ChatsApi;
+  private chatsApi: ChatsApi;
+  private usersApi: UsersApi;
 
   constructor() {
     this.router = new Router('#app');
-    this.api = new ChatsApi();
+    this.chatsApi = new ChatsApi();
+    this.usersApi = new UsersApi();
   }
 
   async getChats(dto: GetChatsDto) {
-    const chats = await this.api.read(dto);
+    const chats = await this.chatsApi.read(dto);
     const chatsWithTokens = await Promise.all(
       chats.map(async chat => {
         const token = await this.getToken(chat.id);
@@ -29,14 +32,24 @@ export class ChatsController {
   }
 
   async createChat(chatName: string) {
-    await this.api.create({ title: chatName });
+    await this.chatsApi.create({ title: chatName });
 
     await this.getChats({ limit: 50, offset: 0 });
   }
 
   async getToken(chatId: number) {
-    const response = await this.api.getToken(chatId);
+    const response = await this.chatsApi.getToken(chatId);
 
     return response.token;
+  }
+
+  async addUser(userName: string, chatId: number) {
+    const searchResponse = await this.usersApi.searchUser(userName);
+    await this.chatsApi.addUser({ chatId, users: [searchResponse[0].id] });
+  }
+
+  async deleteUser(userName: string, chatId: number) {
+    const searchResponse = await this.usersApi.searchUser(userName);
+    await this.chatsApi.deleteUser(searchResponse[0].id, chatId);
   }
 }

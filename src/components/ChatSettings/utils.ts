@@ -23,7 +23,7 @@ export const getButtonsForSelectedChat = ({
     noValidation: true,
     stylesType: ButtonStyleTypes.Custom,
     styles: 'chatSettings__actionBtn',
-    events: { click: () => clickAddUser },
+    events: { click: clickAddUser },
   }),
   new Button({
     label: 'Удалить пользователя',

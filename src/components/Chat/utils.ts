@@ -14,6 +14,7 @@ export type ModalNames =
 
 export const modalSwitcher = (
   onCloseModal: () => void,
+  chatId: number,
   controller: ChatsController,
   modalName?: ModalNames | null
 ) => {
@@ -31,14 +32,20 @@ export const modalSwitcher = (
     fields: [loginField],
     inputs: [loginInput],
     submitBtn: new Button({ label: 'Добавить пользователя', stylesType: ButtonStyleTypes.Submit }),
-    submit: values => console.log(values),
+    submit: async ({ login }) => {
+      await controller.addUser(login, chatId);
+      onCloseModal();
+    },
   });
 
   const deleteUserForm = new Form<{ login: 'login' }>({
     fields: [loginField],
     inputs: [loginInput],
     submitBtn: new Button({ label: 'Удалить пользователя', stylesType: ButtonStyleTypes.Submit }),
-    submit: values => console.log(values),
+    submit: async ({ login }) => {
+      await controller.deleteUser(login, chatId);
+      onCloseModal();
+    },
   });
 
   const fileInput = new Input({
