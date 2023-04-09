@@ -2,10 +2,12 @@ import { ChatsController } from '../../controllers/ChatsController';
 import { MessagesController } from '../../controllers/MessagesController';
 import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
+import { Router, Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import isEqual from '../../utils/isEqual';
 import { State } from '../../utils/Store';
 import { Message } from '../../utils/WSTransport';
+import { AnchorLink } from '../AnchorLink/AnchorLink';
 import ChatsListItem, { ChatListItemProps } from '../Message/ChatsListItem';
 import template from './ChatsList.hbs';
 
@@ -18,6 +20,7 @@ type PropsFromStore = {
 type Controllers = {
   chatsController: ChatsController;
   messagesController: MessagesController;
+  router: Router;
 };
 
 type OwnProps = Record<string, never>;
@@ -30,13 +33,23 @@ class ChatsList extends Block<Props> {
   }
 
   protected async init() {
+    this.children.ProfileLink = new AnchorLink({
+      href: '/',
+      text: 'Профиль >',
+      events: {
+        click: (e: Event) => {
+          e.preventDefault();
+          this.props.router.go(Routes.Profile);
+        },
+      },
+      styles: 'messages__profileLink',
+    });
+
     await this.props.chatsController.getChats({ limit: 50, offset: 0 });
 
     this.props.chats?.forEach(async chat => {
-      this.props.messagesController.connect(chat.id, chat.token);
+      await this.props.messagesController.connect(chat.id, chat.token);
     });
-
-    this.children.chats = this.createChats();
   }
 
   protected componentDidUpdate(oldProps: PropsFromStore, newProps: PropsFromStore): boolean {
@@ -104,6 +117,7 @@ const mapStateToProps = (state: State): PropsFromStore => {
 const WithControllers = withControllers<OwnProps, Controllers>(ChatsList, {
   chatsController: new ChatsController(),
   messagesController: new MessagesController(),
+  router: new Router('#app'),
 });
 
 export default withStore<OwnProps, PropsFromStore>(mapStateToProps)(WithControllers);

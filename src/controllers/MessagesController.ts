@@ -32,7 +32,7 @@ export class MessagesController {
       return;
     }
 
-    const userId = store.getState().user?.data?.id;
+    const userId = store.getState().user?.id;
 
     const transport = new WSTransport(`wss://ya-praktikum.tech/ws/chats/${userId}/${id}/${token}`);
 

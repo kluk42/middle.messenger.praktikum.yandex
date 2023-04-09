@@ -37,19 +37,19 @@ export class AuthController {
     try {
       const user = await this.api.getUser();
 
-      store.set('user.data', user);
+      store.set('user', user);
     } catch (error) {
       this.router.replace(Routes.SignInPage);
       console.error(error);
     }
   }
-  async logout() {
+  async logout(redirectPath?: Routes) {
     try {
       MessagesController.closeAll();
 
       await this.api.logout();
 
-      this.router.replace(Routes.SignUpPage);
+      this.router.replace(redirectPath ?? Routes.SignUpPage);
 
       store.set('user', undefined);
     } catch (error) {

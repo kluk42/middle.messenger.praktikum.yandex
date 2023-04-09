@@ -1,4 +1,3 @@
-import { GetUserResponse } from '../api/AuthApi';
 import { EventBus } from './EventBus';
 import { Message } from './WSTransport';
 import set from './set';
@@ -28,7 +27,16 @@ export type State = {
     messages: { message: string }[];
     id: number;
   };
-  user?: { data?: GetUserResponse };
+  user?: {
+    id: number;
+    first_name: string;
+    second_name: string;
+    display_name: string;
+    login: string;
+    email: string;
+    phone: number;
+    avatar: string;
+  };
   chats?: { chatsList: ChatsList; selectedChatId?: number };
   messages?: Record<number, Message[]>;
 };

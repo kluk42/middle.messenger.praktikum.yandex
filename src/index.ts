@@ -1,7 +1,7 @@
 import { AuthController } from './controllers/AuthController';
 import ChatPage from './pages/ChatPage/ChatPage';
-import { EditPasswordPage } from './pages/EditPasswordPage/EditPasswordPage';
-import { EditProfilePage } from './pages/EditProfilePage/EditProfilePage';
+import EditPasswordPage from './pages/EditPasswordPage/EditPasswordPage';
+import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
 import { ErrorPage } from './pages/ErrorPage/ErrorPage';
 import { HomePage } from './pages/HomePage/HomePage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';

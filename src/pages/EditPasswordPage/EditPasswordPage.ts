@@ -4,7 +4,10 @@ import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
 import { InputName, ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
-import Router from '../../Router/Router';
+import { AuthController } from '../../controllers/AuthController';
+import { ProfileController } from '../../controllers/ProfileController';
+import { withControllers } from '../../hocs/withControllers';
+import Router, { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './EditPasswordPage.hbs';
 
@@ -60,9 +63,18 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
     ),
 };
 
-export class EditPasswordPage extends Block<Record<string, never>> {
-  constructor() {
-    super({});
+type Controllers = {
+  profileController: ProfileController;
+  authController: AuthController;
+};
+
+type OwnProps = Record<string, never>;
+
+type Props = Controllers & OwnProps;
+
+class EditPasswordPage extends Block<Props> {
+  constructor(props: Props) {
+    super(props);
   }
 
   protected init(): void {
@@ -100,8 +112,8 @@ export class EditPasswordPage extends Block<Record<string, never>> {
     });
     const newPasswordInput = new Input({
       inputStyle: 'editProfileForm__input',
-      type: 'text',
-      name: 'second_name',
+      type: 'password',
+      name: InputNames.NewPassword,
     });
     const newPasswordAgainInput = new Input({
       inputStyle: 'editProfileForm__input',
@@ -138,19 +150,31 @@ export class EditPasswordPage extends Block<Record<string, never>> {
 
     const fields: Field[] = [oldPasswordField, newPasswordField, newPasswordAgainField];
 
+    const submitBtn = new Button({
+      label: 'Сохранить',
+      stylesType: ButtonStyleTypes.Submit,
+      styles: 'authForm__signUpBtn',
+    });
+
     this.children.form = new Form<InputNamesType>({
       fields,
-      submitBtn: new Button({
-        label: 'Сохранить',
-        stylesType: ButtonStyleTypes.Submit,
-        styles: 'authForm__signUpBtn',
-      }),
-      submit: values => {
-        console.log(values);
+      submitBtn,
+      submit: async ({ newPassword, oldPassword }) => {
+        try {
+          await this.props.profileController.editPassword(oldPassword, newPassword);
+
+          this.props.authController.logout(Routes.SignInPage);
+        } catch (error) {
+          const e = error as any;
+          const reason: string = e.reason;
+
+          submitBtn.props.actionError = reason;
+        }
       },
       inputs,
       validationRules,
       formClass: 'editProfileForm',
+      shouldCleanOnSubmit: true,
     });
   }
 
@@ -158,3 +182,8 @@ export class EditPasswordPage extends Block<Record<string, never>> {
     return this.compile(template, this.children);
   }
 }
+
+export default withControllers<OwnProps, Controllers>(EditPasswordPage, {
+  profileController: new ProfileController(),
+  authController: new AuthController(),
+});

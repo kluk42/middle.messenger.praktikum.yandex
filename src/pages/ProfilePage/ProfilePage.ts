@@ -82,7 +82,7 @@ class ProfilePage extends Block<Props> {
 }
 
 const mapStateToProps = (state: State) => {
-  return state.user?.data;
+  return state.user;
 };
 
 const WithControllers = withControllers<OwnProps, Controllers>(ProfilePage, {

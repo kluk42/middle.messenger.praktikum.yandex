@@ -206,7 +206,7 @@ const WithControllers = withControllers<OwnProps, { auth: AuthController; router
 );
 
 const mapStateToProps = (state: State): FromStore => {
-  return state.user?.data;
+  return state.user;
 };
 
 const WithStore = withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);

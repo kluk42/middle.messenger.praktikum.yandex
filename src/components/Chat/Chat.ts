@@ -184,7 +184,7 @@ const mapStateToProps = (state: State): PropsFromStore => {
       chatId !== undefined && state.messages && chatId in state.messages
         ? [...state.messages[chatId]]
         : [],
-    userId: state.user?.data?.id,
+    userId: state.user?.id,
   };
 };
 

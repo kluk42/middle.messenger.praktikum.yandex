@@ -1,15 +1,12 @@
 import { ChatsApi, GetChatsDto } from '../api/ChatsApi';
 import { UsersApi } from '../api/UsersApi';
-import { Router } from '../Router/Router';
 import store from '../utils/Store';
 
 export class ChatsController {
-  private router: Router;
   private chatsApi: ChatsApi;
   private usersApi: UsersApi;
 
   constructor() {
-    this.router = new Router('#app');
     this.chatsApi = new ChatsApi();
     this.usersApi = new UsersApi();
   }
