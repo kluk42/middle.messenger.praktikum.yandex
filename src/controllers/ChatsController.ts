@@ -50,6 +50,7 @@ export class ChatsController {
 
   async deleteUser(userName: string, chatId: number) {
     const searchResponse = await this.usersApi.searchUser(userName);
+
     await this.chatsApi.deleteUser(searchResponse[0].id, chatId);
   }
 }

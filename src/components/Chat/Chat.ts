@@ -180,7 +180,10 @@ const mapStateToProps = (state: State): PropsFromStore => {
   return {
     isChatSelected: state.chats?.selectedChatId !== undefined,
     chatId: chatId,
-    chatMessages: chatId !== undefined ? state.messages && [...state.messages[chatId]] : [],
+    chatMessages:
+      chatId !== undefined && state.messages && chatId in state.messages
+        ? [...state.messages[chatId]]
+        : [],
     userId: state.user?.data?.id,
   };
 };

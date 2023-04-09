@@ -50,7 +50,7 @@ export class HTTPTransport {
   delete<Response>(path: string, options: Omit<OptionsType, 'method' | 'retries'>) {
     return this.request<Response>(
       this.endpoint + path,
-      { ...options, method: METHODS.POST },
+      { ...options, method: METHODS.DELETE },
       options.timeout
     );
   }

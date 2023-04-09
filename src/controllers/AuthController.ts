@@ -28,7 +28,7 @@ export class AuthController {
 
       await this.getUser();
 
-      this.router.replace(Routes.Profile);
+      this.router.replace(Routes.Chat);
     } catch (error) {
       console.error(error);
     }
