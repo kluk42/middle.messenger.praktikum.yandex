@@ -85,15 +85,24 @@ class SignInPage extends Block<AllProps> {
 
     const fields: Field[] = [loginField, passwordField];
 
+    const submitBtn = new Button({
+      label: 'Войти',
+      stylesType: ButtonStyleTypes.Submit,
+      containerStyles: 'authForm__submitBtn',
+    });
+
     this.children.form = new Form<InputNamesType>({
       fields,
-      submitBtn: new Button({
-        label: 'Войти',
-        stylesType: ButtonStyleTypes.Submit,
-        containerStyles: 'authForm__submitBtn',
-      }),
+      submitBtn,
       submit: async values => {
-        await this.props.auth.signIn(values);
+        try {
+          await this.props.auth.signIn(values);
+        } catch (error) {
+          const e = error as any;
+          const reason: string = e.reason;
+
+          submitBtn.props.actionError = reason;
+        }
       },
       inputs,
       validationRules,

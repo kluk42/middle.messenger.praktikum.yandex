@@ -28,7 +28,6 @@ interface IRoute {
 }
 
 export enum Routes {
-  Home = '/',
   SignInPage = 'sign-in',
   SignUpPage = 'sign-up',
   Chat = 'chat',
@@ -132,16 +131,10 @@ export class Router implements IRouter {
       const target = event.currentTarget as Window;
       const pathName =
         target.location.pathname === '/'
-          ? Routes.Home
+          ? Routes.SignInPage
           : (trim(target.location.pathname, '/') as Routes);
       this.onRoute(pathName);
     };
-
-    const pathName =
-      window.location.pathname === '/'
-        ? Routes.Home
-        : (trim(window.location.pathname, '/') as Routes);
-    this.onRoute(pathName);
   }
 
   onRoute(pathname: Routes) {
@@ -176,9 +169,7 @@ export class Router implements IRouter {
   }
 
   replace(newRoute: Routes) {
-    if (this.currentRoute?.pathName) {
-      this.history.replaceState({}, '', this.currentRoute?.pathName);
-    }
+    this.history.replaceState({}, '', newRoute);
     this.onRoute(newRoute);
   }
 }

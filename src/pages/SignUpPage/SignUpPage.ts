@@ -164,15 +164,24 @@ class SignUpPage extends Block<AllProps> {
       passwordField,
     ];
 
+    const submitBtn = new Button({
+      label: 'Зарегистрироваться',
+      stylesType: ButtonStyleTypes.Submit,
+      styles: 'authForm__signUpBtn',
+    });
+
     this.children.form = new Form<InputNamesType>({
       fields,
-      submitBtn: new Button({
-        label: 'Зарегистрироваться',
-        stylesType: ButtonStyleTypes.Submit,
-        styles: 'authForm__signUpBtn',
-      }),
+      submitBtn,
       submit: async values => {
-        await this.props.auth.signUp(values);
+        try {
+          await this.props.auth.signUp(values);
+        } catch (error) {
+          const e = error as any;
+          const reason = e.reason;
+
+          submitBtn.props.actionError = reason;
+        }
       },
       inputs,
       validationRules,

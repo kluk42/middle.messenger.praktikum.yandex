@@ -156,25 +156,30 @@ class EditPasswordPage extends Block<Props> {
       styles: 'authForm__signUpBtn',
     });
 
+    const pageProps = this.props;
+
+    const submit = async function (
+      this: Form<InputNamesType>,
+      { newPassword, oldPassword }: { newPassword: string; oldPassword: string }
+    ) {
+      try {
+        await pageProps.profileController.editPassword(oldPassword, newPassword);
+        pageProps.authController.logout(Routes.SignInPage);
+      } catch (error) {
+        const e = error as any;
+        const reason: string = e.reason;
+
+        submitBtn.props.actionError = reason;
+      }
+    };
+
     this.children.form = new Form<InputNamesType>({
       fields,
       submitBtn,
-      submit: async ({ newPassword, oldPassword }) => {
-        try {
-          await this.props.profileController.editPassword(oldPassword, newPassword);
-
-          this.props.authController.logout(Routes.SignInPage);
-        } catch (error) {
-          const e = error as any;
-          const reason: string = e.reason;
-
-          submitBtn.props.actionError = reason;
-        }
-      },
+      submit,
       inputs,
       validationRules,
       formClass: 'editProfileForm',
-      shouldCleanOnSubmit: true,
     });
   }
 

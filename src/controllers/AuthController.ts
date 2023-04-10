@@ -11,33 +11,30 @@ export class AuthController {
     this.api = new AuthAPI();
     this.router = new Router('#app');
   }
+
   async signUp(data: SignUpBody) {
-    try {
-      await this.api.signup(data);
+    await this.api.signup(data);
 
-      await this.getUser();
+    await this.getUser();
 
-      this.router.replace(Routes.Profile);
-    } catch (error) {
-      console.error(error);
-    }
+    this.router.replace(Routes.Profile);
   }
+
   async signIn(data: SignInBody) {
-    try {
-      await this.api.signin(data);
+    await this.api.signin(data);
 
-      await this.getUser();
+    await this.getUser();
 
-      this.router.replace(Routes.Chat);
-    } catch (error) {
-      console.error(error);
-    }
+    this.router.replace(Routes.Chat);
   }
+
   async getUser() {
     try {
       const user = await this.api.getUser();
 
       store.set('user', user);
+
+      this.router.replace(Routes.Chat);
     } catch (error) {
       this.router.replace(Routes.SignInPage);
       console.error(error);
