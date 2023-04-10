@@ -1,4 +1,4 @@
-import { EditProfileDto, UsersApi } from '../api/UsersApi';
+import { EditAvatarDto, EditProfileDto, UsersApi } from '../api/UsersApi';
 import store from '../utils/Store';
 
 export class ProfileController {
@@ -16,5 +16,11 @@ export class ProfileController {
 
   editPassword(oldPassword: string, newPassword: string) {
     return this.usersApi.editPassword(oldPassword, newPassword);
+  }
+
+  async editAvatar(data: EditAvatarDto) {
+    const newUserData = await this.usersApi.editAvatar(data);
+
+    store.set('user', newUserData);
   }
 }

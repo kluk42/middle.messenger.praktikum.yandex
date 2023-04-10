@@ -33,6 +33,10 @@ export type EditProfileDto = {
   phone: string;
 };
 
+export type EditAvatarDto = {
+  avatar: FormData;
+};
+
 export class UsersApi extends BaseAPI {
   constructor() {
     super('/user');
@@ -63,6 +67,14 @@ export class UsersApi extends BaseAPI {
       method: METHODS.PUT,
       retries: 1,
       data: { oldPassword, newPassword },
+    });
+  }
+
+  editAvatar(data: EditAvatarDto) {
+    return fetchWithRetry<EditProfileResponse>(this.http, '/profile/avatar', {
+      method: METHODS.PUT,
+      retries: 1,
+      data,
     });
   }
 }
