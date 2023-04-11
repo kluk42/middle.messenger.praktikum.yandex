@@ -1,9 +1,9 @@
-import { ChatsController } from '../../controllers/ChatsController';
-import { Button, ButtonStyleTypes } from '../Button/Button';
-import { Field } from '../Field/Field';
-import { Form } from '../Form/Form';
-import { Input } from '../Input/Input';
-import { Modal } from '../Modal/Modal';
+import { Button, ButtonStyleTypes } from '../components/Button/Button';
+import { Field } from '../components/Field/Field';
+import { Form } from '../components/Form/Form';
+import { Input } from '../components/Input/Input';
+import { Modal } from '../components/Modal/Modal';
+import { ChatsController } from '../controllers/ChatsController';
 
 export type ModalNames =
   | 'delete-chat'
@@ -12,7 +12,7 @@ export type ModalNames =
   | 'change-avatar'
   | 'create-chat';
 
-export const modalSwitcher = (
+export const modalsSwitcher = (
   onCloseModal: () => void,
   chatId: number,
   controller: ChatsController,

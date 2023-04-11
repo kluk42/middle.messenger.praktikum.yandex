@@ -1,5 +1,5 @@
 import { Block } from '../../utils/Block';
-import { Form } from '../Form/Form';
+import { Button } from '../Button/Button';
 import template from './ProfileAvatar.hbs';
 
 export type InputName = {
@@ -7,7 +7,7 @@ export type InputName = {
 };
 
 type Props = {
-  fileForm: Form<InputName>;
+  openModalBtn: Button;
   avatarSrc?: string;
 };
 

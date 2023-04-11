@@ -1,8 +1,11 @@
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
+import { FileForm } from '../../components/Form/FileForm';
 import { Form, Props as FormProps } from '../../components/Form/Form';
+import { FileInput } from '../../components/Input/FileInput';
 import { Input } from '../../components/Input/Input';
-import { InputName, ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
+import { Modal } from '../../components/Modal/Modal';
+import { ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
 import { ProfileController } from '../../controllers/ProfileController';
 import { withControllers } from '../../hocs/withControllers';
@@ -81,12 +84,16 @@ type PropsFromStore = {
   user: State['user'];
 };
 
-type OwnProps = Record<string, never>;
+type StateProps = {
+  isModalOpen?: boolean;
+};
 
-type Props = OwnProps & Controllers & PropsFromStore;
+type InjectedProps = Controllers & PropsFromStore;
+
+type Props = InjectedProps & StateProps;
 
 export class EditProfilePage extends Block<Props> {
-  constructor(props: Props) {
+  constructor(props: InjectedProps) {
     super(props);
   }
 
@@ -107,29 +114,56 @@ export class EditProfilePage extends Block<Props> {
     return !isEqual(oldProps, newProps);
   }
 
-  protected renderForm() {
-    const fileInput = new Input({
-      inputStyle: 'profile__changeAvatarInput',
-      name: 'file',
+  protected closeModal() {
+    this.children.AvatarModal = undefined;
+    this.props.isModalOpen = false;
+  }
+
+  protected renderModal() {
+    const fileInput = new FileInput({
       type: 'file',
+      name: 'avatar',
+      id: 'avatar',
+      inputStyle: 'modal__fileInput',
     });
-    const fileInputField = new Field({
+    const fileField = new Field({
       input: fileInput,
-      label: '',
-      labelStyle: 'editProfileForm__fileInputLabel',
-      name: 'file',
-      errorStyle: 'editProfileForm__fileInputError',
+      label: 'Выберите файл',
+      name: 'avatar',
+      labelStyle: 'modal__fileInputLabel',
     });
 
-    const fileForm = new Form<InputName>({
-      fields: [fileInputField],
+    const fileForm = new FileForm<{ avatar: 'avatar' }>({
+      fields: [fileField],
       inputs: [fileInput],
-      submit(values) {
-        console.log(values);
+      submit: values => console.log(values),
+      submitBtn: new Button({ label: 'Поменять аватар', stylesType: ButtonStyleTypes.Submit }),
+      formClass: 'modal__fileForm',
+    });
+
+    const modal = new Modal({
+      content: [fileForm],
+      header: 'Изменить аватар',
+      isOpen: true,
+      onClose: this.closeModal.bind(this),
+    });
+
+    this.children.AvatarModal = modal;
+    this.props.isModalOpen = true;
+  }
+
+  protected renderForm() {
+    const openModal = this.renderModal.bind(this);
+    const openModalBtn = new Button({
+      label: '',
+      noValidation: true,
+      styles: 'editProfileForm__openAvatarModal',
+      events: {
+        click: openModal,
       },
     });
 
-    this.children.AvatarInput = new ProfileAvatar({ fileForm });
+    this.children.AvatarInput = new ProfileAvatar({ openModalBtn });
 
     const nameInput = new Input({
       inputStyle: 'editProfileForm__input',
@@ -241,8 +275,8 @@ const mapStateToProps = (state: State): PropsFromStore => {
   return { user: state.user };
 };
 
-const WithStore = withStore<OwnProps, PropsFromStore>(mapStateToProps)(EditProfilePage);
+const WithStore = withStore<InjectedProps, PropsFromStore>(mapStateToProps)(EditProfilePage);
 
-export default withControllers<OwnProps, Controllers>(WithStore, {
+export default withControllers<Omit<InjectedProps, keyof PropsFromStore>, Controllers>(WithStore, {
   profileController: new ProfileController(),
 });

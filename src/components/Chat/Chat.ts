@@ -6,6 +6,7 @@ import { Block } from '../../utils/Block';
 import { State } from '../../utils/Store';
 import { Message } from '../../utils/WSTransport';
 import isEqual from '../../utils/isEqual';
+import { ModalNames, modalsSwitcher } from '../../utils/modalsSwitcher';
 import { Button, ButtonStyleTypes } from '../Button/Button';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
@@ -13,7 +14,6 @@ import { ChatSettings } from '../ChatSettings/ChatSettings';
 import { DotsForButton } from '../ChatSettings/DotsForButton';
 import { getButtonsForNotSelectedChat, getButtonsForSelectedChat } from '../ChatSettings/utils';
 import template from './Chat.hbs';
-import { ModalNames, modalSwitcher } from './utils';
 
 type InternalProps = {
   Modal?: ModalNames | null;
@@ -82,7 +82,7 @@ class Chat extends Block<Props> {
       this.props.areSettingsOpen = false;
 
       if (this.props.chatId) {
-        const modal = modalSwitcher(
+        const modal = modalsSwitcher(
           this.closeModal.bind(this),
           this.props.chatId,
           this.props.chatsController,
