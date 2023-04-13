@@ -25,6 +25,8 @@ type PropsFromStore = {
   chatId?: number;
   chatMessages?: Message[];
   userId?: number;
+  avatarSrc?: string;
+  chatName?: string;
 };
 
 type Controllers = {
@@ -32,14 +34,9 @@ type Controllers = {
   messagesController: MessagesController;
 };
 
-type OwnProps = {
-  avatarSrc?: string;
-  chatName?: string;
-};
-
-type Props = OwnProps & PropsFromStore & InternalProps & Controllers;
-type PropsFromConstructor = OwnProps & PropsFromStore & Controllers;
-type PropsWithoutControllers = OwnProps & PropsFromStore;
+type Props = PropsFromStore & InternalProps & Controllers;
+type PropsFromConstructor = PropsFromStore & Controllers;
+type PropsWithoutControllers = PropsFromStore;
 
 class Chat extends Block<Props> {
   constructor(props: PropsFromConstructor) {
@@ -175,16 +172,17 @@ const WithControllers = withControllers<Props, Controllers>(Chat, {
 });
 
 const mapStateToProps = (state: State): PropsFromStore => {
-  const chatId = state.chats?.selectedChatId;
-
+  const chatId = state.selectedChat?.id;
   return {
-    isChatSelected: state.chats?.selectedChatId !== undefined,
+    isChatSelected: state.selectedChat !== undefined,
     chatId: chatId,
     chatMessages:
       chatId !== undefined && state.messages && chatId in state.messages
         ? [...state.messages[chatId]]
         : [],
     userId: state.user?.id,
+    chatName: state.selectedChat?.chatName,
+    avatarSrc: state.selectedChat?.avatarSrc,
   };
 };
 

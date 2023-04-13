@@ -71,7 +71,6 @@ class ChatsList extends Block<Props> {
     const messagesController = this.props.messagesController;
 
     const props = this.props;
-
     return this.props.lastChatMessages?.map(
       m =>
         new ChatsListItem({
@@ -81,7 +80,9 @@ class ChatsList extends Block<Props> {
               chatsController.selectChat(m.chatId);
 
               const hasOldMessages =
-                !!props.messages && props.messages[m.chatId] && props.messages[m.chatId].length > 0;
+                !!props.messages &&
+                !!props.messages[m.chatId] &&
+                props.messages[m.chatId].length > 0;
 
               if (hasOldMessages) {
                 return;
@@ -97,7 +98,7 @@ class ChatsList extends Block<Props> {
 
 const mapStateToProps = (state: State): PropsFromStore => {
   return {
-    lastChatMessages: state.chats?.chatsList.map(c => {
+    lastChatMessages: state.chats?.map(c => {
       return {
         chatName: c.title,
         message: c.last_message?.content,
@@ -109,7 +110,7 @@ const mapStateToProps = (state: State): PropsFromStore => {
         chatId: c.id,
       };
     }),
-    chats: state.chats?.chatsList.map(c => ({ id: c.id, token: c.token })),
+    chats: state.chats?.map(c => ({ id: c.id, token: c.token })),
     messages: state.messages,
   };
 };

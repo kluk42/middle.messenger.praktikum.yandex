@@ -37,7 +37,12 @@ export type State = {
     phone: number;
     avatar: string;
   };
-  chats?: { chatsList: ChatsList; selectedChatId?: number };
+  chats?: ChatsList;
+  selectedChat?: {
+    avatarSrc?: string;
+    chatName: string;
+    id: number;
+  };
   messages?: Record<number, Message[]>;
 };
 

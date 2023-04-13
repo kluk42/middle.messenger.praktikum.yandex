@@ -38,8 +38,6 @@ class ChatsListItem extends Block<Props> {
   protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
     if (oldProps.selectedChatId !== newProps.selectedChatId) {
       this.props.isMessageSelected = this.props.chatId === newProps.selectedChatId;
-
-      return true;
     }
 
     return !isEqual(oldProps, newProps);
@@ -52,7 +50,7 @@ class ChatsListItem extends Block<Props> {
 
 const mapStateToProps = (state: State): PropsFromStore => {
   return {
-    selectedChatId: state.chats?.selectedChatId,
+    selectedChatId: state.selectedChat?.id,
   };
 };
 

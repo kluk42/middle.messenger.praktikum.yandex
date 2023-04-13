@@ -6,7 +6,7 @@ export type CreateChatDto = {
   title: string;
 };
 
-export type GetChatsResponse = {
+export type ChatDto = {
   id: number;
   title: string;
   avatar: string;
@@ -23,7 +23,9 @@ export type GetChatsResponse = {
     time: string;
     content: string;
   };
-}[];
+};
+
+export type GetChatsResponse = ChatDto[];
 
 export type DeleteChatResponse = {
   userId: number;
@@ -114,6 +116,14 @@ export class ChatsApi extends BaseAPI {
     return fetchWithRetry<GetTokenResponse>(this.http, `/token/${id}`, {
       method: METHODS.POST,
       retries: 1,
+    });
+  }
+
+  public editAvatar(avatar: FormData) {
+    return fetchWithRetry<ChatDto>(this.http, '/avatar', {
+      method: METHODS.PUT,
+      retries: 1,
+      data: avatar,
     });
   }
 }

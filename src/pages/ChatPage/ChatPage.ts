@@ -10,9 +10,7 @@ export default class ChatPage extends Block<Props> {
   }
 
   async init() {
-    this.children.Chat = new Chat({
-      chatName: 'Иван',
-    });
+    this.children.Chat = new Chat({});
 
     this.children.MessagesList = new MessagesList({});
   }

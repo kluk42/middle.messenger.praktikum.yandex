@@ -1,5 +1,6 @@
 import { ChatsApi, GetChatsDto } from '../api/ChatsApi';
 import { UsersApi } from '../api/UsersApi';
+import { AppLinks } from '../api/constants';
 import store from '../utils/Store';
 
 export class ChatsController {
@@ -17,15 +18,22 @@ export class ChatsController {
       chats.map(async chat => {
         const token = await this.getToken(chat.id);
 
-        return { ...chat, token };
+        return { ...chat, token, avatar: chat.avatar && AppLinks.ResourcesUrl + '/' + chat.avatar };
       })
     );
 
-    store.set('chats.chatsList', chatsWithTokens);
+    store.set('chats', chatsWithTokens);
   }
 
   async selectChat(id: number) {
-    store.set('chats.selectedChatId', id);
+    const chat = store.getState().chats?.find(c => c.id === id);
+    if (chat) {
+      store.set('selectedChat', {
+        avatarSrc: chat.avatar,
+        chatName: chat.title,
+        id: id,
+      });
+    }
   }
 
   async createChat(chatName: string) {
@@ -49,5 +57,16 @@ export class ChatsController {
     const searchResponse = await this.usersApi.searchUser(userName);
 
     await this.chatsApi.deleteUser(searchResponse[0].id, chatId);
+  }
+
+  async editAvatar(avatar: FormData) {
+    const { avatar: newAvatarSrc, id } = await this.chatsApi.editAvatar(avatar);
+
+    const updatedChatIndex = store.getState().chats?.findIndex(chat => chat.id === id);
+
+    const avatarPath = AppLinks.ResourcesUrl + newAvatarSrc;
+
+    store.set('selectedChat.avatarSrc', avatarPath);
+    store.set(`chats.${updatedChatIndex}.avatar`, avatarPath);
   }
 }

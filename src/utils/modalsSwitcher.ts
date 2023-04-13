@@ -1,6 +1,8 @@
 import { Button, ButtonStyleTypes } from '../components/Button/Button';
 import { Field } from '../components/Field/Field';
+import { FileForm } from '../components/Form/FileForm';
 import { Form } from '../components/Form/Form';
+import { FileInput } from '../components/Input/FileInput';
 import { Input } from '../components/Input/Input';
 import { Modal } from '../components/Modal/Modal';
 import { ChatsController } from '../controllers/ChatsController';
@@ -48,7 +50,7 @@ export const modalsSwitcher = (
     },
   });
 
-  const fileInput = new Input({
+  const fileInput = new FileInput({
     type: 'file',
     name: 'avatar',
     id: 'avatar',
@@ -61,10 +63,18 @@ export const modalsSwitcher = (
     labelStyle: 'modal__fileInputLabel',
   });
 
-  const fileForm = new Form<{ avatar: 'avatar' }>({
+  const fileForm = new FileForm<{ avatar: 'avatar' }>({
     fields: [fileField],
     inputs: [fileInput],
-    submit: values => console.log(values),
+    submit: async ({ avatar }) => {
+      if (avatar) {
+        const formData = new FormData();
+        formData.append('avatar', avatar);
+        formData.append('chatId', chatId.toString());
+        await controller.editAvatar(formData);
+      }
+      onCloseModal();
+    },
     submitBtn: new Button({ label: 'Поменять аватар', stylesType: ButtonStyleTypes.Submit }),
     formClass: 'modal__fileForm',
   });
