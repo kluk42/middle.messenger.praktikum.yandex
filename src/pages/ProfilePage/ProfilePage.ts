@@ -10,7 +10,7 @@ import { State } from '../../utils/Store';
 import template from './ProfilePage.hbs';
 
 type Controllers = { router: Router; authController: AuthController };
-type FromStore = GetUserResponse | undefined;
+type FromStore = { user?: GetUserResponse; avatarSrc?: string };
 type OwnProps = {};
 type Props = Controllers & FromStore & OwnProps;
 
@@ -71,18 +71,22 @@ class ProfilePage extends Block<Props> {
   protected render(): DocumentFragment {
     return this.compile(template, {
       ...this.children,
-      email: this.props.email,
-      login: this.props.login,
-      name: this.props.first_name,
-      surname: this.props.second_name,
+      email: this.props.user?.email,
+      login: this.props.user?.login,
+      name: this.props.user?.first_name,
+      surname: this.props.user?.second_name,
       chatName: 'Bla',
-      telephone: this.props.phone,
+      telephone: this.props.user?.phone,
+      avatarSrc: this.props.avatarSrc,
     });
   }
 }
 
-const mapStateToProps = (state: State) => {
-  return state.user;
+const mapStateToProps = (state: State): FromStore => {
+  return {
+    user: state.user,
+    avatarSrc: state.user?.avatar,
+  };
 };
 
 const WithControllers = withControllers<OwnProps, Controllers>(ProfilePage, {

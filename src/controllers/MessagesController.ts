@@ -1,4 +1,5 @@
 import { ChatsApi } from '../api/ChatsApi';
+import { AppLinks } from '../api/constants';
 import store from '../utils/Store';
 import { Message, WSTransport, WSTransportEvents } from '../utils/WSTransport';
 
@@ -34,7 +35,7 @@ export class MessagesController {
 
     const userId = store.getState().user?.id;
 
-    const transport = new WSTransport(`wss://ya-praktikum.tech/ws/chats/${userId}/${id}/${token}`);
+    const transport = new WSTransport(`${AppLinks.WSURL}/${userId}/${id}/${token}`);
 
     await transport.connect();
 

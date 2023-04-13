@@ -1,4 +1,5 @@
 import { AuthAPI, SignInBody, SignUpBody } from '../api/AuthApi';
+import { AppLinks } from '../api/constants';
 import { Router, Routes } from '../Router/Router';
 import store from '../utils/Store';
 import { MessagesController } from './MessagesController';
@@ -31,6 +32,8 @@ export class AuthController {
   async getUser() {
     try {
       const user = await this.api.getUser();
+
+      user.avatar = AppLinks.ResourcesUrl + user.avatar;
 
       store.set('user', user);
 

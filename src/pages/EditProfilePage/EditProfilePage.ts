@@ -119,6 +119,12 @@ export class EditProfilePage extends Block<Props> {
     this.props.isModalOpen = false;
   }
 
+  protected async submitAvatar(avatar: File) {
+    const formData = new FormData();
+    formData.append('avatar', avatar);
+    await this.props.profileController.editAvatar(formData);
+  }
+
   protected renderModal() {
     const fileInput = new FileInput({
       type: 'file',
@@ -136,8 +142,16 @@ export class EditProfilePage extends Block<Props> {
     const fileForm = new FileForm<{ avatar: 'avatar' }>({
       fields: [fileField],
       inputs: [fileInput],
-      submit: values => console.log(values),
-      submitBtn: new Button({ label: 'Поменять аватар', stylesType: ButtonStyleTypes.Submit }),
+      submit: async ({ avatar }) => {
+        if (avatar) {
+          await this.submitAvatar(avatar);
+        }
+      },
+      submitBtn: new Button({
+        label: 'Поменять аватар',
+        stylesType: ButtonStyleTypes.Submit,
+        type: 'submit',
+      }),
       formClass: 'modal__fileForm',
     });
 
@@ -150,6 +164,7 @@ export class EditProfilePage extends Block<Props> {
 
     this.children.AvatarModal = modal;
     this.props.isModalOpen = true;
+    modal.dispatchComponentDidMount();
   }
 
   protected renderForm() {
@@ -157,7 +172,7 @@ export class EditProfilePage extends Block<Props> {
     const openModalBtn = new Button({
       label: '',
       noValidation: true,
-      styles: 'editProfileForm__openAvatarModal',
+      styles: 'editProfileForm__openAvatarModal profile__changeAvatarBtn',
       events: {
         click: openModal,
       },

@@ -1,3 +1,5 @@
+import { AppLinks } from '../api/constants';
+
 export enum METHODS {
   GET = 'GET',
   POST = 'POST',
@@ -7,7 +9,7 @@ export enum METHODS {
 }
 
 export type OptionsType = {
-  data?: Record<string, unknown>;
+  data?: Record<string, unknown> | FormData;
   timeout?: number;
   headers?: Record<string, string>;
   method: METHODS;
@@ -15,7 +17,7 @@ export type OptionsType = {
 };
 
 export class HTTPTransport {
-  static API_URL = 'https://ya-praktikum.tech/api/v2';
+  static API_URL = AppLinks.BaseUrl;
   protected endpoint: string;
 
   constructor(endpoint: string) {
@@ -23,12 +25,14 @@ export class HTTPTransport {
   }
 
   get<Response>(path: string = '/', options: Omit<OptionsType, 'method' | 'retries'> = {}) {
-    const query = this.queryStringify(path, options.data);
-    return this.request<Response>(
-      this.endpoint + query,
-      { ...options, method: METHODS.GET },
-      options.timeout
-    );
+    if (!(options.data instanceof FormData)) {
+      const query = this.queryStringify(path, options.data);
+      return this.request<Response>(
+        this.endpoint + query,
+        { ...options, method: METHODS.GET },
+        options.timeout
+      );
+    }
   }
 
   put<Response = void>(path: string, options: Omit<OptionsType, 'method' | 'retries'>) {
@@ -62,6 +66,7 @@ export class HTTPTransport {
   ): Promise<Response> {
     return new Promise(function (resolve, reject) {
       const { headers, data, method } = options;
+      const isFormData = data instanceof FormData;
 
       const xhr = new XMLHttpRequest();
       xhr.open(method, url);
@@ -83,7 +88,9 @@ export class HTTPTransport {
         }
       };
 
-      xhr.setRequestHeader('Content-Type', 'application/json');
+      if (!isFormData) {
+        xhr.setRequestHeader('Content-Type', 'application/json');
+      }
 
       xhr.withCredentials = true;
       xhr.responseType = 'json';
@@ -91,6 +98,11 @@ export class HTTPTransport {
       xhr.onabort = reject;
       xhr.onerror = reject;
       xhr.ontimeout = reject;
+
+      if (isFormData) {
+        xhr.send(data);
+        return;
+      }
 
       if (method === METHODS.GET || !data) {
         xhr.send();

@@ -70,7 +70,7 @@ export class UsersApi extends BaseAPI {
     });
   }
 
-  editAvatar(data: EditAvatarDto) {
+  editAvatar(data: FormData) {
     return fetchWithRetry<EditProfileResponse>(this.http, '/profile/avatar', {
       method: METHODS.PUT,
       retries: 1,
