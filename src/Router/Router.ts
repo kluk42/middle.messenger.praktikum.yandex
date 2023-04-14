@@ -172,6 +172,10 @@ export class Router implements IRouter {
     this.history.replaceState({}, '', newRoute);
     this.onRoute(newRoute);
   }
+
+  getCurrentPathName() {
+    return trim(window.location.pathname, '/');
+  }
 }
 
 export default new Router('#app');

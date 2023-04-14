@@ -37,7 +37,9 @@ export class AuthController {
 
       store.set('user', user);
 
-      this.router.replace(Routes.Chat);
+      const currentPathName = this.router.getCurrentPathName();
+
+      this.router.replace(currentPathName !== '' ? (currentPathName as Routes) : Routes.Chat);
     } catch (error) {
       this.router.replace(Routes.SignInPage);
       console.error(error);
