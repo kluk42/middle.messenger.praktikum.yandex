@@ -54,4 +54,5 @@ const mapStateToProps = (state: State): PropsFromStore => {
   };
 };
 
-export default withStore<ChatListItemProps, PropsFromStore>(mapStateToProps)(ChatsListItem);
+export const createChatsListItem = () =>
+  withStore<ChatListItemProps, PropsFromStore>(mapStateToProps)(ChatsListItem);

@@ -8,7 +8,7 @@ import isEqual from '../../utils/isEqual';
 import { State } from '../../utils/Store';
 import { Message } from '../../utils/WSTransport';
 import { AnchorLink } from '../AnchorLink/AnchorLink';
-import ChatsListItem, { ChatListItemProps } from '../Message/ChatsListItem';
+import { ChatListItemProps, createChatsListItem } from '../Message/ChatsListItem';
 import template from './ChatsList.hbs';
 
 type PropsFromStore = {
@@ -44,7 +44,9 @@ class ChatsList extends Block<Props> {
       },
       styles: 'messages__profileLink',
     });
+  }
 
+  async componentDidMount() {
     await this.props.chatsController.getChats({ limit: 50, offset: 0 });
 
     this.props.chats?.forEach(async chat => {
@@ -71,28 +73,29 @@ class ChatsList extends Block<Props> {
     const messagesController = this.props.messagesController;
 
     const props = this.props;
-    return this.props.lastChatMessages?.map(
-      m =>
-        new ChatsListItem({
-          ...m,
-          events: {
-            async click() {
+
+    const listItems = this.props.lastChatMessages?.map(m => {
+      const ChatsListItem = createChatsListItem();
+      return new ChatsListItem({
+        ...m,
+        events: {
+          async click() {
+            const hasOldMessages =
+              !!props.messages && !!props.messages[m.chatId] && props.messages[m.chatId].length > 0;
+
+            if (hasOldMessages) {
               chatsController.selectChat(m.chatId);
+              return;
+            }
 
-              const hasOldMessages =
-                !!props.messages &&
-                !!props.messages[m.chatId] &&
-                props.messages[m.chatId].length > 0;
-
-              if (hasOldMessages) {
-                return;
-              }
-
-              await messagesController.fetchOldMessages(m.chatId, 0);
-            },
+            await messagesController.fetchOldMessages(m.chatId, 0);
+            chatsController.selectChat(m.chatId);
           },
-        })
-    );
+        },
+      });
+    });
+
+    return listItems;
   }
 }
 
