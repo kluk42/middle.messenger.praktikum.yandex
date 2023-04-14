@@ -7,7 +7,7 @@ export type InputName = {
 };
 
 type Props = {
-  openModalBtn: Button;
+  openModalBtn?: Button;
   avatarSrc?: string;
 };
 

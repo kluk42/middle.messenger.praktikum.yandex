@@ -178,7 +178,10 @@ export class EditProfilePage extends Block<Props> {
       },
     });
 
-    this.children.AvatarInput = new ProfileAvatar({ openModalBtn });
+    this.children.AvatarInput = new ProfileAvatar({
+      openModalBtn,
+      avatarSrc: this.props.user?.avatar,
+    });
 
     const nameInput = new Input({
       inputStyle: 'editProfileForm__input',

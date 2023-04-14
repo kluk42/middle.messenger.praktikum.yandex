@@ -25,14 +25,13 @@ export class HTTPTransport {
   }
 
   get<Response>(path: string = '/', options: Omit<OptionsType, 'method' | 'retries'> = {}) {
-    if (!(options.data instanceof FormData)) {
-      const query = this.queryStringify(path, options.data);
-      return this.request<Response>(
-        this.endpoint + query,
-        { ...options, method: METHODS.GET },
-        options.timeout
-      );
-    }
+    const query =
+      options.data instanceof FormData ? undefined : this.queryStringify(path, options.data);
+    return this.request<Response>(
+      this.endpoint + query,
+      { ...options, method: METHODS.GET },
+      options.timeout
+    );
   }
 
   put<Response = void>(path: string, options: Omit<OptionsType, 'method' | 'retries'>) {
