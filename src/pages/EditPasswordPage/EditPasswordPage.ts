@@ -2,13 +2,15 @@ import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
-import { InputName, ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
+import { ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
 import { AuthController } from '../../controllers/AuthController';
 import { ProfileController } from '../../controllers/ProfileController';
 import { withControllers } from '../../hocs/withControllers';
+import { withStore } from '../../hocs/withStore';
 import Router, { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
+import { State } from '../../utils/Store';
 import template from './EditPasswordPage.hbs';
 
 enum InputNames {
@@ -68,9 +70,13 @@ type Controllers = {
   authController: AuthController;
 };
 
+type PropsFromStore = {
+  avatarSrc?: string;
+};
+
 type OwnProps = Record<string, never>;
 
-type Props = Controllers & OwnProps;
+type Props = Controllers & OwnProps & PropsFromStore;
 
 class EditPasswordPage extends Block<Props> {
   constructor(props: Props) {
@@ -82,28 +88,7 @@ class EditPasswordPage extends Block<Props> {
       events: { click: () => Router.back() },
     });
 
-    const fileInput = new Input({
-      inputStyle: 'profile__changeAvatarInput',
-      name: 'file',
-      type: 'file',
-    });
-    const fileInputField = new Field({
-      input: fileInput,
-      label: '',
-      labelStyle: 'editProfileForm__fileInputLabel',
-      name: 'file',
-      errorStyle: 'editProfileForm__fileInputError',
-    });
-
-    const fileForm = new Form<InputName>({
-      fields: [fileInputField],
-      inputs: [fileInput],
-      submit(values) {
-        console.log(values);
-      },
-    });
-
-    this.children.AvatarInput = new ProfileAvatar({ fileForm });
+    this.children.AvatarInput = new ProfileAvatar({ avatarSrc: this.props.avatarSrc });
 
     const oldPasswordInput = new Input({
       inputStyle: 'editProfileForm__input',
@@ -188,7 +173,15 @@ class EditPasswordPage extends Block<Props> {
   }
 }
 
-export default withControllers<OwnProps, Controllers>(EditPasswordPage, {
+const mapStateToProps = (state: State): PropsFromStore => {
+  return {
+    avatarSrc: state.user?.avatar,
+  };
+};
+
+const WithProps = withStore<Props, PropsFromStore>(mapStateToProps)(EditPasswordPage);
+
+export default withControllers<OwnProps, Controllers>(WithProps, {
   profileController: new ProfileController(),
   authController: new AuthController(),
 });
