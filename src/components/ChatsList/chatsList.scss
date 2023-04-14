@@ -1,0 +1,60 @@
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
+@import '../../styles/utils/scrollBar';
+
+.messages {
+    grid-column: 1/3;
+    background-color: $color-slightly-gray;
+    border-right: 1px solid $color-grayish;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &__head {
+        padding: 21px 10px;
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid $color-grayish;
+        padding-bottom: 14px;
+        flex-shrink: 0;
+    }
+
+    &__profileLink {
+        @include thick;
+
+        color: $color-gray;
+        align-self: flex-end;
+        margin-bottom: 23px;
+    }
+
+    &__searchInput {
+        height: 32px;
+        border-radius: 5px;
+        background-color: $color-intermediate-gray;
+        padding: 10px 8px;
+
+        &::placeholder {
+            @include thick;
+
+            color: $color-gray;
+            text-align: center;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &__list {
+        overflow-y: scroll;
+        flex: 1;
+        padding: 0 10px;
+        padding-bottom: 10px;
+
+        @include scroll-bar;
+    }
+
+    &__chat {
+        grid-column: 3/-1;
+    }
+}

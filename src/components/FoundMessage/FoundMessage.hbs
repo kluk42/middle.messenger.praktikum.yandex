@@ -1,8 +1,10 @@
-<div class="foundMessage">
+<div>
+  <li class='foundMessage'>
     {{#if avatarSrc}}
-        <img src={{avatarSrc}} alt="" class="foundMessage_avatar">
+      <img src={{avatarSrc}} alt='' class='foundMessage_avatar' />
     {{else}}
-        <div class="foundMessage__absentAvatar"></div>
+      <div class='foundMessage__absentAvatar'></div>
     {{/if}}
-    <p class="foundMessage__name">{{name}}</p>
+    <p class='foundMessage__name'>{{name}}</p>
+  </li>
 </div>

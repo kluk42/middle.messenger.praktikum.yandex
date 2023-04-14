@@ -1,5 +1,5 @@
-<div class="inputField {{inputWrapperStyle}}">
-    <label for={{name}} class="inputField__label {{labelStyle}}">{{label}}</label>
-    <input type="{{type}}" {{#if value}}value={{value}}{{/if}} class="inputField__input {{inputStyle}}" name={{name}}>
-    <p class="inputField__error {{errorStyle}}">{{errorText}}</p>
-</div>
+{{#if isTextArea}}
+<textarea {{#if value}}value={{value}}{{/if}} class="{{inputStyle}}" name={{name}} placeholder={{placeholder}}>
+{{else}}
+<input type="{{type}}" {{#if value}}value={{value}}{{/if}} class="{{inputStyle}}" name={{name}} {{#if id}}id={{id}}{{/if}}>
+{{/if}}

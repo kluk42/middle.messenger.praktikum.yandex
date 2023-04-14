@@ -1,0 +1,71 @@
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
+
+.modalBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: $color-almost-transparent-gray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.modal {
+    border-radius: 12px;
+    background-color: $color-white;
+    box-shadow: 0 0 6px rgb(0 0 0 / 14%);
+    padding: 40px 30px;
+    min-width: 340px;
+    min-height: 257px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &__header {
+        margin: 0 auto;
+    }
+
+    &__fileForm {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    &__fileInput {
+        display: none;
+    }
+
+    &__fileInputLabel {
+        color: $color-main;
+        text-decoration: underline;
+        @include tall-thick;
+
+        align-self: center;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+.closeBtn {
+    &::after {
+        content: "\00d7";
+        position: absolute;
+        top: 37px;
+        right: 37px;
+        line-height: 74px;
+        font-size: 74px;
+        color: $color-semi-transparent-gray;
+    }
+
+    &:hover {
+        cursor: pointer;
+        opacity: .6;
+        transition: opacity .2s ease-in-out;
+    }
+}

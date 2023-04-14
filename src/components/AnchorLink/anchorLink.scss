@@ -1,10 +1,10 @@
-@import '../../styles/palette.scss';
-@import '../../styles/fonts/typography.scss';
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
 
 .anchorLink {
-    @include smallThick;
-    color: $color-main;
+    @include small-thick;
 
+    color: $color-main;
     opacity: 1;
 
     &:hover {

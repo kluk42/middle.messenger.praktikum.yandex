@@ -1,0 +1,76 @@
+@import '../../styles/palette';
+@import '../../styles/fonts/typography';
+
+.message {
+    display: grid;
+    grid-template-columns: min-content 1fr max-content;
+    grid-template-rows: repeat(2, min-content) 20px;
+    border-bottom: 1px solid $color-grayish;
+    padding: 12px 0;
+    cursor: pointer;
+
+    &_unread {
+        background-color: $color-hawkes-blue;
+    }
+
+    &__avatar {
+        grid-column: 1/2;
+        grid-row: 1/-1;
+        width: 47px;
+        height: 47px;
+        border-radius: 100%;
+        align-self: center;
+        margin-right: 10px;
+
+        &_empty {
+            background-color: $color-intermediate-gray;
+        }
+    }
+
+    &__chatName {
+        @include small-extra-thick;
+
+        height: fit-content;
+    }
+
+    &__date {
+        @include tiny-thick;
+
+        color: $color-gray;
+    }
+
+    &__text {
+        @include tall-thick;
+
+        color: $color-gray;
+        margin-top: 4px;
+        height: fit-content;
+        max-height: 30px;
+        grid-row: 2/-1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+
+        &_highlighted {
+            color: $color-dark;
+            @include tall-thick;
+        }
+    }
+
+    &__unreadCount {
+        grid-row: -1/-2;
+        grid-column: -1/-2;
+        justify-self: end;
+        background-color: $color-main;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $color-white;
+        @include small-tall-thick;
+    }
+}

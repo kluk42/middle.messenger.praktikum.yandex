@@ -2,34 +2,35 @@
 @use './styles/components/auth.scss';
 @use './styles/components/authForm.scss';
 @use './styles/fonts/typography.scss';
-@use './components/Input/input.scss';
+@use './components/Field/inputField.scss';
 @use './styles/layouts/main.scss';
 @use './components/AnchorLink/anchorLink.scss';
-@use './components/MessagesList/messagesList.scss';
-@use './components/Message/message.scss';
+@use './components/ChatsList/chatsList.scss';
+@use './components/Message/chatsListItem.scss';
 @use './components/Chat/chat.scss';
 @use './components/ChatMessage/chatMessage.scss';
-@use './components/ChatNewMessageInput/chatNewMessageInput.scss';
+@use './components/ChatMessageInput/chatMessageInput.scss';
 @use './components/FoundMessage/foundMessage.scss';
 @use './components/ChatSettings/chatSettings.scss';
 @use './styles/components/profile.scss';
 @use './components/ProfileGoBackBtn/profileGoBackBtn.scss';
 @use './pages/EditProfilePage/editProfilePage.scss';
-@use './pages/ErrorPage/errorPage.scss';
-@use './styles/components/modal.scss';
+@use './styles/layouts/errorPage.scss';
+@use './components/Modal/modal.scss';
 
-@import url('https://fonts.googleapis.com/css?family=Inter:300,400,500,600|Josefin+Sans:300,400,400i,500,600');
+@import 'https://fonts.googleapis.com/css?family=Inter:300,400,500,600|Josefin+Sans:300,400,400i,500,600';
 
 * {
-    font-family: 'Inter';
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    border: none;
-    text-decoration: none;
-    overflow: hidden;
+  font-family: Inter, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border: none;
+  text-decoration: none;
+  overflow: hidden;
+  outline: none !important;
 }
 
 body {
-    height: 100vh;
+  height: 100vh;
 }
