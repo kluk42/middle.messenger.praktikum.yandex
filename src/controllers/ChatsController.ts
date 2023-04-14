@@ -1,7 +1,7 @@
 import { ChatsApi, GetChatsDto } from '../api/ChatsApi';
 import { UsersApi } from '../api/UsersApi';
 import { AppLinks } from '../api/constants';
-import store from '../utils/Store';
+import store, { ChatsListItem } from '../utils/Store';
 
 export class ChatsController {
   private chatsApi: ChatsApi;
@@ -59,14 +59,20 @@ export class ChatsController {
     await this.chatsApi.deleteUser(searchResponse[0].id, chatId);
   }
 
-  async editAvatar(avatar: FormData) {
-    const { avatar: newAvatarSrc, id } = await this.chatsApi.editAvatar(avatar);
+  async editAvatar(avatarDto: FormData) {
+    const { avatar, id } = await this.chatsApi.editAvatar(avatarDto);
 
-    const updatedChatIndex = store.getState().chats?.findIndex(chat => chat.id === id);
+    const oldChat = store.getState().chats?.find(chat => chat.id === id);
+    const notUpdatedChats = store.getState().chats?.filter(chat => chat.id !== id);
 
-    const avatarPath = AppLinks.ResourcesUrl + newAvatarSrc;
+    const avatarPath = AppLinks.ResourcesUrl + avatar;
 
-    store.set('selectedChat.avatarSrc', avatarPath);
-    store.set(`chats.${updatedChatIndex}.avatar`, avatarPath);
+    if (oldChat && notUpdatedChats) {
+      store.set('selectedChat.avatarSrc', avatarPath);
+
+      const updatedChat: ChatsListItem = { ...oldChat, avatar: avatarPath };
+      const updatedChatsArr = [...notUpdatedChats, updatedChat];
+      store.set('chats', updatedChatsArr);
+    }
   }
 }

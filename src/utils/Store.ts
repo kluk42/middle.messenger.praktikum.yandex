@@ -2,7 +2,7 @@ import { EventBus } from './EventBus';
 import { Message } from './WSTransport';
 import set from './set';
 
-export type ChatsList = {
+export type ChatsListItem = {
   id: number;
   title: string;
   avatar: string;
@@ -20,7 +20,9 @@ export type ChatsList = {
     content: string;
   };
   token: string;
-}[];
+};
+
+export type ChatsList = ChatsListItem[];
 
 export type State = {
   chat?: {

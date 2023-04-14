@@ -6,6 +6,7 @@ import template from './ChatsListItem.hbs';
 
 type PropsFromStore = {
   selectedChatId?: number;
+  selectedChatAvatar?: string;
 };
 
 export type ChatListItemProps = {
@@ -40,6 +41,14 @@ class ChatsListItem extends Block<Props> {
       this.props.isMessageSelected = this.props.chatId === newProps.selectedChatId;
     }
 
+    if (
+      newProps.selectedChatAvatar &&
+      oldProps.selectedChatAvatar !== newProps.selectedChatAvatar &&
+      this.props.isMessageSelected
+    ) {
+      this.props.imgSrc = newProps.selectedChatAvatar;
+    }
+
     return !isEqual(oldProps, newProps);
   }
 
@@ -51,6 +60,7 @@ class ChatsListItem extends Block<Props> {
 const mapStateToProps = (state: State): PropsFromStore => {
   return {
     selectedChatId: state.selectedChat?.id,
+    selectedChatAvatar: state.selectedChat?.avatarSrc,
   };
 };
 
