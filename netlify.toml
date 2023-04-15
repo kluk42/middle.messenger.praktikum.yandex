@@ -10,4 +10,4 @@
   
 [[redirects]]
   from = "/*"
-  to = "/blog/:splat"
+  to = "/index.html"
