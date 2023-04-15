@@ -16,7 +16,7 @@ export type ModalNames =
 
 export const modalsSwitcher = (
   onCloseModal: () => void,
-  chatId: number,
+  chatId: number | null,
   controller: ChatsController,
   modalName?: ModalNames | null
 ) => {
@@ -35,8 +35,10 @@ export const modalsSwitcher = (
     inputs: [loginInput],
     submitBtn: new Button({ label: 'Добавить пользователя', stylesType: ButtonStyleTypes.Submit }),
     submit: async ({ login }) => {
-      await controller.addUser(login, chatId);
-      onCloseModal();
+      if (chatId !== null) {
+        await controller.addUser(login, chatId);
+        onCloseModal();
+      }
     },
   });
 
@@ -45,8 +47,10 @@ export const modalsSwitcher = (
     inputs: [loginInput],
     submitBtn: new Button({ label: 'Удалить пользователя', stylesType: ButtonStyleTypes.Submit }),
     submit: async ({ login }) => {
-      await controller.deleteUser(login, chatId);
-      onCloseModal();
+      if (chatId !== null) {
+        await controller.deleteUser(login, chatId);
+        onCloseModal();
+      }
     },
   });
 
@@ -67,7 +71,7 @@ export const modalsSwitcher = (
     fields: [fileField],
     inputs: [fileInput],
     submit: async ({ avatar }) => {
-      if (avatar) {
+      if (avatar && chatId !== null) {
         const formData = new FormData();
         formData.append('avatar', avatar);
         formData.append('chatId', chatId.toString());

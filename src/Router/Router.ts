@@ -28,7 +28,7 @@ interface IRoute {
 }
 
 export enum Routes {
-  SignInPage = 'sign-in',
+  SignInPage = '/',
   SignUpPage = 'sign-up',
   Chat = 'chat',
   EditProfilePage = 'edit-profile',

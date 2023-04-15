@@ -78,20 +78,18 @@ class Chat extends Block<Props> {
     if (oldProps.Modal !== newProps.Modal) {
       this.props.areSettingsOpen = false;
 
-      if (this.props.chatId) {
-        const modal = modalsSwitcher(
-          this.closeModal.bind(this),
-          this.props.chatId,
-          this.props.chatsController,
-          newProps.Modal
-        );
+      const modal = modalsSwitcher(
+        this.closeModal.bind(this),
+        this.props.chatId ?? null,
+        this.props.chatsController,
+        newProps.Modal
+      );
 
-        if (modal) {
-          modal.dispatchComponentDidMount();
-        }
-
-        this.children.Modal = modal;
+      if (modal) {
+        modal.dispatchComponentDidMount();
       }
+
+      this.children.Modal = modal;
     }
 
     if (oldProps.areSettingsOpen !== newProps.areSettingsOpen) {

@@ -145,6 +145,7 @@ export class EditProfilePage extends Block<Props> {
       submit: async ({ avatar }) => {
         if (avatar) {
           await this.submitAvatar(avatar);
+          this.closeModal();
         }
       },
       submitBtn: new Button({
@@ -290,7 +291,11 @@ export class EditProfilePage extends Block<Props> {
 }
 
 const mapStateToProps = (state: State): PropsFromStore => {
-  return { user: state.user };
+  if (state.user) {
+    return { user: { ...state.user } };
+  } else {
+    return { user: undefined };
+  }
 };
 
 const WithStore = withStore<InjectedProps, PropsFromStore>(mapStateToProps)(EditProfilePage);
