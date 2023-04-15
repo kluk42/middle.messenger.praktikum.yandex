@@ -42,7 +42,7 @@ type EventArguments = {
 
 export class WSTransport extends EventBus<EventNamesType, EventArguments> {
   private socket: WebSocket | null = null;
-  private pingInterval?: NodeJS.Timer;
+  private pingInterval?: ReturnType<typeof setTimeout>;
 
   constructor(private url: string) {
     super();
