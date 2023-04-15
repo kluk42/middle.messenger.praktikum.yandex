@@ -4,6 +4,7 @@ import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
 import { Router, Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
+import { differenceInDays, format, FormatStrings } from '../../utils/DateUtils';
 import isEqual from '../../utils/isEqual';
 import { State } from '../../utils/Store';
 import { Message } from '../../utils/WSTransport';
@@ -76,8 +77,25 @@ class ChatsList extends Block<Props> {
 
     const listItems = this.props.lastChatMessages?.map(m => {
       const ChatsListItem = createChatsListItem();
+
+      let messageDate = '';
+
+      if (m.messageDate) {
+        const date = new Date(m.messageDate);
+        const currentTime = new Date();
+
+        const diffInDays = differenceInDays(currentTime, date);
+
+        if (diffInDays >= 1) {
+          messageDate = format(date, FormatStrings.DDMMYY);
+        } else {
+          messageDate = format(date, FormatStrings.HHMM);
+        }
+      }
+
       return new ChatsListItem({
         ...m,
+        messageDate,
         events: {
           async click() {
             const hasOldMessages =
