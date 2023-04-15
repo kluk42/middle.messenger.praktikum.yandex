@@ -38,9 +38,15 @@ type Props = PropsFromStore & InternalProps & Controllers;
 type PropsFromConstructor = PropsFromStore & Controllers;
 type PropsWithoutControllers = PropsFromStore;
 
+let closeFunction: null | ((e: MouseEvent) => void) = null;
+
 class Chat extends Block<Props> {
   constructor(props: PropsFromConstructor) {
     super({ ...props, Modal: null, areSettingsOpen: false });
+  }
+
+  toggleSettings() {
+    this.props.areSettingsOpen = !this.props.areSettingsOpen;
   }
 
   protected init(): void {
@@ -56,7 +62,7 @@ class Chat extends Block<Props> {
         styles: 'chatSettings__settingsBtn',
         child: new DotsForButton(),
         events: {
-          click: () => (this.props.areSettingsOpen = !this.props.areSettingsOpen),
+          click: this.toggleSettings.bind(this),
         },
       }),
     });
@@ -95,6 +101,24 @@ class Chat extends Block<Props> {
     if (oldProps.areSettingsOpen !== newProps.areSettingsOpen) {
       const chatSettings = this.children.ChatSettings as ChatSettings;
       chatSettings.props.isOpen = !!newProps.areSettingsOpen;
+
+      if (newProps.areSettingsOpen) {
+        closeFunction = (e: MouseEvent) => {
+          const target = e.target as HTMLElement;
+          if (target.classList.contains('chatSettings__settingsBtn')) {
+            return;
+          }
+
+          this.toggleSettings();
+        };
+
+        document.addEventListener('click', closeFunction);
+      } else {
+        if (closeFunction) {
+          document.removeEventListener('click', closeFunction);
+          closeFunction = null;
+        }
+      }
     }
 
     if (oldProps.isChatSelected !== newProps.isChatSelected) {
@@ -114,7 +138,7 @@ class Chat extends Block<Props> {
             styles: 'chatSettings__settingsBtn',
             child: new DotsForButton(),
             events: {
-              click: () => (this.props.areSettingsOpen = !this.props.areSettingsOpen),
+              click: this.toggleSettings.bind(this),
             },
           }),
         });
@@ -133,7 +157,7 @@ class Chat extends Block<Props> {
             styles: 'chatSettings__settingsBtn',
             child: new DotsForButton(),
             events: {
-              click: () => (this.props.areSettingsOpen = !this.props.areSettingsOpen),
+              click: this.toggleSettings.bind(this),
             },
           }),
         });
