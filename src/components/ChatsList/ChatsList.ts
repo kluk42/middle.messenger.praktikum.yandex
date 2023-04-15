@@ -4,7 +4,7 @@ import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
 import { Router, Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
-import { differenceInDays, format, FormatStrings } from '../../utils/DateUtils';
+import { differenceInDays, format, FormatStrings } from '../../utils/DateTimeUtils';
 import isEqual from '../../utils/isEqual';
 import { State } from '../../utils/Store';
 import { Message } from '../../utils/WSTransport';
