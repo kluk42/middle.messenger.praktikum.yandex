@@ -103,11 +103,25 @@ export const modalsSwitcher = (
     formClass: 'modal__fileForm',
   });
 
+  const deleteChatBtn = new Button({
+    label: 'Подтвердить',
+    stylesType: ButtonStyleTypes.Submit,
+    type: 'submit',
+    events: {
+      click: async () => {
+        if (chatId) {
+          await controller.deleteChat(chatId);
+          onCloseModal();
+        }
+      },
+    },
+  });
+
   switch (modalName) {
     case 'delete-chat':
       return new Modal({
         isOpen: true,
-        content: [new Button({ label: 'Подтвердить', stylesType: ButtonStyleTypes.Submit })],
+        content: [deleteChatBtn],
         header: 'Удалить?',
         onClose: onCloseModal,
       });

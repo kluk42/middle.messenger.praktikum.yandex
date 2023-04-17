@@ -2,14 +2,17 @@ import { ChatsApi, GetChatsDto } from '../api/ChatsApi';
 import { UsersApi } from '../api/UsersApi';
 import { AppLinks } from '../api/constants';
 import store, { ChatsListItem } from '../utils/Store';
+import { MessagesController } from './MessagesController';
 
 export class ChatsController {
   private chatsApi: ChatsApi;
   private usersApi: UsersApi;
+  private messagesController: MessagesController;
 
   constructor() {
     this.chatsApi = new ChatsApi();
     this.usersApi = new UsersApi();
+    this.messagesController = new MessagesController();
   }
 
   async getChats(dto: GetChatsDto) {
@@ -18,7 +21,11 @@ export class ChatsController {
       chats.map(async chat => {
         const token = await this.getToken(chat.id);
 
-        return { ...chat, token, avatar: chat.avatar && AppLinks.ResourcesUrl + '/' + chat.avatar };
+        return {
+          ...chat,
+          token,
+          avatar: chat.avatar && AppLinks.BaseUrl + '/resources' + chat.avatar,
+        };
       })
     );
 
@@ -63,16 +70,31 @@ export class ChatsController {
     const { avatar, id } = await this.chatsApi.editAvatar(avatarDto);
 
     const oldChat = store.getState().chats?.find(chat => chat.id === id);
-    const notUpdatedChats = store.getState().chats?.filter(chat => chat.id !== id);
+    const chatIndex = store.getState().chats?.findIndex(chat => chat.id === id);
+    const notUpdatedChats = store.getState().chats;
+    const chatsToUpdate = notUpdatedChats && [...notUpdatedChats];
 
-    const avatarPath = AppLinks.ResourcesUrl + avatar;
+    const avatarPath = AppLinks.BaseUrl + '/resources' + avatar;
 
-    if (oldChat && notUpdatedChats) {
+    if (oldChat && chatsToUpdate && chatIndex !== undefined) {
       store.set('selectedChat.avatarSrc', avatarPath);
 
       const updatedChat: ChatsListItem = { ...oldChat, avatar: avatarPath };
-      const updatedChatsArr = [...notUpdatedChats, updatedChat];
-      store.set('chats', updatedChatsArr);
+
+      chatsToUpdate[chatIndex] = updatedChat;
+
+      store.set('chats', chatsToUpdate);
     }
+  }
+
+  async deleteChat(chatId: number) {
+    await this.chatsApi.delete({ chatId });
+    this.messagesController.disconnect(chatId);
+
+    const newChats = store.getState().chats?.filter(chat => chat.id !== chatId);
+
+    store.set('chats', newChats);
+    store.set('selectedChat', undefined);
+    store.set(`messages.${chatId}`, undefined);
   }
 }

@@ -1,12 +1,12 @@
-type Subscriber<A extends any[]> = (...args: A) => void;
+type Subscriber<A extends unknown[]> = (...args: A) => void;
 export type MapType<P> = P[keyof P];
 
 export type EventNamesType = { [name: string]: string };
-export type EventDataType<E extends EventNamesType> = Record<MapType<E>, any[]>;
+export type EventDataType<E extends EventNamesType> = Record<MapType<E>, []>;
 
 export class EventBus<
   EventNames extends EventNamesType = Record<string, string>,
-  Args extends Record<MapType<EventNames>, any[]> = Record<string, any[]>
+  Args extends Record<MapType<EventNames>, unknown[]> = Record<string, never[]>
 > {
   private readonly listeners: {
     [K in MapType<EventNames>]?: Subscriber<Args[K]>[];

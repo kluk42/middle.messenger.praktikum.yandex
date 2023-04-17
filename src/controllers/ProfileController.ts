@@ -12,6 +12,8 @@ export class ProfileController {
   async editProfile(data: EditProfileDto) {
     const newUserData = await this.usersApi.update(data);
 
+    newUserData.avatar = newUserData.avatar && AppLinks.BaseUrl + '/resources' + newUserData.avatar;
+
     store.set('user', newUserData);
   }
 
@@ -21,7 +23,7 @@ export class ProfileController {
 
   async editAvatar(avatar: FormData) {
     const newUserData = await this.usersApi.editAvatar(avatar);
-    newUserData.avatar = AppLinks.ResourcesUrl + newUserData.avatar;
+    newUserData.avatar = AppLinks.BaseUrl + '/resources' + newUserData.avatar;
 
     store.set('user', newUserData);
   }

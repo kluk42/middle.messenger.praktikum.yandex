@@ -35,7 +35,7 @@ type DataType = Message | Message[] | { type: 'ping' } | { type: 'pong' };
 
 type EventArguments = {
   [WSTransportEvents.Message]: [Message | Message[]];
-  [WSTransportEvents.Error]: [any];
+  [WSTransportEvents.Error]: [unknown];
   [WSTransportEvents.Close]: [];
   [WSTransportEvents.Connected]: [];
 };
@@ -93,13 +93,17 @@ export class WSTransport extends EventBus<EventNamesType, EventArguments> {
     });
 
     socket.addEventListener('message', (message: { data: string }) => {
-      const data = JSON.parse(message.data) as DataType;
+      try {
+        const data = JSON.parse(message.data) as DataType;
 
-      if (!Array.isArray(data) && data.type && (data.type === 'ping' || data.type === 'pong')) {
-        return;
+        if (!Array.isArray(data) && data.type && (data.type === 'ping' || data.type === 'pong')) {
+          return;
+        }
+
+        this.emit(WSTransportEvents.Message, data as Message | Message[]);
+      } catch (e) {
+        this.emit(WSTransportEvents.Error, e);
       }
-
-      this.emit(WSTransportEvents.Message, data as Message | Message[]);
     });
   }
 }

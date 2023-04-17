@@ -25,10 +25,6 @@ export type ChatsListItem = {
 export type ChatsList = ChatsListItem[];
 
 export type State = {
-  chat?: {
-    messages: { message: string }[];
-    id: number;
-  };
   user?: {
     id: number;
     first_name: string;

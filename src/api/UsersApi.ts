@@ -46,7 +46,7 @@ export class UsersApi extends BaseAPI {
   read = undefined;
   delete = undefined;
 
-  update(data: EditProfileDto): Promise<unknown> {
+  update(data: EditProfileDto) {
     return fetchWithRetry<EditProfileResponse>(this.http, '/profile', {
       method: METHODS.PUT,
       retries: 1,

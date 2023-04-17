@@ -33,29 +33,28 @@ const isEqual = (a?: object, b?: object): boolean => {
     return false;
   }
 
-  let result = true;
-
-  aEntries.forEach(([key, aValue]) => {
+  for (const [key, aValue] of aEntries) {
     const castB = b as Indexed;
 
     if (!(key in castB)) {
-      result = false;
-      return;
+      return false;
     }
 
     const bValue = castB[key];
 
     if (isArrayOrObject(aValue) && isArrayOrObject(bValue)) {
-      result = isEqual(aValue, bValue);
-      return;
+      if (isEqual(aValue, bValue)) {
+        continue;
+      }
+      return false;
     }
 
     if (aValue !== bValue) {
-      result = isNaNCheck(aValue) && isNaNCheck(bValue);
+      return isNaNCheck(aValue) && isNaNCheck(bValue);
     }
-  });
+  }
 
-  return result;
+  return true;
 };
 
 export default isEqual;

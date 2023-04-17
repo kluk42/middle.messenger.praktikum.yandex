@@ -65,6 +65,10 @@ export class MessagesController {
     transport.send(dto);
   }
 
+  disconnect(id: number) {
+    this.sockets.get(id)?.close();
+  }
+
   private onMessage(id: number, messages: Message | Message[]) {
     if (!Array.isArray(messages) && messages.type !== 'message') {
       return;
