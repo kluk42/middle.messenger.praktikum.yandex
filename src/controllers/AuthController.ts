@@ -33,7 +33,7 @@ export class AuthController {
     try {
       const user = await this.api.getUser();
 
-      user.avatar = AppLinks.ResourcesUrl + user.avatar;
+      user.avatar = AppLinks.BaseUrl + '/resources' + user.avatar;
 
       store.set('user', user);
 

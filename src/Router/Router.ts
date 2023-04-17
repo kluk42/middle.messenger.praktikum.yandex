@@ -1,7 +1,7 @@
 import { Block } from '../utils/Block';
 import { trim } from '../utils/trim';
 
-export interface BlockConstructable<P extends Record<string, any> = any> {
+export interface BlockConstructable<P extends Record<string, unknown> = any> {
   new (props: P): Block<P>;
 }
 
@@ -30,8 +30,8 @@ interface IRoute {
 export enum Routes {
   SignInPage = '/',
   SignUpPage = 'sign-up',
-  Chat = 'chat',
-  EditProfilePage = 'edit-profile',
+  Chat = 'messenger',
+  EditProfilePage = 'settings',
   EditPasswordPage = 'edit-password',
   Profile = 'profile',
   NotFoundPage = 'not-found',

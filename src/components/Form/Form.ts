@@ -142,7 +142,7 @@ export class Form<InputNames extends EventNamesType> extends Block<
     const inputs = this.children.inputs as Input[];
 
     inputs.forEach(input => {
-      input.props.value = '';
+      input.props.value = input.props.value === undefined ? '' : undefined;
     });
   }
 
