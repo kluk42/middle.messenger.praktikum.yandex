@@ -1,122 +1,34 @@
-enum METHODS {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
-}
+import { HTTPTransport, METHODS, OptionsType } from './HttpTransport';
 
-type OptionsType = {
-  data?: Record<string, unknown>;
-  timeout?: number;
-  headers?: Record<string, string>;
-  method: METHODS;
-  retries: number;
-};
-
-class HTTPTransport {
-  private static instance?: HTTPTransport;
-
-  private constructor() {}
-
-  public static get Instance() {
-    if (!HTTPTransport.instance) {
-      HTTPTransport.instance = new HTTPTransport();
-    }
-
-    return HTTPTransport.instance;
-  }
-
-  get = (url: string, options: Omit<OptionsType, 'method' | 'retries'> = {}) => {
-    const query = this.queryStringify(url, options.data);
-    return this.request(query, { ...options, method: METHODS.GET }, options.timeout);
-  };
-
-  put = (url: string, options: Omit<OptionsType, 'method' | 'retries'>) => {
-    return this.request(url, { ...options, method: METHODS.PUT }, options.timeout);
-  };
-
-  post = (url: string, options: Omit<OptionsType, 'method' | 'retries'>) => {
-    return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
-  };
-
-  delete = (url: string, options: Omit<OptionsType, 'method' | 'retries'>) => {
-    return this.request(url, { ...options, method: METHODS.POST }, options.timeout);
-  };
-
-  private request = (url: string, options: Omit<OptionsType, 'retries'>, timeout = 5000) => {
-    return new Promise(function (resolve, reject) {
-      const { headers, data, method } = options;
-
-      const xhr = new XMLHttpRequest();
-      xhr.open(method, url);
-
-      xhr.timeout = timeout;
-
-      if (headers) {
-        Object.entries(headers).forEach(([key, value]) => {
-          xhr.setRequestHeader(key, value);
-        });
-      }
-
-      xhr.onload = function () {
-        resolve(xhr);
-      };
-
-      xhr.onabort = reject;
-      xhr.onerror = reject;
-      xhr.ontimeout = reject;
-
-      if (method === METHODS.GET || !data) {
-        xhr.send();
-      } else {
-        xhr.send(JSON.stringify(data));
-      }
-    });
-  };
-
-  private queryStringify(url: string, data?: Record<string, unknown>) {
-    if (data) {
-      let optionsString = '?';
-
-      Object.entries(data).forEach(([key, value]) => {
-        optionsString += `${key}=${value}&`;
-      });
-
-      return url + optionsString.slice(0, -1);
-    } else {
-      return url;
-    }
-  }
-}
-
-export async function fetchWithRetry(url: string, options: OptionsType) {
-  const transport = HTTPTransport.Instance;
-
+export const fetchWithRetry = async <Response>(
+  transport: HTTPTransport,
+  path: string,
+  options: OptionsType
+): Promise<Response> => {
   const { retries, method } = options;
 
   let requestFunction:
-    | ((url: string, options: Omit<OptionsType, 'retries'>) => Promise<unknown>)
+    | ((path: string, options: Omit<OptionsType, 'retries'>) => Promise<Response>)
     | null = null;
 
   switch (method) {
     case METHODS.DELETE:
-      requestFunction = transport.delete;
+      requestFunction = transport.delete.bind(transport);
       break;
     case METHODS.POST:
-      requestFunction = transport.post;
+      requestFunction = transport.post.bind(transport);
       break;
     case METHODS.PUT:
-      requestFunction = transport.put;
+      requestFunction = transport.put.bind(transport);
       break;
     default:
-      requestFunction = transport.get;
+      requestFunction = transport.get.bind(transport);
   }
 
   let triesCount = 0;
 
   try {
-    const res = await requestFunction(url, options);
+    const res = await requestFunction(path, options);
     return res;
   } catch (err) {
     if (requestFunction === null) {
@@ -126,7 +38,7 @@ export async function fetchWithRetry(url: string, options: OptionsType) {
       throw err;
     } else {
       triesCount += 1;
-      return requestFunction(url, options);
+      return requestFunction(path, options);
     }
   }
-}
+};

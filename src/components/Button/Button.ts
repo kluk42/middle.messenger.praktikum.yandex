@@ -13,6 +13,7 @@ export type Props = {
   events?: {
     click: () => void;
   };
+  type?: string;
 };
 
 export enum ButtonStyleTypes {
@@ -21,10 +22,11 @@ export enum ButtonStyleTypes {
   Custom = 'custom',
 }
 
-export class Button extends Block {
+export class Button extends Block<Props> {
   constructor(props: Props) {
     super(props);
   }
+
   protected render(): DocumentFragment {
     return this.compile(template, this.props);
   }

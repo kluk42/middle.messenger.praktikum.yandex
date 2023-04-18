@@ -1,143 +1,59 @@
+import { ChatsController } from '../../controllers/ChatsController';
+import { MessagesController } from '../../controllers/MessagesController';
+import { withControllers } from '../../hocs/withControllers';
+import { withStore } from '../../hocs/withStore';
 import { Block } from '../../utils/Block';
+import { State } from '../../utils/Store';
+import { Message } from '../../utils/WSTransport';
+import isEqual from '../../utils/isEqual';
+import { ModalNames, modalsSwitcher } from '../../utils/modalsSwitcher';
 import { Button, ButtonStyleTypes } from '../Button/Button';
 import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
 import { ChatSettings } from '../ChatSettings/ChatSettings';
 import { DotsForButton } from '../ChatSettings/DotsForButton';
-import { Field } from '../Field/Field';
-import { Form } from '../Form/Form';
-import { Input } from '../Input/Input';
-import { Modal } from '../Modal/Modal';
+import { getButtonsForNotSelectedChat, getButtonsForSelectedChat } from '../ChatSettings/utils';
 import template from './Chat.hbs';
 
 type InternalProps = {
-  Modal: 'delete-chat' | 'add-user' | 'delete-user' | 'change-avatar' | null;
-  areSettingsOpen: boolean;
+  Modal?: ModalNames | null;
+  areSettingsOpen?: boolean;
 };
 
-const modalSwitcher = (modalName: InternalProps['Modal'], onCloseModal: () => void) => {
-  const loginInput = new Input({
-    name: 'login',
-    inputStyle: 'inputField__input',
-  });
-  const loginField = new Field({
-    input: loginInput,
-    label: 'Логин',
-    name: 'login',
-  });
-
-  const addUserForm = new Form<{ login: 'login' }>({
-    fields: [loginField],
-    inputs: [loginInput],
-    submitBtn: new Button({ label: 'Добавить пользователя', stylesType: ButtonStyleTypes.Submit }),
-    submit: values => console.log(values),
-  });
-
-  const deleteUserForm = new Form<{ login: 'login' }>({
-    fields: [loginField],
-    inputs: [loginInput],
-    submitBtn: new Button({ label: 'Удалить пользователя', stylesType: ButtonStyleTypes.Submit }),
-    submit: values => console.log(values),
-  });
-
-  const fileInput = new Input({
-    type: 'file',
-    name: 'avatar',
-    id: 'avatar',
-    inputStyle: 'modal__fileInput',
-  });
-  const fileField = new Field({
-    input: fileInput,
-    label: 'Выберите файл',
-    name: 'avatar',
-    labelStyle: 'modal__fileInputLabel',
-  });
-
-  const fileForm = new Form<{ avatar: 'avatar' }>({
-    fields: [fileField],
-    inputs: [fileInput],
-    submit: values => console.log(values),
-    submitBtn: new Button({ label: 'Поменять аватар', stylesType: ButtonStyleTypes.Submit }),
-    formClass: 'modal__fileForm',
-  });
-
-  switch (modalName) {
-    case 'delete-chat':
-      return new Modal({
-        isOpen: true,
-        content: [new Button({ label: 'Подтвердить', stylesType: ButtonStyleTypes.Submit })],
-        header: 'Удалить?',
-        onClose: onCloseModal,
-      });
-    case 'add-user':
-      return new Modal({
-        isOpen: true,
-        header: 'Добавить пользователя',
-        content: [addUserForm],
-        onClose: onCloseModal,
-      });
-    case 'delete-user':
-      return new Modal({
-        isOpen: true,
-        header: 'Удалить пользователя',
-        content: [deleteUserForm],
-        onClose: onCloseModal,
-      });
-    case 'change-avatar':
-      return new Modal({
-        isOpen: true,
-        header: 'Поменять аватар',
-        content: [fileForm],
-        onClose: onCloseModal,
-      });
-    default:
-      return undefined;
-  }
-};
-
-type Props = {
-  ChatMessageInput: ChatMessageInput;
+type PropsFromStore = {
+  isChatSelected: boolean;
+  chatId?: number;
+  chatMessages?: Message[];
+  userId?: number;
   avatarSrc?: string;
   chatName?: string;
-  isChatSelected?: boolean;
-  chatMessages?: ChatMessage[];
 };
 
-export class Chat extends Block<Props & InternalProps> {
-  constructor(props: Props) {
+type Controllers = {
+  chatsController: ChatsController;
+  messagesController: MessagesController;
+};
+
+type Props = PropsFromStore & InternalProps & Controllers;
+type PropsFromConstructor = PropsFromStore & Controllers;
+type PropsWithoutControllers = PropsFromStore;
+
+let closeFunction: null | ((e: MouseEvent) => void) = null;
+
+class Chat extends Block<Props> {
+  constructor(props: PropsFromConstructor) {
     super({ ...props, Modal: null, areSettingsOpen: false });
+  }
+
+  toggleSettings() {
+    this.props.areSettingsOpen = !this.props.areSettingsOpen;
   }
 
   protected init(): void {
     this.children.ChatSettings = new ChatSettings({
       isOpen: false,
-      deleteChatBtn: new Button({
-        label: 'Удалить чат',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__actionBtn',
-        events: { click: () => (this.props.Modal = 'delete-chat') },
-      }),
-      addUserBtn: new Button({
-        label: 'Добавить пользователя',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__actionBtn',
-        events: { click: () => (this.props.Modal = 'add-user') },
-      }),
-      deleteUserBtn: new Button({
-        label: 'Удалить пользователя',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__actionBtn',
-        events: { click: () => (this.props.Modal = 'delete-user') },
-      }),
-      changeAvatarBtn: new Button({
-        label: 'Изменить аватар',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__actionBtn',
-        events: { click: () => (this.props.Modal = 'change-avatar') },
+      buttons: getButtonsForNotSelectedChat({
+        clickCreateChat: () => (this.props.Modal = 'create-chat'),
       }),
       openBtn: new Button({
         label: '',
@@ -146,11 +62,17 @@ export class Chat extends Block<Props & InternalProps> {
         styles: 'chatSettings__settingsBtn',
         child: new DotsForButton(),
         events: {
-          click: () => {
-            this.props.areSettingsOpen = !this.props.areSettingsOpen;
-          },
+          click: this.toggleSettings.bind(this),
         },
       }),
+    });
+
+    this.children.ChatMessageInput = new ChatMessageInput({
+      sendMessage: message => {
+        if (this.props.chatId) {
+          this.props.messagesController.sendMessage(this.props.chatId, message);
+        }
+      },
     });
   }
 
@@ -158,11 +80,16 @@ export class Chat extends Block<Props & InternalProps> {
     this.props.Modal = null;
   }
 
-  protected componentDidUpdate(oldProps: InternalProps, newProps: InternalProps): boolean {
+  protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
     if (oldProps.Modal !== newProps.Modal) {
       this.props.areSettingsOpen = false;
 
-      const modal = modalSwitcher(newProps.Modal, this.closeModal.bind(this));
+      const modal = modalsSwitcher(
+        this.closeModal.bind(this),
+        this.props.chatId ?? null,
+        this.props.chatsController,
+        newProps.Modal
+      );
 
       if (modal) {
         modal.dispatchComponentDidMount();
@@ -170,15 +97,115 @@ export class Chat extends Block<Props & InternalProps> {
 
       this.children.Modal = modal;
     }
+
     if (oldProps.areSettingsOpen !== newProps.areSettingsOpen) {
       const chatSettings = this.children.ChatSettings as ChatSettings;
-      chatSettings.props.isOpen = newProps.areSettingsOpen;
+      chatSettings.props.isOpen = !!newProps.areSettingsOpen;
+
+      if (newProps.areSettingsOpen) {
+        closeFunction = (e: MouseEvent) => {
+          const target = e.target as HTMLElement;
+          if (target.classList.contains('chatSettings__settingsBtn')) {
+            return;
+          }
+
+          this.toggleSettings();
+        };
+
+        document.addEventListener('click', closeFunction);
+      } else {
+        if (closeFunction) {
+          document.removeEventListener('click', closeFunction);
+          closeFunction = null;
+        }
+      }
     }
 
-    return oldProps !== newProps;
+    if (oldProps.isChatSelected !== newProps.isChatSelected) {
+      if (newProps.isChatSelected) {
+        this.children.ChatSettings = new ChatSettings({
+          isOpen: false,
+          buttons: getButtonsForSelectedChat({
+            clickDeleteChat: () => (this.props.Modal = 'delete-chat'),
+            clickAddUser: () => (this.props.Modal = 'add-user'),
+            clickDeleteUser: () => (this.props.Modal = 'delete-user'),
+            clickEditAvatar: () => (this.props.Modal = 'change-avatar'),
+          }),
+          openBtn: new Button({
+            label: '',
+            noValidation: true,
+            stylesType: ButtonStyleTypes.Custom,
+            styles: 'chatSettings__settingsBtn',
+            child: new DotsForButton(),
+            events: {
+              click: this.toggleSettings.bind(this),
+            },
+          }),
+        });
+
+        this.renderMessages();
+      } else {
+        this.children.ChatSettings = new ChatSettings({
+          isOpen: false,
+          buttons: getButtonsForNotSelectedChat({
+            clickCreateChat: () => (this.props.Modal = 'create-chat'),
+          }),
+          openBtn: new Button({
+            label: '',
+            noValidation: true,
+            stylesType: ButtonStyleTypes.Custom,
+            styles: 'chatSettings__settingsBtn',
+            child: new DotsForButton(),
+            events: {
+              click: this.toggleSettings.bind(this),
+            },
+          }),
+        });
+      }
+    }
+
+    if (!isEqual(oldProps.chatMessages, newProps.chatMessages)) {
+      this.renderMessages();
+    }
+
+    return !isEqual(oldProps, newProps);
+  }
+
+  private renderMessages() {
+    this.children.chatMessages = this.props.chatMessages?.map(message => {
+      const messageDate = new Date(message.time);
+      const messageTime = `${messageDate.getHours()}:${messageDate.getMinutes()}`;
+      return new ChatMessage({
+        isMessageSent: message.user_id === this.props.userId,
+        messageTime,
+        textMessage: message.content,
+      });
+    });
   }
 
   protected render(): DocumentFragment {
     return this.compile(template, this.props);
   }
 }
+
+const WithControllers = withControllers<Props, Controllers>(Chat, {
+  chatsController: new ChatsController(),
+  messagesController: new MessagesController(),
+});
+
+const mapStateToProps = (state: State): PropsFromStore => {
+  const chatId = state.selectedChat?.id;
+  return {
+    isChatSelected: state.selectedChat !== undefined,
+    chatId: chatId,
+    chatMessages:
+      chatId !== undefined && state.messages && chatId in state.messages
+        ? [...state.messages[chatId]]
+        : [],
+    userId: state.user?.id,
+    chatName: state.selectedChat?.chatName,
+    avatarSrc: state.selectedChat?.avatarSrc,
+  };
+};
+
+export default withStore<PropsWithoutControllers, PropsFromStore>(mapStateToProps)(WithControllers);

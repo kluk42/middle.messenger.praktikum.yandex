@@ -1,11 +1,19 @@
-import { renderDOM } from '../..';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
+import { FileForm } from '../../components/Form/FileForm';
 import { Form, Props as FormProps } from '../../components/Form/Form';
+import { FileInput } from '../../components/Input/FileInput';
 import { Input } from '../../components/Input/Input';
-import { InputName, ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
+import { Modal } from '../../components/Modal/Modal';
+import { ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
+import { ProfileController } from '../../controllers/ProfileController';
+import { withControllers } from '../../hocs/withControllers';
+import { withStore } from '../../hocs/withStore';
+import Router from '../../Router/Router';
 import { Block } from '../../utils/Block';
+import isEqual from '../../utils/isEqual';
+import { State } from '../../utils/Store';
 import template from './EditProfilePage.hbs';
 
 enum InputNames {
@@ -68,68 +76,143 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
     ),
 };
 
-export class EditProfilePage extends Block<Record<string, never>> {
-  constructor() {
-    super({});
+type Controllers = {
+  profileController: ProfileController;
+};
+
+type PropsFromStore = {
+  user: State['user'];
+};
+
+type StateProps = {
+  isModalOpen?: boolean;
+};
+
+type InjectedProps = Controllers & PropsFromStore;
+
+type Props = InjectedProps & StateProps;
+
+export class EditProfilePage extends Block<Props> {
+  constructor(props: InjectedProps) {
+    super(props);
   }
 
   protected init(): void {
     this.children.GoBackBtn = new ProfileGoBackBtn({
-      events: { click: () => renderDOM('home') },
+      events: { click: () => Router.back() },
     });
 
-    const fileInput = new Input({
-      inputStyle: 'profile__changeAvatarInput',
-      name: 'file',
+    this.renderForm();
+  }
+
+  protected componentDidUpdate(oldProps: Props, newProps: Props): boolean {
+    if (!isEqual(oldProps.user, newProps.user)) {
+      this.renderForm();
+      return true;
+    }
+
+    return !isEqual(oldProps, newProps);
+  }
+
+  protected closeModal() {
+    this.children.AvatarModal = undefined;
+    this.props.isModalOpen = false;
+  }
+
+  protected async submitAvatar(avatar: File) {
+    const formData = new FormData();
+    formData.append('avatar', avatar);
+    await this.props.profileController.editAvatar(formData);
+  }
+
+  protected renderModal() {
+    const fileInput = new FileInput({
       type: 'file',
+      name: 'avatar',
+      id: 'avatar',
+      inputStyle: 'modal__fileInput',
     });
-    const fileInputField = new Field({
+    const fileField = new Field({
       input: fileInput,
-      label: '',
-      labelStyle: 'editProfileForm__fileInputLabel',
-      name: 'file',
-      errorStyle: 'editProfileForm__fileInputError',
+      label: 'Выберите файл',
+      name: 'avatar',
+      labelStyle: 'modal__fileInputLabel',
     });
 
-    const fileForm = new Form<InputName>({
-      fields: [fileInputField],
+    const fileForm = new FileForm<{ avatar: 'avatar' }>({
+      fields: [fileField],
       inputs: [fileInput],
-      submit(values) {
-        console.log(values);
+      submit: async ({ avatar }) => {
+        if (avatar) {
+          await this.submitAvatar(avatar);
+          this.closeModal();
+        }
+      },
+      submitBtn: new Button({
+        label: 'Поменять аватар',
+        stylesType: ButtonStyleTypes.Submit,
+        type: 'submit',
+      }),
+      formClass: 'modal__fileForm',
+    });
+
+    const modal = new Modal({
+      content: [fileForm],
+      header: 'Изменить аватар',
+      isOpen: true,
+      onClose: this.closeModal.bind(this),
+    });
+
+    this.children.AvatarModal = modal;
+    this.props.isModalOpen = true;
+    modal.dispatchComponentDidMount();
+  }
+
+  protected renderForm() {
+    const openModal = this.renderModal.bind(this);
+    const openModalBtn = new Button({
+      label: '',
+      noValidation: true,
+      styles: 'editProfileForm__openAvatarModal profile__changeAvatarBtn',
+      events: {
+        click: openModal,
       },
     });
 
-    this.children.AvatarInput = new ProfileAvatar({ fileForm });
+    this.children.AvatarInput = new ProfileAvatar({
+      openModalBtn,
+      avatarSrc: this.props.user?.avatar,
+    });
 
     const nameInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'first_name',
-      value: 'Name',
+      value: this.props.user?.first_name ?? '',
     });
     const surnameInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'second_name',
-      value: 'Surname',
+      value: this.props.user?.second_name ?? '',
     });
     const loginInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'text',
       name: 'login',
-      value: 'login',
+      value: this.props.user?.login ?? '',
     });
     const emailInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'email',
       name: 'email',
-      value: 'bla@bla.bla',
+      value: this.props.user?.email ?? '',
     });
     const phoneInput = new Input({
       inputStyle: 'editProfileForm__input',
       type: 'tel',
       name: 'phone',
-      value: '+777',
+      value: this.props.user?.phone.toString() ?? '',
     });
 
     const inputs = [nameInput, surnameInput, loginInput, emailInput, phoneInput];
@@ -177,23 +260,46 @@ export class EditProfilePage extends Block<Record<string, never>> {
 
     const fields: Field[] = [firstNameField, secondNameField, loginField, emailField, phoneField];
 
-    this.children.form = new Form<InputNamesType>({
+    const profileController = this.props.profileController;
+    const oldUserData: State['user'] | Record<string, never> = this.props.user ?? {};
+
+    this.children.Form = new Form<InputNamesType>({
       fields,
       submitBtn: new Button({
         label: 'Сохранить',
         stylesType: ButtonStyleTypes.Submit,
         styles: 'authForm__signUpBtn',
       }),
-      submit: values => {
-        console.log(values);
+      async submit(values) {
+        await profileController.editProfile({
+          ...oldUserData,
+          ...values,
+          display_name: oldUserData.display_name ?? '',
+        });
       },
       inputs,
       validationRules,
       formClass: 'editProfileForm',
     });
+
+    this.children.Form.componentDidMount();
   }
 
   protected render(): DocumentFragment {
     return this.compile(template, this.children);
   }
 }
+
+const mapStateToProps = (state: State): PropsFromStore => {
+  if (state.user) {
+    return { user: { ...state.user } };
+  } else {
+    return { user: undefined };
+  }
+};
+
+const WithStore = withStore<InjectedProps, PropsFromStore>(mapStateToProps)(EditProfilePage);
+
+export default withControllers<Omit<InjectedProps, keyof PropsFromStore>, Controllers>(WithStore, {
+  profileController: new ProfileController(),
+});

@@ -1,11 +1,13 @@
 <div class="chat">
     <div class="chat__head">
+    {{#if isChatSelected}}
         {{#if avatarSrc}}
             <img src="{{avatarSrc}}" alt="avatar" class="chat__avatar">
         {{else}}
             <div class="chat__avatar chat__avatar_empty"></div>
         {{/if}}
             <h2 class="chat__name">{{chatName}}</h2>
+    {{/if}}
         {{{ChatSettings}}}
     </div>
     <div {{#if isChatSelected}}class="chat__messagesWindow"{{/if}} class="chat__messagesWindow chat__messagesWindow_chatIsNotSelected">

@@ -1,19 +1,32 @@
-import { renderDOM } from '../..';
+import { GetUserResponse } from '../../api/AuthApi';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
+import { AuthController } from '../../controllers/AuthController';
+import { withControllers } from '../../hocs/withControllers';
+import { withStore } from '../../hocs/withStore';
+import { Router, Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
+import { State } from '../../utils/Store';
 import template from './ProfilePage.hbs';
 
-export class ProfilePage extends Block<Record<string, never>> {
-  constructor() {
-    super({});
+type Controllers = { router: Router; authController: AuthController };
+type FromStore = { user?: GetUserResponse; avatarSrc?: string };
+type OwnProps = {};
+type Props = Controllers & FromStore & OwnProps;
+
+class ProfilePage extends Block<Props> {
+  constructor(props: Props) {
+    super(props);
   }
 
   protected init(): void {
+    const router = this.props.router;
+    const authController = this.props.authController;
+
     this.children.GoBackBtn = new ProfileGoBackBtn({
       events: {
         click() {
-          renderDOM('home');
+          router.back();
         },
       },
     });
@@ -25,7 +38,7 @@ export class ProfilePage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
-          renderDOM('editProfile');
+          router.go(Routes.EditProfilePage);
         },
       },
     });
@@ -35,8 +48,9 @@ export class ProfilePage extends Block<Record<string, never>> {
       text: 'Выйти',
       styles: 'profile__link',
       events: {
-        click(e) {
+        async click(e) {
           e.preventDefault();
+          await authController.logout();
         },
       },
     });
@@ -48,7 +62,7 @@ export class ProfilePage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
-          renderDOM('editPassword');
+          router.go(Routes.EditPasswordPage);
         },
       },
     });
@@ -57,12 +71,27 @@ export class ProfilePage extends Block<Record<string, never>> {
   protected render(): DocumentFragment {
     return this.compile(template, {
       ...this.children,
-      email: 'bla@bla.bla',
-      login: 'bla88',
-      name: 'Bla',
-      surname: 'Bla',
+      email: this.props.user?.email,
+      login: this.props.user?.login,
+      name: this.props.user?.first_name,
+      surname: this.props.user?.second_name,
       chatName: 'Bla',
-      telephone: '777',
+      telephone: this.props.user?.phone,
+      avatarSrc: this.props.avatarSrc,
     });
   }
 }
+
+const mapStateToProps = (state: State): FromStore => {
+  return {
+    user: state.user,
+    avatarSrc: state.user?.avatar,
+  };
+};
+
+const WithControllers = withControllers<OwnProps, Controllers>(ProfilePage, {
+  router: new Router('#app'),
+  authController: new AuthController(),
+});
+
+export default withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);

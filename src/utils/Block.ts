@@ -1,4 +1,5 @@
 import { EventBus } from './EventBus';
+import isEqual from './isEqual';
 
 enum BlockEvents {
   INIT = 'init',
@@ -93,7 +94,6 @@ export abstract class Block<P extends Record<string, unknown> = any> {
         }
       }
     });
-
     const html = template(contextAndStubs);
 
     const temp = document.createElement('template');
@@ -126,6 +126,14 @@ export abstract class Block<P extends Record<string, unknown> = any> {
 
   getContent() {
     return this._element;
+  }
+
+  setProps(nextProps: Partial<P>) {
+    if (!nextProps) {
+      return;
+    }
+
+    Object.assign(this.props, nextProps);
   }
 
   private addEvents() {
@@ -177,6 +185,10 @@ export abstract class Block<P extends Record<string, unknown> = any> {
     });
   }
 
+  public hide() {
+    return;
+  }
+
   private _componentDidUpdate(oldProps: P, newProps: P) {
     if (this.componentDidUpdate(oldProps, newProps)) {
       this.eventBus.emit(BlockEvents.FLOW_RENDER);
@@ -184,7 +196,7 @@ export abstract class Block<P extends Record<string, unknown> = any> {
   }
 
   protected componentDidUpdate(oldProps: P, newProps: P) {
-    return oldProps !== newProps;
+    return !isEqual(oldProps, newProps);
   }
 
   private registerEvents() {

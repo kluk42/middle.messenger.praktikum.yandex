@@ -1,26 +1,18 @@
-import { Chat } from '../../components/Chat/Chat';
-import { ChatMessageInput } from '../../components/ChatMessageInput/ChatMessageInput';
-import { MessagesList } from '../../components/MessagesList/MessagesList';
+import Chat from '../../components/Chat/Chat';
+import MessagesList from '../../components/ChatsList/ChatsList';
 import { Block } from '../../utils/Block';
 import template from './ChatPage.hbs';
-import { chatMessagesMock, messagesListMock } from './mocks';
+type Props = Record<string, never>;
 
-export class ChatPage extends Block<Record<string, never>> {
-  constructor() {
-    super({});
+export default class ChatPage extends Block<Props> {
+  constructor(props: Props) {
+    super(props);
   }
 
-  init() {
-    this.children.Chat = new Chat({
-      chatName: 'Иван',
-      isChatSelected: true,
-      chatMessages: chatMessagesMock,
-      ChatMessageInput: new ChatMessageInput({}),
-    });
+  async init() {
+    this.children.Chat = new Chat({});
 
-    this.children.MessagesList = new MessagesList({
-      messages: messagesListMock,
-    });
+    this.children.MessagesList = new MessagesList({});
   }
 
   protected render(): DocumentFragment {

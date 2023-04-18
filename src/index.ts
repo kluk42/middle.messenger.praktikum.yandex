@@ -1,36 +1,25 @@
-import { ChatPage } from './pages/ChatPage/ChatPage';
-import { EditPasswordPage } from './pages/EditPasswordPage/EditPasswordPage';
-import { EditProfilePage } from './pages/EditProfilePage/EditProfilePage';
+import { AuthController } from './controllers/AuthController';
+import ChatPage from './pages/ChatPage/ChatPage';
+import EditPasswordPage from './pages/EditPasswordPage/EditPasswordPage';
+import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
 import { ErrorPage } from './pages/ErrorPage/ErrorPage';
-import { HomePage } from './pages/HomePage/HomePage';
-import { ProfilePage } from './pages/ProfilePage/ProfilePage';
-import { SignInPage } from './pages/SignInPage/SignInPage';
-import { SignUpPage } from './pages/SignUpPage/SignUpPage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import SignInPage from './pages/SignInPage/SignInPage';
+import SignUpPage from './pages/SignUpPage/SignUpPage';
+import { Router, Routes } from './Router/Router';
 
-const routes = {
-  home: HomePage,
-  signUp: SignUpPage,
-  signIn: SignInPage,
-  chat: ChatPage,
-  editProfile: EditProfilePage,
-  editPassword: EditPasswordPage,
-  profilePage: ProfilePage,
-  errorPage: ErrorPage,
-};
+window.addEventListener('DOMContentLoaded', async () => {
+  new Router('#app')
+    .use(Routes.SignInPage, SignInPage, {})
+    .use(Routes.SignUpPage, SignUpPage, {})
+    .use(Routes.Chat, ChatPage, {})
+    .use(Routes.EditProfilePage, EditProfilePage, {})
+    .use(Routes.EditPasswordPage, EditPasswordPage, {})
+    .use(Routes.Profile, ProfilePage, {})
+    .use(Routes.NotFoundPage, ErrorPage, { statusCode: 404, text: 'Не найдено' })
+    .use(Routes.ServerError, ErrorPage, { statusCode: 500, text: 'Что-то пошло не так' })
+    .start();
 
-export function renderDOM(route: keyof typeof routes) {
-  const root = document.getElementById('app')!;
-
-  root.innerHTML = '';
-
-  const Page = routes[route];
-  const page = new Page();
-
-  root.appendChild(page.getContent()!);
-
-  page.dispatchComponentDidMount();
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  renderDOM('home');
+  const authController = new AuthController();
+  await authController.getUser();
 });

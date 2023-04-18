@@ -1,10 +1,15 @@
-import { renderDOM } from '../..';
+import { GetUserResponse } from '../../api/AuthApi';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
+import { AuthController } from '../../controllers/AuthController';
+import { withControllers } from '../../hocs/withControllers';
+import { withStore } from '../../hocs/withStore';
+import { Router, Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
+import { State } from '../../utils/Store';
 import template from './SignUpPage.hbs';
 
 enum InputNames {
@@ -75,72 +80,77 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
     ),
 };
 
-export class SignUpPage extends Block {
-  constructor() {
-    super({});
+type Controllers = { auth: AuthController; router: Router };
+type FromStore = GetUserResponse | undefined;
+type OwnProps = {};
+type AllProps = Controllers & FromStore & OwnProps;
+
+class SignUpPage extends Block<AllProps> {
+  constructor(props: AllProps) {
+    super(props);
   }
 
   init() {
     const nameInput = new Input({
       inputStyle: 'inputField__input',
       type: 'text',
-      name: 'first_name',
+      name: InputNames.Name,
     });
     const surnameInput = new Input({
       inputStyle: 'inputField__input',
       type: 'text',
-      name: 'second_name',
+      name: InputNames.Surname,
     });
     const loginInput = new Input({
       inputStyle: 'inputField__input',
       type: 'text',
-      name: 'login',
+      name: InputNames.Login,
     });
     const emailInput = new Input({
       inputStyle: 'inputField__input',
       type: 'email',
-      name: 'email',
+      name: InputNames.Email,
     });
     const phoneInput = new Input({
       inputStyle: 'inputField__input',
       type: 'tel',
-      name: 'phone',
+      name: InputNames.Phone,
     });
     const passwordInput = new Input({
       inputStyle: 'inputField__input',
       type: 'password',
-      name: 'password',
+      name: InputNames.Password,
     });
 
     const inputs = [nameInput, surnameInput, loginInput, emailInput, phoneInput, passwordInput];
 
     const firstNameField = new Field({
-      name: 'first_name',
+      name: InputNames.Name,
       label: 'Имя',
       input: nameInput,
     });
     const secondNameField = new Field({
-      name: 'second_name',
+      name: InputNames.Surname,
       label: 'Фамилия',
       input: surnameInput,
     });
     const loginField = new Field({
-      name: 'login',
+      name: InputNames.Login,
       label: 'Логин *',
       input: loginInput,
     });
     const emailField = new Field({
-      name: 'email',
+      name: InputNames.Email,
       label: 'Email *',
       input: emailInput,
     });
     const phoneField = new Field({
-      name: 'phone',
+      name: InputNames.Phone,
       label: 'Телефон *',
       input: phoneInput,
     });
     const passwordField = new Field({
-      name: 'password',
+      name: InputNames.Password,
       label: 'Пароль *',
       input: passwordInput,
     });
@@ -154,15 +164,24 @@ export class SignUpPage extends Block {
       passwordField,
     ];
 
+    const submitBtn = new Button({
+      label: 'Зарегистрироваться',
+      stylesType: ButtonStyleTypes.Submit,
+      styles: 'authForm__signUpBtn',
+    });
+
     this.children.form = new Form<InputNamesType>({
       fields,
-      submitBtn: new Button({
-        label: 'Зарегистрироваться',
-        stylesType: ButtonStyleTypes.Submit,
-        styles: 'authForm__signUpBtn',
-      }),
-      submit: values => {
-        console.log(values);
+      submitBtn,
+      submit: async values => {
+        try {
+          await this.props.auth.signUp(values);
+        } catch (error) {
+          const e = error as any;
+          const reason = e.reason;
+
+          submitBtn.props.actionError = reason;
+        }
       },
       inputs,
       validationRules,
@@ -176,7 +195,7 @@ export class SignUpPage extends Block {
       events: {
         click: e => {
           e.preventDefault();
-          renderDOM('signIn');
+          this.props.router.go(Routes.SignInPage);
         },
       },
     });
@@ -186,3 +205,19 @@ export class SignUpPage extends Block {
     return this.compile(template, this.children);
   }
 }
+
+const WithControllers = withControllers<OwnProps, { auth: AuthController; router: Router }>(
+  SignUpPage,
+  {
+    auth: new AuthController(),
+    router: new Router('#app'),
+  }
+);
+
+const mapStateToProps = (state: State): FromStore => {
+  return state.user;
+};
+
+const WithStore = withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);
+
+export default WithStore;

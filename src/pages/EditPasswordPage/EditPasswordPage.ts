@@ -1,11 +1,16 @@
-import { renderDOM } from '../..';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
-import { InputName, ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
+import { ProfileAvatar } from '../../components/ProfileAvatar/ProfileAvatar';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
+import { AuthController } from '../../controllers/AuthController';
+import { ProfileController } from '../../controllers/ProfileController';
+import { withControllers } from '../../hocs/withControllers';
+import { withStore } from '../../hocs/withStore';
+import Router, { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
+import { State } from '../../utils/Store';
 import template from './EditPasswordPage.hbs';
 
 enum InputNames {
@@ -60,38 +65,30 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
     ),
 };
 
-export class EditPasswordPage extends Block<Record<string, never>> {
-  constructor() {
-    super({});
+type Controllers = {
+  profileController: ProfileController;
+  authController: AuthController;
+};
+
+type PropsFromStore = {
+  avatarSrc?: string;
+};
+
+type OwnProps = Record<string, never>;
+
+type Props = Controllers & OwnProps & PropsFromStore;
+
+class EditPasswordPage extends Block<Props> {
+  constructor(props: Props) {
+    super(props);
   }
 
   protected init(): void {
     this.children.GoBackBtn = new ProfileGoBackBtn({
-      events: { click: () => renderDOM('home') },
+      events: { click: () => Router.back() },
     });
 
-    const fileInput = new Input({
-      inputStyle: 'profile__changeAvatarInput',
-      name: 'file',
-      type: 'file',
-    });
-    const fileInputField = new Field({
-      input: fileInput,
-      label: '',
-      labelStyle: 'editProfileForm__fileInputLabel',
-      name: 'file',
-      errorStyle: 'editProfileForm__fileInputError',
-    });
-
-    const fileForm = new Form<InputName>({
-      fields: [fileInputField],
-      inputs: [fileInput],
-      submit(values) {
-        console.log(values);
-      },
-    });
-
-    this.children.AvatarInput = new ProfileAvatar({ fileForm });
+    this.children.AvatarInput = new ProfileAvatar({ avatarSrc: this.props.avatarSrc });
 
     const oldPasswordInput = new Input({
       inputStyle: 'editProfileForm__input',
@@ -100,8 +97,8 @@ export class EditPasswordPage extends Block<Record<string, never>> {
     });
     const newPasswordInput = new Input({
       inputStyle: 'editProfileForm__input',
-      type: 'text',
-      name: 'second_name',
+      type: 'password',
+      name: InputNames.NewPassword,
     });
     const newPasswordAgainInput = new Input({
       inputStyle: 'editProfileForm__input',
@@ -138,16 +135,33 @@ export class EditPasswordPage extends Block<Record<string, never>> {
 
     const fields: Field[] = [oldPasswordField, newPasswordField, newPasswordAgainField];
 
+    const submitBtn = new Button({
+      label: 'Сохранить',
+      stylesType: ButtonStyleTypes.Submit,
+      styles: 'authForm__signUpBtn',
+    });
+
+    const pageProps = this.props;
+
+    const submit = async function (
+      this: Form<InputNamesType>,
+      { newPassword, oldPassword }: { newPassword: string; oldPassword: string }
+    ) {
+      try {
+        await pageProps.profileController.editPassword(oldPassword, newPassword);
+        pageProps.authController.logout(Routes.SignInPage);
+      } catch (error) {
+        const e = error as any;
+        const reason: string = e.reason;
+
+        submitBtn.props.actionError = reason;
+      }
+    };
+
     this.children.form = new Form<InputNamesType>({
       fields,
-      submitBtn: new Button({
-        label: 'Сохранить',
-        stylesType: ButtonStyleTypes.Submit,
-        styles: 'authForm__signUpBtn',
-      }),
-      submit: values => {
-        console.log(values);
-      },
+      submitBtn,
+      submit,
       inputs,
       validationRules,
       formClass: 'editProfileForm',
@@ -158,3 +172,16 @@ export class EditPasswordPage extends Block<Record<string, never>> {
     return this.compile(template, this.children);
   }
 }
+
+const mapStateToProps = (state: State): PropsFromStore => {
+  return {
+    avatarSrc: state.user?.avatar,
+  };
+};
+
+const WithProps = withStore<Props, PropsFromStore>(mapStateToProps)(EditPasswordPage);
+
+export default withControllers<OwnProps, Controllers>(WithProps, {
+  profileController: new ProfileController(),
+  authController: new AuthController(),
+});

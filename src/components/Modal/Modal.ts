@@ -2,7 +2,7 @@ import { Block } from '../../utils/Block';
 import { Button } from '../Button/Button';
 import template from './Modal.hbs';
 
-type Props = {
+export type Props = {
   isOpen: boolean;
   content: Block[];
   header: string;

@@ -1,11 +1,16 @@
-import { renderDOM } from '../..';
 import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
+import router, { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './ErrorPage.hbs';
 
-export class ErrorPage extends Block<Record<string, never>> {
-  constructor() {
-    super({});
+type Props = {
+  statusCode: number;
+  text: string;
+};
+
+export class ErrorPage extends Block<Props> {
+  constructor(props: Props) {
+    super(props);
   }
 
   protected init(): void {
@@ -15,7 +20,7 @@ export class ErrorPage extends Block<Record<string, never>> {
       events: {
         click(e) {
           e.preventDefault();
-          renderDOM('chat');
+          router.go(Routes.Chat);
         },
       },
     });
@@ -24,8 +29,7 @@ export class ErrorPage extends Block<Record<string, never>> {
   protected render(): DocumentFragment {
     return this.compile(template, {
       Link: this.children.Link,
-      statusCode: 500,
-      text: 'Что-то пошло не так',
+      ...this.props,
     });
   }
 }

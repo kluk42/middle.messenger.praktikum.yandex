@@ -9,11 +9,12 @@ export type Props<InputNames extends EventNamesType> = {
   fields: Field[];
   submitBtn?: Button;
   inputs: Input[];
-  submit: (values: Record<string, string>) => void;
+  submit: (values: { [K in MapType<InputNames>]: string }) => void;
   formClass?: string;
   validationRules?: {
     [K in MapType<InputNames>]: (value: string) => string | null;
   };
+  shouldCleanOnSubmit?: boolean;
 };
 
 export class Form<InputNames extends EventNamesType> extends Block<
@@ -33,11 +34,14 @@ export class Form<InputNames extends EventNamesType> extends Block<
   }
 
   public getValues() {
-    const values: Record<string, string> = {};
+    const values: { [K in MapType<InputNames>]: string } = {} as {
+      [K in MapType<InputNames>]: string;
+    };
     const inputs = this.children.inputs as Input[];
     inputs.forEach(i => {
       const input = i.getContent()! as HTMLInputElement;
-      values[input.name] = input.value;
+      const name = input.name as MapType<InputNames>;
+      values[name] = input.value;
     });
     return values;
   }
@@ -59,6 +63,10 @@ export class Form<InputNames extends EventNamesType> extends Block<
         }
 
         this.props.submit(this.getValues());
+
+        if (this.props.shouldCleanOnSubmit) {
+          this.cleanValues();
+        }
       },
     };
 
@@ -128,6 +136,14 @@ export class Form<InputNames extends EventNamesType> extends Block<
         inputField.props.errorText = '';
       }
     }
+  }
+
+  private cleanValues() {
+    const inputs = this.children.inputs as Input[];
+
+    inputs.forEach(input => {
+      input.props.value = input.props.value === undefined ? '' : undefined;
+    });
   }
 
   protected render(): DocumentFragment {
