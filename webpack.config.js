@@ -23,9 +23,6 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
-    chunkFilename: '[name].bundle.js',
-    assetModuleFilename: 'images/[hash][ext][query]',
   },
 
   module: {
@@ -71,5 +68,7 @@ module.exports = {
     hot: true,
     historyApiFallback: true,
     compress: true,
+    port: 3000,
+    open: true,
   },
 };
