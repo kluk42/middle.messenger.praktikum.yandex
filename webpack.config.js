@@ -6,7 +6,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
 const plugins = [
-  new MiniCssExtractPlugin(),
+  new MiniCssExtractPlugin({ filename: 'static/[name].css' }),
   new HtmlWebpackPlugin({
     template: './src/index.html',
   }),
@@ -23,6 +23,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
+    assetModuleFilename: 'images/[hash][ext][query]',
   },
 
   module: {
@@ -30,6 +31,9 @@ module.exports = {
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
         type: 'asset',
+        generator: {
+          filename: 'static/[hash][ext][query]',
+        },
       },
       {
         test: /\.(ts)$/,
