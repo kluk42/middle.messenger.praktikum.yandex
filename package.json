@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve",
-    "build": "cross-env NODE_ENV=production webpack build",
+    "build": "cross-env NODE_ENV=production webpack build && cd ./dist/static && surge --domain broken-clocks.surge.sh",
     "lint": "eslint -- ./src",
     "lint:css": "stylelint src/**/*.scss --fix"
   },
@@ -31,7 +31,6 @@
     "stylelint": "15.2.0",
     "stylelint-config-prettier-scss": "0.0.1",
     "stylelint-config-standard-scss": "7.0.1",
-    "surge": "0.23.1",
     "ts-loader": "9.4.2",
     "typescript": "4.9.5",
     "webpack": "5.80.0",
