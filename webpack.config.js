@@ -6,9 +6,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 
 const plugins = [
-  new MiniCssExtractPlugin({ filename: 'static/[name].css' }),
+  new MiniCssExtractPlugin({
+    filename: 'static/[name].css',
+  }),
   new HtmlWebpackPlugin({
     template: './src/index.html',
+    favicon: './favicon.ico',
   }),
 ];
 
@@ -50,10 +53,6 @@ module.exports = {
       {
         test: /\.(sc|c)ss$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
-      },
-      {
-        test: /\.(woff(2)?|eot|ttf|otf|svg|)$/,
-        type: 'asset/inline',
       },
       { test: /\.hbs$/, loader: 'handlebars-loader' },
     ],

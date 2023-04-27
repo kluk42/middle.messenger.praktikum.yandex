@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "cross-env NODE_ENV=development webpack serve",
-    "build": "cross-env NODE_ENV=production webpack build && cd ./dist/static && surge --domain broken-clocks.surge.sh",
+    "start": "npm run build && node server.js",
+    "dev": "cross-env NODE_ENV=development webpack serve",
+    "build": "cross-env NODE_ENV=production webpack build && surge -p ./dist/static --domain broken-clocks.surge.sh",
     "lint": "eslint -- ./src",
     "lint:css": "stylelint src/**/*.scss --fix"
   },
