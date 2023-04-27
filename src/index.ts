@@ -8,6 +8,8 @@ import SignInPage from './pages/SignInPage/SignInPage';
 import SignUpPage from './pages/SignUpPage/SignUpPage';
 import { Router, Routes } from './Router/Router';
 
+import './index.scss';
+
 window.addEventListener('DOMContentLoaded', async () => {
   new Router('#app')
     .use(Routes.SignInPage, SignInPage, {})
