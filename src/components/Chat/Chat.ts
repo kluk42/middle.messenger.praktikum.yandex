@@ -12,8 +12,22 @@ import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
 import { ChatSettings } from '../ChatSettings/ChatSettings';
 import { DotsForButton } from '../ChatSettings/DotsForButton';
-import { getButtonsForNotSelectedChat, getButtonsForSelectedChat } from '../ChatSettings/utils';
+import { getButtonsForSelectedChat } from '../ChatSettings/utils';
 import template from './Chat.hbs';
+
+export const getButtonsForNotSelectedChat = ({
+  clickCreateChat,
+}: {
+  clickCreateChat: () => void;
+}) => [
+  new Button({
+    label: '',
+    noValidation: true,
+    stylesType: ButtonStyleTypes.Custom,
+    styles: 'chat__createChatBtn',
+    events: { click: clickCreateChat },
+  }),
+];
 
 type InternalProps = {
   Modal?: ModalNames | null;
@@ -50,21 +64,8 @@ class Chat extends Block<Props> {
   }
 
   protected init(): void {
-    this.children.ChatSettings = new ChatSettings({
-      isOpen: false,
-      buttons: getButtonsForNotSelectedChat({
-        clickCreateChat: () => (this.props.Modal = 'create-chat'),
-      }),
-      openBtn: new Button({
-        label: '',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__settingsBtn',
-        child: new DotsForButton(),
-        events: {
-          click: this.toggleSettings.bind(this),
-        },
-      }),
+    this.children.CreateChatBtn = getButtonsForNotSelectedChat({
+      clickCreateChat: () => (this.props.Modal = 'create-chat'),
     });
 
     this.children.ChatMessageInput = new ChatMessageInput({
@@ -145,21 +146,8 @@ class Chat extends Block<Props> {
 
         this.renderMessages();
       } else {
-        this.children.ChatSettings = new ChatSettings({
-          isOpen: false,
-          buttons: getButtonsForNotSelectedChat({
-            clickCreateChat: () => (this.props.Modal = 'create-chat'),
-          }),
-          openBtn: new Button({
-            label: '',
-            noValidation: true,
-            stylesType: ButtonStyleTypes.Custom,
-            styles: 'chatSettings__settingsBtn',
-            child: new DotsForButton(),
-            events: {
-              click: this.toggleSettings.bind(this),
-            },
-          }),
+        this.children.CreateChatBtn = getButtonsForNotSelectedChat({
+          clickCreateChat: () => (this.props.Modal = 'create-chat'),
         });
       }
     }
