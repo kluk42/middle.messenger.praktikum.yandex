@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import { HTTPTransport, METHODS } from './HttpTransport';
 
-describe.only('Tests for hhtp transport', () => {
+describe('Tests for hhtp transport', () => {
   const requests: sinon.SinonFakeXMLHttpRequest[] = [];
   const XHR = sinon.useFakeXMLHttpRequest();
 
