@@ -10,8 +10,8 @@
     "lint:css": "stylelint src/**/*.scss --fix",
     "test": "mocha --require ts-node/register --require ./mochaSetup.js './src/**/*.test.ts'",
     "validate": "npm-run-all --parallel test lint lint:css",
-    "precommit": "npm run validate",
-    "prepush": "npm run validate"
+    "pre-commit": "npm run validate",
+    "pre-push": "npm run validate"
   },
   "keywords": [],
   "author": "",
