@@ -5,10 +5,13 @@
   "scripts": {
     "start": "node server.js",
     "dev": "cross-env NODE_ENV=development webpack serve",
-    "build": "cross-env NODE_ENV=production webpack build && surge -p ./dist/static --domain broken-clocks.surge.sh",
+    "build": "cross-env NODE_ENV=production webpack build",
     "lint": "eslint -- ./src",
     "lint:css": "stylelint src/**/*.scss --fix",
-    "test": "mocha --require ts-node/register --require ./mochaSetup.js './src/**/*.test.ts'"
+    "test": "mocha --require ts-node/register --require ./mochaSetup.js './src/**/*.test.ts'",
+    "validate": "npm-run-all --parallel test lint lint:css",
+    "precommit": "npm run validate",
+    "prepush": "npm run validate"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +19,7 @@
   "devDependencies": {
     "@types/chai": "4.3.4",
     "@types/mocha": "10.0.1",
-    "@types/sinon": "^10.0.14",
+    "@types/sinon": "10.0.14",
     "@typescript-eslint/eslint-plugin": "5.52.0",
     "@typescript-eslint/parser": "5.52.0",
     "chai": "4.3.7",
@@ -30,9 +33,11 @@
     "handlebars": "4.7.7",
     "handlebars-loader": "1.7.3",
     "html-webpack-plugin": "5.5.1",
+    "husky": "8.0.3",
     "jsdom": "21.1.1",
     "mini-css-extract-plugin": "2.7.5",
     "mocha": "10.2.0",
+    "npm-run-all": "4.1.5",
     "prettier": "2.8.4",
     "sass-loader": "13.2.2",
     "sinon": "15.0.4",
@@ -44,6 +49,7 @@
     "typescript": "4.9.5",
     "webpack": "5.80.0",
     "webpack-cli": "5.0.2",
-    "webpack-dev-server": "4.13.3"
+    "webpack-dev-server": "4.13.3",
+    "express-history-api-fallback": "2.2.1"
   }
 }

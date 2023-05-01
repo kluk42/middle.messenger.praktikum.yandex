@@ -1,5 +1,5 @@
 const { JSDOM } = require('jsdom');
-const HandleBars = require('handlebars');
+const Handlebars = require('handlebars');
 const fs = require('fs');
 
 const { window } = new JSDOM('<div id="app"></div>', {
