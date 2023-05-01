@@ -10,8 +10,7 @@
     "lint:css": "stylelint src/**/*.scss --fix",
     "test": "mocha --require ts-node/register --require ./mochaSetup.js './src/**/*.test.ts'",
     "validate": "npm-run-all --parallel test lint lint:css",
-    "pre-commit": "npm run validate",
-    "pre-push": "npm run validate"
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -30,6 +29,7 @@
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-prettier": "4.2.1",
     "express": "4.18.2",
+    "express-history-api-fallback": "2.2.1",
     "handlebars": "4.7.7",
     "handlebars-loader": "1.7.3",
     "html-webpack-plugin": "5.5.1",
@@ -49,7 +49,6 @@
     "typescript": "4.9.5",
     "webpack": "5.80.0",
     "webpack-cli": "5.0.2",
-    "webpack-dev-server": "4.13.3",
-    "express-history-api-fallback": "2.2.1"
+    "webpack-dev-server": "4.13.3"
   }
 }
