@@ -1,5 +1,5 @@
 import { GetUserResponse } from '../../api/AuthApi';
-import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
+import AnchorLink from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
@@ -112,12 +112,7 @@ class SignInPage extends Block<AllProps> {
       href: '/',
       text: 'Нет аккаунта?',
       styles: 'auth__link',
-      events: {
-        click: e => {
-          e.preventDefault();
-          this.props.router.go(Routes.SignUpPage);
-        },
-      },
+      path: Routes.SignUpPage,
     });
   }
 
@@ -126,13 +121,9 @@ class SignInPage extends Block<AllProps> {
   }
 }
 
-const WithControllers = withControllers<OwnProps, { auth: AuthController; router: Router }>(
-  SignInPage,
-  {
-    auth: new AuthController(),
-    router: new Router('#app'),
-  }
-);
+const WithControllers = withControllers<OwnProps, { auth: AuthController }>(SignInPage, {
+  auth: new AuthController(),
+});
 
 const mapStateToProps = (state: State): FromStore => {
   return state.user;

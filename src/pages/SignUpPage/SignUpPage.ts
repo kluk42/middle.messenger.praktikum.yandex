@@ -1,5 +1,5 @@
 import { GetUserResponse } from '../../api/AuthApi';
-import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
+import AnchorLink from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
@@ -192,12 +192,7 @@ class SignUpPage extends Block<AllProps> {
       href: '/',
       text: 'Уже есть аккаунт?',
       styles: 'auth__link',
-      events: {
-        click: e => {
-          e.preventDefault();
-          this.props.router.go(Routes.SignInPage);
-        },
-      },
+      path: Routes.SignInPage,
     });
   }
 
@@ -206,13 +201,9 @@ class SignUpPage extends Block<AllProps> {
   }
 }
 
-const WithControllers = withControllers<OwnProps, { auth: AuthController; router: Router }>(
-  SignUpPage,
-  {
-    auth: new AuthController(),
-    router: new Router('#app'),
-  }
-);
+const WithControllers = withControllers<OwnProps, { auth: AuthController }>(SignUpPage, {
+  auth: new AuthController(),
+});
 
 const mapStateToProps = (state: State): FromStore => {
   return state.user;

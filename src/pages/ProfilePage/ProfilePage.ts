@@ -1,5 +1,5 @@
 import { GetUserResponse } from '../../api/AuthApi';
-import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
+import AnchorLink from '../../components/AnchorLink/AnchorLink';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
 import { AuthController } from '../../controllers/AuthController';
 import { withControllers } from '../../hocs/withControllers';
@@ -35,36 +35,21 @@ class ProfilePage extends Block<Props> {
       href: '/',
       text: 'Изменить данные',
       styles: 'profile__link',
-      events: {
-        click(e) {
-          e.preventDefault();
-          router.go(Routes.EditProfilePage);
-        },
-      },
+      path: Routes.EditProfilePage,
     });
 
     this.children.LogoutLink = new AnchorLink({
       href: '/',
       text: 'Выйти',
       styles: 'profile__link',
-      events: {
-        async click(e) {
-          e.preventDefault();
-          await authController.logout();
-        },
-      },
+      handler: authController.logout,
     });
 
     this.children.ChangePasswordLink = new AnchorLink({
       href: '/',
       text: 'Изменить пароль',
       styles: 'profile__link',
-      events: {
-        click(e) {
-          e.preventDefault();
-          router.go(Routes.EditPasswordPage);
-        },
-      },
+      path: Routes.EditPasswordPage,
     });
   }
 

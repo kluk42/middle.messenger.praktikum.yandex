@@ -1,5 +1,5 @@
-import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
-import router, { Routes } from '../../Router/Router';
+import AnchorLink from '../../components/AnchorLink/AnchorLink';
+import { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './ErrorPage.hbs';
 
@@ -17,12 +17,7 @@ export class ErrorPage extends Block<Props> {
     this.children.Link = new AnchorLink({
       href: '/',
       text: 'Назад к чатам',
-      events: {
-        click(e) {
-          e.preventDefault();
-          router.go(Routes.Chat);
-        },
-      },
+      path: Routes.Chat,
     });
   }
 

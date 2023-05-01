@@ -2,13 +2,13 @@ import { ChatsController } from '../../controllers/ChatsController';
 import { MessagesController } from '../../controllers/MessagesController';
 import { withControllers } from '../../hocs/withControllers';
 import { withStore } from '../../hocs/withStore';
-import { Router, Routes } from '../../Router/Router';
+import { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import { differenceInDays, format, FormatStrings } from '../../utils/DateTimeUtils';
 import isEqual from '../../utils/isEqual';
 import { State } from '../../utils/Store';
 import { Message } from '../../utils/WSTransport';
-import { AnchorLink } from '../AnchorLink/AnchorLink';
+import AnchorLink from '../AnchorLink/AnchorLink';
 import { ChatListItemProps, createChatsListItem } from '../Message/ChatsListItem';
 import template from './ChatsList.hbs';
 
@@ -21,7 +21,6 @@ type PropsFromStore = {
 type Controllers = {
   chatsController: ChatsController;
   messagesController: MessagesController;
-  router: Router;
 };
 
 type OwnProps = Record<string, never>;
@@ -37,12 +36,7 @@ class ChatsList extends Block<Props> {
     this.children.ProfileLink = new AnchorLink({
       href: '/',
       text: 'Профиль >',
-      events: {
-        click: (e: Event) => {
-          e.preventDefault();
-          this.props.router.go(Routes.Profile);
-        },
-      },
+      path: Routes.Profile,
       styles: 'messages__profileLink',
     });
   }
@@ -139,7 +133,6 @@ const mapStateToProps = (state: State): PropsFromStore => {
 const WithControllers = withControllers<OwnProps, Controllers>(ChatsList, {
   chatsController: new ChatsController(),
   messagesController: new MessagesController(),
-  router: new Router('#app'),
 });
 
 export default withStore<OwnProps, PropsFromStore>(mapStateToProps)(WithControllers);
