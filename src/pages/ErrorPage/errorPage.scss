@@ -1,9 +1,8 @@
-@import '../../styles/fonts/typography.scss';
+@import '../../styles/fonts/typography';
 
 .errorPage {
     width: 100vw;
     height: 100vh;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,11 +10,13 @@
 
     &__error {
         @include superLargeThick;
+
         margin-bottom: 20px;
     }
 
     &__text {
         @include hugeThick;
+
         margin-bottom: 69px;
     }
 }

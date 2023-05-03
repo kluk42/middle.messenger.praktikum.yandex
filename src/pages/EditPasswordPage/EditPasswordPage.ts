@@ -78,7 +78,13 @@ type OwnProps = Record<string, never>;
 
 type Props = Controllers & OwnProps & PropsFromStore;
 
-class EditPasswordPage extends Block<Props> {
+type Children = {
+  GoBackBtn: ProfileGoBackBtn;
+  AvatarInput: ProfileAvatar;
+  form: Form<InputNamesType>;
+};
+
+class EditPasswordPage extends Block<Props, Children> {
   constructor(props: Props) {
     super(props);
   }
@@ -179,9 +185,9 @@ const mapStateToProps = (state: State): PropsFromStore => {
   };
 };
 
-const WithProps = withStore<Props, PropsFromStore>(mapStateToProps)(EditPasswordPage);
+const WithProps = withStore<Props, PropsFromStore, Children>(mapStateToProps)(EditPasswordPage);
 
-export default withControllers<OwnProps, Controllers>(WithProps, {
+export default withControllers<OwnProps, Controllers, Children>(WithProps, {
   profileController: new ProfileController(),
   authController: new AuthController(),
 });

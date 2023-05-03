@@ -8,7 +8,7 @@ type Props = {
   openBtn: Button;
 };
 
-export class ChatSettings extends Block<Props> {
+export class ChatSettings extends Block<Props, Record<string, never>> {
   constructor(props: Props) {
     super(props);
   }

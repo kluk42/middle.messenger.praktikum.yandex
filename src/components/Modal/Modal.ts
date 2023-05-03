@@ -1,15 +1,19 @@
-import { Block } from '../../utils/Block';
+import { Block, IBlock } from '../../utils/Block';
 import { Button } from '../Button/Button';
 import template from './Modal.hbs';
 
 export type Props = {
   isOpen: boolean;
-  content: Block[];
+  content: IBlock<Record<string, unknown>>[];
   header: string;
   onClose: () => void;
 };
 
-export class Modal extends Block<Props> {
+type Children = {
+  CloseBtn: Button;
+};
+
+export class Modal extends Block<Props, Children> {
   constructor(props: Props) {
     super(props);
   }

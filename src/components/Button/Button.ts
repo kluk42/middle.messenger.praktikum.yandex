@@ -1,4 +1,4 @@
-import { Block } from '../../utils/Block';
+import { Block, IBlock } from '../../utils/Block';
 import template from './Button.hbs';
 
 export type Props = {
@@ -9,7 +9,7 @@ export type Props = {
   styles?: string;
   validationError?: string;
   containerStyles?: string;
-  child?: Block;
+  child?: IBlock<Record<string, never>> | IBlock<Record<string, unknown>>;
   events?: {
     click: () => void;
   };
@@ -22,7 +22,7 @@ export enum ButtonStyleTypes {
   Custom = 'custom',
 }
 
-export class Button extends Block<Props> {
+export class Button extends Block<Props, Record<string, never>> {
   constructor(props: Props) {
     super(props);
   }

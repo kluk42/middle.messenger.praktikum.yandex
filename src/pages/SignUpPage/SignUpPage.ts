@@ -1,15 +1,12 @@
-import { GetUserResponse } from '../../api/AuthApi';
-import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
+import AnchorLink from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
 import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
 import { AuthController } from '../../controllers/AuthController';
 import { withControllers } from '../../hocs/withControllers';
-import { withStore } from '../../hocs/withStore';
-import { Router, Routes } from '../../Router/Router';
+import { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
-import { State } from '../../utils/Store';
 import template from './SignUpPage.hbs';
 
 enum InputNames {
@@ -80,12 +77,15 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
     ),
 };
 
-type Controllers = { auth: AuthController; router: Router };
-type FromStore = GetUserResponse | undefined;
-type OwnProps = {};
-type AllProps = Controllers & FromStore & OwnProps;
+type Controllers = { auth: AuthController };
+type AllProps = Controllers;
 
-class SignUpPage extends Block<AllProps> {
+type Children = {
+  signInLink: InstanceType<typeof AnchorLink>;
+  form: Form<InputNamesType>;
+};
+
+class SignUpPage extends Block<AllProps, Children> {
   constructor(props: AllProps) {
     super(props);
   }
@@ -192,12 +192,7 @@ class SignUpPage extends Block<AllProps> {
       href: '/',
       text: 'Уже есть аккаунт?',
       styles: 'auth__link',
-      events: {
-        click: e => {
-          e.preventDefault();
-          this.props.router.go(Routes.SignInPage);
-        },
-      },
+      path: Routes.SignInPage,
     });
   }
 
@@ -206,18 +201,8 @@ class SignUpPage extends Block<AllProps> {
   }
 }
 
-const WithControllers = withControllers<OwnProps, { auth: AuthController; router: Router }>(
-  SignUpPage,
-  {
-    auth: new AuthController(),
-    router: new Router('#app'),
-  }
-);
+const WithControllers = withControllers<AllProps, Controllers, Children>(SignUpPage, {
+  auth: new AuthController(),
+});
 
-const mapStateToProps = (state: State): FromStore => {
-  return state.user;
-};
-
-const WithStore = withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);
-
-export default WithStore;
+export default WithControllers;

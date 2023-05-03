@@ -1,5 +1,5 @@
-@import '../../styles/fonts/typography.scss';
-@import '../../styles/palette.scss';
+@import '../../styles/fonts/typography';
+@import '../../styles/palette';
 
 .inputField {
     display: flex;
@@ -29,6 +29,7 @@
 
     &__error {
         @include small;
+
         color: $color-error;
         margin-top: 7px;
     }

@@ -1,12 +1,13 @@
-import { Block } from '../utils/Block';
+import { Block, IBlock } from '../utils/Block';
 import isEqual from '../utils/isEqual';
 import store, { State, StoreEvents } from '../utils/Store';
 
 export function withStore<
   Props extends Record<string, unknown>,
-  V extends Record<string, unknown> | undefined
+  V extends Record<string, unknown> | undefined,
+  C extends Record<string, IBlock<Record<string, unknown>> | IBlock<Record<string, unknown>>[]>
 >(mapStateToProps: (state: State) => V) {
-  return function wrap(Component: typeof Block<Props>) {
+  return function wrap(Component: typeof Block<Props, C>) {
     let previousState: V;
 
     return class WithStore extends Component {

@@ -1,5 +1,5 @@
 import { GetUserResponse } from '../../api/AuthApi';
-import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
+import AnchorLink from '../../components/AnchorLink/AnchorLink';
 import { ProfileGoBackBtn } from '../../components/ProfileGoBackBtn/ProfileGoBackBtn';
 import { AuthController } from '../../controllers/AuthController';
 import { withControllers } from '../../hocs/withControllers';
@@ -11,10 +11,16 @@ import template from './ProfilePage.hbs';
 
 type Controllers = { router: Router; authController: AuthController };
 type FromStore = { user?: GetUserResponse; avatarSrc?: string };
-type OwnProps = {};
-type Props = Controllers & FromStore & OwnProps;
+type Props = Controllers & FromStore;
 
-class ProfilePage extends Block<Props> {
+type Children = {
+  GoBackBtn: ProfileGoBackBtn;
+  LogoutLink: InstanceType<typeof AnchorLink>;
+  ChangeDataLink: InstanceType<typeof AnchorLink>;
+  ChangePasswordLink: InstanceType<typeof AnchorLink>;
+};
+
+class ProfilePage extends Block<Props, Children> {
   constructor(props: Props) {
     super(props);
   }
@@ -35,36 +41,21 @@ class ProfilePage extends Block<Props> {
       href: '/',
       text: 'Изменить данные',
       styles: 'profile__link',
-      events: {
-        click(e) {
-          e.preventDefault();
-          router.go(Routes.EditProfilePage);
-        },
-      },
+      path: Routes.EditProfilePage,
     });
 
     this.children.LogoutLink = new AnchorLink({
       href: '/',
       text: 'Выйти',
       styles: 'profile__link',
-      events: {
-        async click(e) {
-          e.preventDefault();
-          await authController.logout();
-        },
-      },
+      handler: authController.logout.bind(authController),
     });
 
     this.children.ChangePasswordLink = new AnchorLink({
       href: '/',
       text: 'Изменить пароль',
       styles: 'profile__link',
-      events: {
-        click(e) {
-          e.preventDefault();
-          router.go(Routes.EditPasswordPage);
-        },
-      },
+      path: Routes.EditPasswordPage,
     });
   }
 
@@ -89,9 +80,11 @@ const mapStateToProps = (state: State): FromStore => {
   };
 };
 
-const WithControllers = withControllers<OwnProps, Controllers>(ProfilePage, {
+const WithControllers = withControllers<Props, Controllers, Children>(ProfilePage, {
   router: new Router('#app'),
   authController: new AuthController(),
 });
 
-export default withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);
+export default withStore<Omit<Props, keyof Controllers>, FromStore, Children>(mapStateToProps)(
+  WithControllers
+);

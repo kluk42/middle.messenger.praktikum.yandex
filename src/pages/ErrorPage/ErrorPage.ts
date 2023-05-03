@@ -1,5 +1,5 @@
-import { AnchorLink } from '../../components/AnchorLink/AnchorLink';
-import router, { Routes } from '../../Router/Router';
+import AnchorLink from '../../components/AnchorLink/AnchorLink';
+import { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
 import template from './ErrorPage.hbs';
 
@@ -8,7 +8,11 @@ type Props = {
   text: string;
 };
 
-export class ErrorPage extends Block<Props> {
+type Children = {
+  Link: InstanceType<typeof AnchorLink>;
+};
+
+export class ErrorPage extends Block<Props, Children> {
   constructor(props: Props) {
     super(props);
   }
@@ -17,12 +21,7 @@ export class ErrorPage extends Block<Props> {
     this.children.Link = new AnchorLink({
       href: '/',
       text: 'Назад к чатам',
-      events: {
-        click(e) {
-          e.preventDefault();
-          router.go(Routes.Chat);
-        },
-      },
+      path: Routes.Chat,
     });
   }
 

@@ -8,7 +8,7 @@ type Props = {
   placeholder: string;
 };
 
-export class TextAreaInput extends Block {
+export class TextAreaInput extends Block<Props> {
   constructor(props: Props) {
     super(props);
   }

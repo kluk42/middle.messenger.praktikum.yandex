@@ -22,12 +22,23 @@ type EventArgs = {
   [BlockEvents.FLOW_RENDER]: [];
 };
 
-export abstract class Block<P extends Record<string, unknown> = any> {
-  public id = Math.random().toString(16).slice(6);
-  protected children: Record<
+export interface IBlock<P extends Record<string, unknown>> {
+  id: string;
+  getContent: () => HTMLElement | null;
+  setProps: (nextProps: Partial<P>) => void;
+  dispatchComponentDidMount: () => void;
+}
+
+export abstract class Block<
+  P extends Record<string, unknown>,
+  C extends Record<
     string,
-    Block<Record<string, unknown>> | Block<Record<string, unknown>>[] | undefined
-  >;
+    IBlock<Record<string, unknown>> | IBlock<Record<string, unknown>>[]
+  > = Record<string, never>
+> implements IBlock<P>
+{
+  public id = Math.random().toString(16).slice(6);
+  protected children: C;
   public props: P;
   private _element: HTMLElement | null = null;
   private eventBus: EventBus<BlockEventNamesType, EventArgs>;
@@ -46,16 +57,14 @@ export abstract class Block<P extends Record<string, unknown> = any> {
 
   protected separatePropsFromChildren(childrenAndProps: P) {
     const props: Record<string, unknown> = {};
-    const children: Record<
-      string,
-      Block<Record<string, unknown>> | Block<Record<string, unknown>>[]
-    > = {};
+    const children: typeof this.children = {} as typeof this.children;
 
     Object.entries(childrenAndProps).forEach(([key, value]) => {
       if (Array.isArray(value) && value.length > 0 && value.every(v => v instanceof Block)) {
-        children[key] = value;
+        children[key as keyof C] = value as C[keyof C];
       } else if (value instanceof Block) {
-        children[key] = value;
+        const typedValue = value as unknown;
+        children[key as keyof C] = typedValue as C[keyof C];
       } else {
         props[key] = value;
       }
@@ -82,7 +91,7 @@ export abstract class Block<P extends Record<string, unknown> = any> {
     return new DocumentFragment();
   }
 
-  protected compile(template: (context: any) => string, context: any) {
+  protected compile(template: (context: unknown) => string, context: any) {
     const contextAndStubs = { ...context };
 
     Object.entries(this.children).forEach(([name, component]) => {
@@ -100,7 +109,7 @@ export abstract class Block<P extends Record<string, unknown> = any> {
 
     temp.innerHTML = html;
 
-    const replaceStub = (component: Block<Record<string, unknown>>) => {
+    const replaceStub = (component: IBlock<Record<string, unknown>>) => {
       const stub = temp.content.querySelector(`[data-id="${component.id}"]`);
 
       if (!stub) {
@@ -108,7 +117,7 @@ export abstract class Block<P extends Record<string, unknown> = any> {
       }
       component.getContent()?.append(...Array.from(stub.childNodes));
 
-      stub.replaceWith(component._element!);
+      stub.replaceWith(component.getContent()!);
     };
 
     Object.entries(this.children).forEach(([_, component]) => {

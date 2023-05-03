@@ -1,14 +1,18 @@
-import { Block } from '../utils/Block';
+import { Block, IBlock } from '../utils/Block';
 import { trim } from '../utils/trim';
 
-export interface BlockConstructable<P extends Record<string, unknown> = any> {
-  new (props: P): Block<P>;
+export interface BlockConstructable<
+  P extends Record<string, unknown>,
+  C extends Record<string, IBlock<Record<string, unknown>> | IBlock<Record<string, unknown>>[]>
+> {
+  new (props: P): Block<P, C>;
 }
 
 interface IRouter {
   use<
+    C extends Record<string, IBlock<Record<string, unknown>> | IBlock<Record<string, unknown>>[]>,
     P extends Record<string, unknown> = Record<string, unknown>,
-    B extends BlockConstructable<P> = BlockConstructable<P>
+    B extends BlockConstructable<P, C> = BlockConstructable<P, C>
   >(
     path: Routes,
     block: B,
@@ -20,11 +24,13 @@ interface IRouter {
   back(): void; // переход назад по истории браузера
   forward(): void; // переход вперёд по истории браузера
   onRoute(path: Routes): void;
-  getRoute(path: Routes): Route | null;
 }
 
 interface IRoute {
   navigate(path: Routes): void;
+  render(): void;
+  match(pathname: Routes): boolean;
+  leave(): void;
 }
 
 export enum Routes {
@@ -38,7 +44,7 @@ export enum Routes {
   ServerError = 'server-error',
 }
 
-function render(query: string, block: Block) {
+function render<P extends Record<string, unknown>>(query: string, block: IBlock<P>) {
   const root = document.querySelector(query);
 
   if (root === null) {
@@ -55,13 +61,14 @@ function render(query: string, block: Block) {
 }
 
 export class Route<
+  C extends Record<string, IBlock<Record<string, unknown>> | IBlock<Record<string, unknown>>[]>,
   P extends Record<string, unknown> = Record<string, unknown>,
-  B extends BlockConstructable<P> = BlockConstructable<P>
+  B extends BlockConstructable<P, C> = BlockConstructable<P, C>
 > implements IRoute
 {
   public pathName: Routes;
   private blockClass: B;
-  private block: Block<P> | null = null;
+  private block: Block<P, C> | null = null;
   private props: P;
   private readonly query: string;
 
@@ -101,9 +108,9 @@ export class Route<
 
 export class Router implements IRouter {
   private static instance: Router;
-  private routes: Route<Record<string, unknown>, BlockConstructable>[] = [];
+  private routes: IRoute[] = [];
   private history: (typeof window)['history'] = window.history;
-  private currentRoute: Route | null = null;
+  private currentRoute: IRoute | null = null;
 
   constructor(private readonly query: string) {
     if (Router.instance) {
@@ -116,8 +123,9 @@ export class Router implements IRouter {
   }
 
   use<
-    P extends Record<string, unknown> = Record<string, unknown>,
-    B extends BlockConstructable<P> = BlockConstructable<P>
+    C extends Record<string, IBlock<Record<string, unknown>> | IBlock<Record<string, unknown>>[]>,
+    B extends BlockConstructable<P, C>,
+    P extends Record<string, unknown> = Record<string, unknown>
   >(path: Routes, block: B, props: P): Router {
     const route = new Route(path, block, props, this.query);
 
@@ -149,6 +157,8 @@ export class Router implements IRouter {
     }
 
     route.render();
+
+    this.currentRoute = route;
   }
 
   getRoute(pathname: Routes) {
