@@ -5,6 +5,11 @@ import { Field } from '../Field/Field';
 import { Input } from '../Input/Input';
 import template from './Form.hbs';
 
+type Children = {
+  inputs: Input[];
+  fields: Field[];
+};
+
 export type Props<InputNames extends EventNamesType> = {
   fields: Field[];
   submitBtn?: Button;
@@ -22,7 +27,8 @@ export class Form<InputNames extends EventNamesType> extends Block<
     events?: {
       submit: (e: SubmitEvent) => void;
     };
-  }
+  },
+  Children
 > {
   private validationBus?: EventBus<InputNames, Record<MapType<InputNames>, [string]>>;
 
@@ -37,7 +43,7 @@ export class Form<InputNames extends EventNamesType> extends Block<
     const values: { [K in MapType<InputNames>]: string } = {} as {
       [K in MapType<InputNames>]: string;
     };
-    const inputs = this.children.inputs as Input[];
+    const inputs = this.children.inputs;
     inputs.forEach(i => {
       const input = i.getContent()! as HTMLInputElement;
       const name = input.name as MapType<InputNames>;
@@ -53,7 +59,7 @@ export class Form<InputNames extends EventNamesType> extends Block<
         if (this.validationBus) {
           this.triggerFormValidation();
 
-          const fields = this.children.fields as Field[];
+          const fields = this.children.fields;
 
           const isFormInValid = fields.some(f => f.props.errorText && f.props.errorText !== '');
 
@@ -79,7 +85,7 @@ export class Form<InputNames extends EventNamesType> extends Block<
 
   private subscribeInputsToValidationBus() {
     if (this.validationBus) {
-      const inputs = this.children.inputs as Input[];
+      const inputs = this.children.inputs;
 
       inputs.forEach(input => {
         const inputName = input.props.name as MapType<InputNames>;
@@ -101,7 +107,7 @@ export class Form<InputNames extends EventNamesType> extends Block<
   }
 
   private triggerFormValidation() {
-    const inputs = this.children.inputs as Input[];
+    const inputs = this.children.inputs;
 
     inputs.forEach(input => {
       if (this.validationBus) {
@@ -116,7 +122,7 @@ export class Form<InputNames extends EventNamesType> extends Block<
     if (listener) {
       const errorText = listener(value);
 
-      const fields = this.children.fields as Field[];
+      const fields = this.children.fields;
       const inputFieldArr = fields.filter(field => field.props.name === inputName);
 
       if (!inputFieldArr[0]) {
@@ -139,7 +145,7 @@ export class Form<InputNames extends EventNamesType> extends Block<
   }
 
   private cleanValues() {
-    const inputs = this.children.inputs as Input[];
+    const inputs = this.children.inputs;
 
     inputs.forEach(input => {
       input.props.value = input.props.value === undefined ? '' : undefined;

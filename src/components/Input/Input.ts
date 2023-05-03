@@ -14,7 +14,7 @@ export type Props = {
   isTextArea?: boolean;
 };
 
-export class Input extends Block<Props> {
+export class Input extends Block<Props, Record<string, never>> {
   constructor(props: Props) {
     super(props);
   }

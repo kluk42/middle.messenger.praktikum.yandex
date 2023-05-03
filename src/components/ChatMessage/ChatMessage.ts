@@ -16,7 +16,7 @@ type InternalProps = {
   messageReceivedImgPath: string;
 };
 
-export class ChatMessage extends Block<Props & InternalProps> {
+export class ChatMessage extends Block<Props & InternalProps, Record<string, never>> {
   constructor(props: Props) {
     super({ ...props, messageReceivedImgPath: imageReceivedIcon });
   }

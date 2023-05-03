@@ -14,7 +14,7 @@ export type Props = {
   labelStyle?: string;
 };
 
-export class Field extends Block<Props> {
+export class Field extends Block<Props, Record<string, never>> {
   constructor(props: Props) {
     super(props);
   }

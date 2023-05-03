@@ -3,8 +3,11 @@ import { EventNamesType, MapType } from '../../utils/EventBus';
 import { Button } from '../Button/Button';
 import { Field } from '../Field/Field';
 import { FileInput } from '../Input/FileInput';
-import { Input } from '../Input/Input';
 import template from './Form.hbs';
+
+type Children = {
+  inputs: FileInput[];
+};
 
 export type Props<InputNames extends EventNamesType> = {
   fields: Field[];
@@ -23,7 +26,8 @@ export class FileForm<InputNames extends EventNamesType> extends Block<
     events?: {
       submit: (e: SubmitEvent) => void;
     };
-  }
+  },
+  Children
 > {
   constructor(props: Props<InputNames>) {
     super(props);
@@ -33,7 +37,7 @@ export class FileForm<InputNames extends EventNamesType> extends Block<
     const values: { [K in MapType<InputNames>]: File | null } = {} as {
       [K in MapType<InputNames>]: File | null;
     };
-    const inputs = this.children.inputs as FileInput[];
+    const inputs = this.children.inputs;
     inputs.forEach(i => {
       const name = i.props.name as MapType<InputNames>;
       values[name] = i.file;
@@ -60,10 +64,10 @@ export class FileForm<InputNames extends EventNamesType> extends Block<
   }
 
   private cleanValues() {
-    const inputs = this.children.inputs as Input[];
+    const inputs = this.children.inputs;
 
     inputs.forEach(input => {
-      input.props.value = '';
+      input.props.value = undefined;
     });
   }
 

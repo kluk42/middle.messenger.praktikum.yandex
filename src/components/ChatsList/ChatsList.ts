@@ -12,6 +12,11 @@ import AnchorLink from '../AnchorLink/AnchorLink';
 import { ChatListItemProps, createChatsListItem } from '../Message/ChatsListItem';
 import template from './ChatsList.hbs';
 
+type Children = {
+  ProfileLink: InstanceType<typeof AnchorLink>;
+  chats?: InstanceType<ReturnType<typeof createChatsListItem>>[];
+};
+
 type PropsFromStore = {
   lastChatMessages?: ChatListItemProps[];
   chats?: { id: number; token: string }[];
@@ -23,11 +28,9 @@ type Controllers = {
   messagesController: MessagesController;
 };
 
-type OwnProps = Record<string, never>;
+type Props = PropsFromStore & Controllers;
 
-type Props = PropsFromStore & OwnProps & Controllers;
-
-class ChatsList extends Block<Props> {
+class ChatsList extends Block<Props, Children> {
   constructor(props: Props) {
     super(props);
   }
@@ -130,9 +133,11 @@ const mapStateToProps = (state: State): PropsFromStore => {
   };
 };
 
-const WithControllers = withControllers<OwnProps, Controllers>(ChatsList, {
+const WithControllers = withControllers<Props, Controllers, Children>(ChatsList, {
   chatsController: new ChatsController(),
   messagesController: new MessagesController(),
 });
 
-export default withStore<OwnProps, PropsFromStore>(mapStateToProps)(WithControllers);
+export default withStore<Omit<Props, keyof Controllers>, PropsFromStore, Children>(mapStateToProps)(
+  WithControllers
+);

@@ -1,7 +1,7 @@
 import { Block } from '../../utils/Block';
 import template from './DotsForButton.hbs';
 
-export class DotsForButton extends Block<Record<string, never>> {
+export class DotsForButton extends Block<Record<string, never>, Record<string, never>> {
   constructor() {
     super({});
   }

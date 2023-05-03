@@ -1,4 +1,3 @@
-import { GetUserResponse } from '../../api/AuthApi';
 import AnchorLink from '../../components/AnchorLink/AnchorLink';
 import { Button, ButtonStyleTypes } from '../../components/Button/Button';
 import { Field } from '../../components/Field/Field';
@@ -6,10 +5,8 @@ import { Form, Props as FormProps } from '../../components/Form/Form';
 import { Input } from '../../components/Input/Input';
 import { AuthController } from '../../controllers/AuthController';
 import { withControllers } from '../../hocs/withControllers';
-import { withStore } from '../../hocs/withStore';
-import { Router, Routes } from '../../Router/Router';
+import { Routes } from '../../Router/Router';
 import { Block } from '../../utils/Block';
-import { State } from '../../utils/Store';
 import template from './SignInPage.hbs';
 
 enum InputNames {
@@ -48,13 +45,16 @@ const validationRules: FormProps<InputNamesType>['validationRules'] = {
     ),
 };
 
-type Controllers = { auth: AuthController; router: Router };
-type FromStore = GetUserResponse | undefined;
-type OwnProps = {};
-type AllProps = Controllers & FromStore & OwnProps;
+type Controllers = { auth: AuthController };
+type Props = Controllers;
 
-class SignInPage extends Block<AllProps> {
-  constructor(props: AllProps) {
+type Children = {
+  signUpLink: InstanceType<typeof AnchorLink>;
+  form: Form<InputNamesType>;
+};
+
+class SignInPage extends Block<Props, Children> {
+  constructor(props: Props) {
     super(props);
   }
 
@@ -121,14 +121,8 @@ class SignInPage extends Block<AllProps> {
   }
 }
 
-const WithControllers = withControllers<OwnProps, { auth: AuthController }>(SignInPage, {
+const WithControllers = withControllers<Props, Controllers, Children>(SignInPage, {
   auth: new AuthController(),
 });
 
-const mapStateToProps = (state: State): FromStore => {
-  return state.user;
-};
-
-const WithStore = withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);
-
-export default WithStore;
+export default WithControllers;

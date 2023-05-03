@@ -1,9 +1,13 @@
-import { Block } from '../utils/Block';
+import { Block, IBlock } from '../utils/Block';
 
 export function withControllers<
   OwnProps extends Record<string, unknown>,
-  C extends Record<string, any>
->(Component: typeof Block<OwnProps>, controllers: C) {
+  C extends Record<string, any>,
+  Children extends Record<
+    string,
+    IBlock<Record<string, unknown>> | IBlock<Record<string, unknown>>[]
+  >
+>(Component: typeof Block<OwnProps, Children>, controllers: C) {
   return class WithController extends Component {
     constructor(props: Omit<OwnProps, keyof C>) {
       const additionalProps = Object.entries(controllers).reduce(

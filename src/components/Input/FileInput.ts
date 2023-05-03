@@ -6,9 +6,10 @@ export type Props = {
   id?: string;
   inputStyle?: string;
   type: 'file';
+  value?: File;
 };
 
-export class FileInput extends Block<Props> {
+export class FileInput extends Block<Props, Record<string, never>> {
   constructor(props: Props) {
     super(props);
   }

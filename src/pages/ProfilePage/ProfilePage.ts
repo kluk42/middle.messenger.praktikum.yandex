@@ -11,10 +11,16 @@ import template from './ProfilePage.hbs';
 
 type Controllers = { router: Router; authController: AuthController };
 type FromStore = { user?: GetUserResponse; avatarSrc?: string };
-type OwnProps = {};
-type Props = Controllers & FromStore & OwnProps;
+type Props = Controllers & FromStore;
 
-class ProfilePage extends Block<Props> {
+type Children = {
+  GoBackBtn: ProfileGoBackBtn;
+  LogoutLink: InstanceType<typeof AnchorLink>;
+  ChangeDataLink: InstanceType<typeof AnchorLink>;
+  ChangePasswordLink: InstanceType<typeof AnchorLink>;
+};
+
+class ProfilePage extends Block<Props, Children> {
   constructor(props: Props) {
     super(props);
   }
@@ -42,7 +48,7 @@ class ProfilePage extends Block<Props> {
       href: '/',
       text: 'Выйти',
       styles: 'profile__link',
-      handler: authController.logout,
+      handler: authController.logout.bind(authController),
     });
 
     this.children.ChangePasswordLink = new AnchorLink({
@@ -74,9 +80,11 @@ const mapStateToProps = (state: State): FromStore => {
   };
 };
 
-const WithControllers = withControllers<OwnProps, Controllers>(ProfilePage, {
+const WithControllers = withControllers<Props, Controllers, Children>(ProfilePage, {
   router: new Router('#app'),
   authController: new AuthController(),
 });
 
-export default withStore<OwnProps, FromStore>(mapStateToProps)(WithControllers);
+export default withStore<Omit<Props, keyof Controllers>, FromStore, Children>(mapStateToProps)(
+  WithControllers
+);

@@ -20,7 +20,7 @@ type Controllers = {
 
 type Props = OwnProps & Controllers;
 
-export class AnchorLink extends Block<Props> {
+export class AnchorLink extends Block<Props, Record<string, never>> {
   constructor(props: Props) {
     const { handler } = props;
     super({
@@ -44,6 +44,9 @@ export class AnchorLink extends Block<Props> {
   }
 }
 
-export default withControllers<Omit<Props, 'events'>, Controllers>(AnchorLink, {
-  router: new Router('#app'),
-});
+export default withControllers<Omit<Props, 'events'>, Controllers, Record<string, never>>(
+  AnchorLink,
+  {
+    router: new Router('#app'),
+  }
+);

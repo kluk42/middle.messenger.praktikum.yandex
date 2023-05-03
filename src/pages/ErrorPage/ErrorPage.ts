@@ -8,7 +8,11 @@ type Props = {
   text: string;
 };
 
-export class ErrorPage extends Block<Props> {
+type Children = {
+  Link: InstanceType<typeof AnchorLink>;
+};
+
+export class ErrorPage extends Block<Props, Children> {
   constructor(props: Props) {
     super(props);
   }
