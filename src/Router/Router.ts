@@ -152,13 +152,13 @@ export class Router implements IRouter {
       return;
     }
 
-    if (this.currentRoute) {
+    if (this.currentRoute && this.currentRoute !== route) {
       this.currentRoute.leave();
     }
 
-    route.render();
-
     this.currentRoute = route;
+
+    route.render();
   }
 
   getRoute(pathname: Routes) {
