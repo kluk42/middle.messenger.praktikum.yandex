@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import { Router, Routes } from '../../Router/Router';
 import { AnchorLink } from './AnchorLink';
 
-describe.only('AnchorLink component tests', () => {
+describe('AnchorLink component tests', () => {
   const goMock = sinon.stub();
   //@ts-ignore
   const router = {

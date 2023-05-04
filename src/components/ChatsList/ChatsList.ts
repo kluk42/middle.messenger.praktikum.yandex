@@ -63,6 +63,7 @@ class ChatsList extends Block<Props, Children> {
   }
 
   protected render(): DocumentFragment {
+    this.children.chats = this.createChats();
     return this.compile(template, { ...this.props, ...this.children });
   }
 
