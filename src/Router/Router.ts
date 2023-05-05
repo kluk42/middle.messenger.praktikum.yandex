@@ -152,7 +152,7 @@ export class Router implements IRouter {
       return;
     }
 
-    if (this.currentRoute && this.currentRoute !== route) {
+    if (this.currentRoute) {
       this.currentRoute.leave();
     }
 
