@@ -92,7 +92,14 @@ type InjectedProps = Controllers & PropsFromStore;
 
 type Props = InjectedProps & StateProps;
 
-export class EditProfilePage extends Block<Props> {
+type Children = {
+  GoBackBtn: ProfileGoBackBtn;
+  AvatarModal?: Modal;
+  AvatarInput: ProfileAvatar;
+  Form: Form<InputNamesType>;
+};
+
+export class EditProfilePage extends Block<Props, Children> {
   constructor(props: InjectedProps) {
     super(props);
   }
@@ -298,8 +305,13 @@ const mapStateToProps = (state: State): PropsFromStore => {
   }
 };
 
-const WithStore = withStore<InjectedProps, PropsFromStore>(mapStateToProps)(EditProfilePage);
+const WithStore = withStore<InjectedProps, PropsFromStore, Children>(mapStateToProps)(
+  EditProfilePage
+);
 
-export default withControllers<Omit<InjectedProps, keyof PropsFromStore>, Controllers>(WithStore, {
-  profileController: new ProfileController(),
-});
+export default withControllers<Omit<InjectedProps, keyof PropsFromStore>, Controllers, Children>(
+  WithStore,
+  {
+    profileController: new ProfileController(),
+  }
+);

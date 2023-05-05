@@ -40,17 +40,3 @@ export const getButtonsForSelectedChat = ({
     events: { click: clickEditAvatar },
   }),
 ];
-
-export const getButtonsForNotSelectedChat = ({
-  clickCreateChat,
-}: {
-  clickCreateChat: () => void;
-}) => [
-  new Button({
-    label: 'Создать чат',
-    noValidation: true,
-    stylesType: ButtonStyleTypes.Custom,
-    styles: 'chatSettings__actionBtn',
-    events: { click: clickCreateChat },
-  }),
-];

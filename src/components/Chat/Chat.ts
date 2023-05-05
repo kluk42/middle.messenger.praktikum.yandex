@@ -12,8 +12,23 @@ import { ChatMessage } from '../ChatMessage/ChatMessage';
 import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
 import { ChatSettings } from '../ChatSettings/ChatSettings';
 import { DotsForButton } from '../ChatSettings/DotsForButton';
-import { getButtonsForNotSelectedChat, getButtonsForSelectedChat } from '../ChatSettings/utils';
+import { getButtonsForSelectedChat } from '../ChatSettings/utils';
+import { Modal } from '../Modal/Modal';
 import template from './Chat.hbs';
+
+export const getButtonsForNotSelectedChat = ({
+  clickCreateChat,
+}: {
+  clickCreateChat: () => void;
+}) => [
+  new Button({
+    label: '',
+    noValidation: true,
+    stylesType: ButtonStyleTypes.Custom,
+    styles: 'chat__createChatBtn',
+    events: { click: clickCreateChat },
+  }),
+];
 
 type InternalProps = {
   Modal?: ModalNames | null;
@@ -38,9 +53,17 @@ type Props = PropsFromStore & InternalProps & Controllers;
 type PropsFromConstructor = PropsFromStore & Controllers;
 type PropsWithoutControllers = PropsFromStore;
 
+type Children = {
+  ChatSettings: ChatSettings;
+  chatMessages?: ChatMessage[];
+  ChatMessageInput: ChatMessageInput;
+  CreateChatBtn: Button[];
+  Modal?: Modal;
+};
+
 let closeFunction: null | ((e: MouseEvent) => void) = null;
 
-class Chat extends Block<Props> {
+class Chat extends Block<Props, Children> {
   constructor(props: PropsFromConstructor) {
     super({ ...props, Modal: null, areSettingsOpen: false });
   }
@@ -50,21 +73,8 @@ class Chat extends Block<Props> {
   }
 
   protected init(): void {
-    this.children.ChatSettings = new ChatSettings({
-      isOpen: false,
-      buttons: getButtonsForNotSelectedChat({
-        clickCreateChat: () => (this.props.Modal = 'create-chat'),
-      }),
-      openBtn: new Button({
-        label: '',
-        noValidation: true,
-        stylesType: ButtonStyleTypes.Custom,
-        styles: 'chatSettings__settingsBtn',
-        child: new DotsForButton(),
-        events: {
-          click: this.toggleSettings.bind(this),
-        },
-      }),
+    this.children.CreateChatBtn = getButtonsForNotSelectedChat({
+      clickCreateChat: () => (this.props.Modal = 'create-chat'),
     });
 
     this.children.ChatMessageInput = new ChatMessageInput({
@@ -99,7 +109,7 @@ class Chat extends Block<Props> {
     }
 
     if (oldProps.areSettingsOpen !== newProps.areSettingsOpen) {
-      const chatSettings = this.children.ChatSettings as ChatSettings;
+      const chatSettings = this.children.ChatSettings;
       chatSettings.props.isOpen = !!newProps.areSettingsOpen;
 
       if (newProps.areSettingsOpen) {
@@ -145,21 +155,8 @@ class Chat extends Block<Props> {
 
         this.renderMessages();
       } else {
-        this.children.ChatSettings = new ChatSettings({
-          isOpen: false,
-          buttons: getButtonsForNotSelectedChat({
-            clickCreateChat: () => (this.props.Modal = 'create-chat'),
-          }),
-          openBtn: new Button({
-            label: '',
-            noValidation: true,
-            stylesType: ButtonStyleTypes.Custom,
-            styles: 'chatSettings__settingsBtn',
-            child: new DotsForButton(),
-            events: {
-              click: this.toggleSettings.bind(this),
-            },
-          }),
+        this.children.CreateChatBtn = getButtonsForNotSelectedChat({
+          clickCreateChat: () => (this.props.Modal = 'create-chat'),
         });
       }
     }
@@ -188,7 +185,7 @@ class Chat extends Block<Props> {
   }
 }
 
-const WithControllers = withControllers<Props, Controllers>(Chat, {
+const WithControllers = withControllers<Props, Controllers, Children>(Chat, {
   chatsController: new ChatsController(),
   messagesController: new MessagesController(),
 });
@@ -208,4 +205,6 @@ const mapStateToProps = (state: State): PropsFromStore => {
   };
 };
 
-export default withStore<PropsWithoutControllers, PropsFromStore>(mapStateToProps)(WithControllers);
+export default withStore<PropsWithoutControllers, PropsFromStore, Children>(mapStateToProps)(
+  WithControllers
+);

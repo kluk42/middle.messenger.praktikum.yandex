@@ -23,7 +23,7 @@ export const format = (date: Date, formatStr: FormatStrings) => {
 };
 
 const formatDDMMYY = (date: Date) => {
-  let dayNumber = date.getDate();
+  const dayNumber = date.getDate();
   let day = dayNumber.toString();
 
   if (dayNumber < 10) {

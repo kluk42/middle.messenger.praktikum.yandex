@@ -32,7 +32,12 @@ type Props = {
   sendMessage: (message: string) => void;
 };
 
-export class ChatMessageInput extends Block<Props> {
+type Children = {
+  AttachmentBtn: Button;
+  Form: Form<InputNamesType>;
+};
+
+export class ChatMessageInput extends Block<Props, Children> {
   constructor(props: Props) {
     super(props);
   }

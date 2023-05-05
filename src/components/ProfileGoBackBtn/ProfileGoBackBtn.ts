@@ -7,7 +7,7 @@ type Props = {
   };
 };
 
-export class ProfileGoBackBtn extends Block<Props> {
+export class ProfileGoBackBtn extends Block<Props, Record<string, never>> {
   constructor(props: Props) {
     super(props);
   }

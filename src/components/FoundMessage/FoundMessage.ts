@@ -6,7 +6,7 @@ type Props = {
   name: string;
 };
 
-export class FoundMessage extends Block<Props> {
+export class FoundMessage extends Block<Props, Record<string, never>> {
   constructor(props: Props) {
     super(props);
   }
